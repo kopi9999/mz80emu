@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+mz80emu
+
+# build temp files
+
+Makefile
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
