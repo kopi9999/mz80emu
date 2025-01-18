@@ -1,5 +1,3 @@
 cmake_minimum_required(VERSION 3.10)
 project(mz80emu)
-add_library(test src/test.c)
-add_executable(mz80emu src/main.cpp)
-target_link_libraries(mz80emu PUBLIC test)
+add_executable(mz80emu src/main.cpp src/test.c)
