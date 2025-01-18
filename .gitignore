@@ -48,3 +48,4 @@ mz80emu.sln
 mz80emu.vcxproj
 mz80emu.vcxproj.filters
 x64/
+build/*
