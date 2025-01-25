@@ -1,22 +1,52 @@
-#include <stdio.h>
-#include <windows.h>
+#include <iostream>
+#include <stdlib.h>
+#include <vector>
+#include <string>
 
 extern "C" {
-	#include "test.h"
     #include "loadlib.h"
+}
+
+using namespace std;
+
+
+bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load libraries from std::vector<string>
+{
+    bool error = false;
+    for (uint16_t i = 0; i < libCount; ++i)
+    {
+        libs[i] = loadLib(libNames[i].c_str());
+        if(!libs[i]){
+            cout << "ERROR: cannot find library: " << libNames[i] << "\n";
+            error = true;
+        }
+        else 
+        {
+            cout << "INFO: Loaded library: " << libNames[i] << "\n";
+        }
+    }
+    return error;
 }
 
 int main()
 {
-	printf("\nPlaceholder: %d\n\n", test());
-    void* lib = loadlib("test.dll");
-    printf("library pointer: %x\n", lib);
-    if (!lib) {printf("error, cant find lib"); return 1;}
-    int (*func) () = (int (*)()) loadfunc(lib, "testdll");
-    printf("function pointer: %x\n", func);
-    if (!func) {printf("error, cant find func"); return 2;}
-    printf("dll test: %d\n", func());
-    unloadlib(lib);
+    //loading from config file
+
+    vector<string> libNames;
+    libNames.push_back("test.dll");
+    
+    uint16_t libCount = libNames.size(); //number of libraries to load
+    void** libs = new void*[libCount];  //table for library pointers
+
+    if (loadLibs(libs, libNames, libCount))
+    {
+        unloadLibs(libs, libCount);
+        exit(1);
+
+    }
+    
+    unloadLibs(libs, libCount);
+    return 0;
 }
 
 //test jocha

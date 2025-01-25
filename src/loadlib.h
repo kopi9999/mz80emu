@@ -1,8 +1,10 @@
 #ifndef LOADLIB
 #define LOADLIB
+#include <stdint.h>
 
-extern void* loadlib(const char*);
-extern void* loadfunc(void*, const char*);
-extern bool unloadlib(void*);
+extern void* loadLib(const char*);
+extern void* loadFunc(void*, const char*);
+extern bool unloadLib(void*);
+extern bool unloadLibs(void**, uint16_t);
 
 #endif
