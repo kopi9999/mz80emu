@@ -45,6 +45,9 @@ int main()
 
     }
     
+    //void** createFuncs = new void*[libCount];
+    //loadFuncs(createFuncs, libs, libCount, "create")
+
     unloadLibs(libs, libCount);
     return 0;
 }

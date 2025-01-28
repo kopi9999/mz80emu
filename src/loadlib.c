@@ -8,9 +8,20 @@ void* loadLib(const char *__restrict dllName)
     return LoadLibrary(TEXT(dllName));
 }
 
-void* loadFunc(void *__restrict dll, const char *funcName)
+void* loadFunc(void *__restrict dll, const char *__restrict funcName)
 {
     return GetProcAddress((HINSTANCE) dll, funcName);
+}
+
+bool loadFuncs(void **__restrict funcTab, void ** __restrict dlls, uint16_t dllCount, const char *__restrict funcName)
+{
+    bool error = false;
+    for (uint16_t i = 0; i < dllCount; i++){
+        funcTab[i] = GetProcAddress((HINSTANCE) dlls[i], funcName);
+        if(!funcTab[i]){error = true;}
+    }
+
+    return error;
 }
 
 bool unloadLib(void *__restrict dll)
