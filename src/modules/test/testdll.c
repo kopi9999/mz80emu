@@ -39,6 +39,7 @@ enum Error createInterfaces(void*__restrict instance, void** interfaces, uint16_
     interfaces[0] = calloc(1, sizeof(uint8_t));
     if (!interfaces[0]) {return MALLOC_ERROR;}
     
+    *count = 1;
     return SUCCESS;
 }
 
