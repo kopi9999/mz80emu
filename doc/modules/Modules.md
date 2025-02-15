@@ -9,37 +9,50 @@ Every **module** is a dynamic library, which contains functions for emulation of
 #### **`enum Error create(void* instance, void* parameters)`**
 
 This function creates an component instance.
-| Argument | Explaination | Access |
+| Argument | Explanation | Access |
 | - | - | - |
-| `void* instance` | Pointer to variable, where instance pointer will be stored. | write |
+| `void* instance` | Pointer to variable, where instance pointer will be stored. | Write |
 | `void* parameters` | Pointer to variable, which holds arguments for instance creation. Variable type, and contents are specific for every module | Read |
 
 #### **`enum Error createInterfaces(void* instance, void** interfaces, uint16_t* count)`**
 
 This function creates interfaces of an instance.
-| Argument | Explaination | Access |
+| Argument | Explanation | Access |
 | - | - | - |
 | `void* instance` | Pointer to variable, where instance pointer is stored. | Read |
-| `void** interfaces` | Pointer to variable, wich will hold pointer to interfaces array. | Write |
-| `uint16_t* count` | Pointer to variable, in wich number of instances created will be stored. Can be used for an argument, depending on specific module | Write, Read (optional) |
+| `void** interfaces` | Pointer to variable, which will hold pointer to interfaces array. | Write |
+| `uint16_t* count` | Pointer to variable, in which number of instances created will be stored. Can be used for an argument, depending on specific module | Write, Read (optional) |
 
 #### **`enum Error strobeUp(void* instance, void** interfaces)`**
 
-This function executes component change of state for rising edge of the clock
+This function executes component change of state for rising edge of the clock.
 
-| Argument | Explaination | Access |
+| Argument | Explanation | Access |
 | - | - | - |
 | `void* instance` | Pointer to a variable, where instance pointer is stored. | Read, Write |
 | `void** interfaces` | Pointer to a variable, where module interfaces are stored. | Read, Write |
 
 #### **`enum Error strobeDown(void* instance, void** interfaces)`**
 
-This function executes component change of state for falling edge of the clock
+This function executes component change of state for falling edge of the clock.
 
-| Argument | Explaination | Access |
+| Argument | Explanation | Access |
 | - | - | - |
 | `void* instance` | Pointer to a variable, where instance pointer is stored. | Read, Write |
 | `void** interfaces` | Pointer to a variable, where module interfaces are stored. | Read, Write |
 
 #### **`enum Error destroy(void* instance)`**
 
+This function deallocates instance memory.
+
+| Argument | Explanation | Access |
+| - | - | - |
+| `void* instance` | Pointer to a variable, where pointer for deallocated instance is stored. | Read |
+
+#### **`enum Error destroyInterfaces(void* instance, void** interfaces, uint16_t count)`**
+
+| Argument | Explanation | Access |
+| - | - | - |
+| `void* instance` | Pointer to a variable, where instance pointer is stored. | Read |
+| `void** interfaces` | Pointer to a variable, where module interfaces are stored for deallocation. | Read |
+| `uint16_t count` | Variable containing number of instances provided for deallocation. |
