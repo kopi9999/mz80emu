@@ -5,9 +5,29 @@
 
 extern "C" {
     #include "loadlib.h"
+    #include "modules\\moduleWindows.h"
 }
 
 using namespace std;
+
+typedef enum Error (*createPtr)(void*, void*);
+typedef enum Error (*createInterfacesPtr)(void*, void**, uint16_t*);
+typedef enum Error (*strobeUpPtr)(void*, void**);
+typedef enum Error (*strobeDownPtr)(void*, void**);
+typedef enum Error (*destroyPtr)(void*);
+typedef enum Error (*destroyInterfacesPtr)(void*, void**, uint16_t);
+
+struct Modules {
+    vector<string> names;
+    uint16_t count;
+    void** pointers;
+    createPtr* createFuncs;
+    createInterfacesPtr* createInterfacesFuncs;
+    strobeUpPtr* strobeUpFuncs;
+    strobeDownPtr* strobeDownFuncs;
+    destroyPtr* destroyFuncs;
+    destroyInterfacesPtr* destroyInterfacesFuncs;
+} modules;
 
 
 bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load libraries from std::vector<string>
@@ -30,13 +50,10 @@ bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load li
 
 int main()
 {
-    //loading from config file
+    // loading from config file
 
-    vector<string> libNames;
-    libNames.push_back("test.dll");
-
-    uint16_t libCount = libNames.size(); //number of libraries to load
-    void** libs = new void*[libCount];  //table for library pointers
+    modules.names.push_back("test.dll");
+    modules.count = modules.names.size(); //number of libraries to load
 
     uint32_t instanceCount = 2; // number of instances
     uint32_t* instancesList = new uint32_t[instanceCount]{0, 0}; // id`s of libraries for instance creation
@@ -62,20 +79,35 @@ int main()
         new bool[clockDepth]{true, false}  // strobe down activation for second instance (180 deg. phase shift)
     };
 
-    //end of config file
-    //loading libraries
+    // end of config file
+    // loading modules
     
-    if (loadLibs(libs, libNames, libCount))
+    modules.pointers = new void*[modules.count];
+    
+    if (loadLibs(modules.pointers, modules.names, modules.count))
     {
-        unloadLibs(libs, libCount);
+        unloadLibs(modules.pointers, modules.count);
         exit(1);
 
     }
-    
-    void** createFuncs = new void*[libCount];
-    loadFuncs(createFuncs, libs, libCount, "create");
+   
+    // loading module functions
 
-    unloadLibs(libs, libCount);
+    modules.createFuncs = new createPtr[modules.count];
+    modules.createInterfacesFuncs = new createInterfacesPtr[modules.count];
+    modules.strobeUpFuncs = new strobeUpPtr[modules.count];
+    modules.strobeDownFuncs = new strobeDownPtr[modules.count];
+    modules.destroyFuncs = new destroyPtr[modules.count];
+    modules.destroyInterfacesFuncs = new destroyInterfacesPtr[modules.count];
+    
+    loadFuncs((void**) modules.createFuncs, modules.pointers, modules.count, "create");
+    loadFuncs((void**) modules.createInterfacesFuncs, modules.pointers, modules.count, "createInterfaces");
+    loadFuncs((void**) modules.strobeUpFuncs, modules.pointers, modules.count, "strobeUp");
+    loadFuncs((void**) modules.strobeDownFuncs, modules.pointers, modules.count, "strobeDown");
+    loadFuncs((void**) modules.destroyFuncs, modules.pointers, modules.count, "destroy");
+    loadFuncs((void**) modules.destroyInterfacesFuncs, modules.pointers, modules.count, "destroyInterfaces");
+
+    unloadLibs(modules.pointers, modules.count);
     return 0;
 }
 
