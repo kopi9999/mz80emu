@@ -5,6 +5,7 @@
 
 extern "C" {
     #include "loadlib.h"
+    #include "misc.h"
     #include "modules\\moduleWindows.h"
 }
 
@@ -37,15 +38,53 @@ bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load li
     {
         libs[i] = loadLib(libNames[i].c_str());
         if(!libs[i]){
-            cout << "ERROR: cannot find library: " << libNames[i] << "\n";
+            cout << "ERROR: cannot find module: " << libNames[i] << "\n";
             error = true;
         }
         else 
         {
-            cout << "INFO: Loaded library: " << libNames[i] << "\n";
+            cout << "INFO: Loading module: " << libNames[i] << "\n";
         }
     }
     return error;
+}
+
+bool loadModuleFunctions()
+{
+    modules.createFuncs = new createPtr[modules.count];
+    modules.createInterfacesFuncs = new createInterfacesPtr[modules.count];
+    modules.strobeUpFuncs = new strobeUpPtr[modules.count];
+    modules.strobeDownFuncs = new strobeDownPtr[modules.count];
+    modules.destroyFuncs = new destroyPtr[modules.count];
+    modules.destroyInterfacesFuncs = new destroyInterfacesPtr[modules.count];
+
+    if (loadFuncs((void**) modules.createFuncs, modules.pointers, modules.count, "create")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createFuncs, modules.count)] << "]: Cannot load all functions.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.createInterfacesFuncs, modules.pointers, modules.count, "createInterfaces")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createInterfacesFuncs, modules.count)] << "]: Cannot load all functions.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.strobeUpFuncs, modules.pointers, modules.count, "strobeUp")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeUpFuncs, modules.count)] << "]: Cannot load all functions.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.strobeDownFuncs, modules.pointers, modules.count, "strobeDown")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeDownFuncs, modules.count)] << "]: Cannot load all functions.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.destroyFuncs, modules.pointers, modules.count, "destroy")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyFuncs, modules.count)] << "]: Cannot load all functions.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.destroyInterfacesFuncs, modules.pointers, modules.count, "destroyInterfaces")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyInterfacesFuncs, modules.count)] << "]: Cannot load all functions.\n";
+        return false;
+    }
+
+    cout << "INFO: All modules succesfully loaded\n";
+    return true;
 }
 
 int main()
@@ -100,12 +139,10 @@ int main()
     modules.destroyFuncs = new destroyPtr[modules.count];
     modules.destroyInterfacesFuncs = new destroyInterfacesPtr[modules.count];
     
-    loadFuncs((void**) modules.createFuncs, modules.pointers, modules.count, "create");
-    loadFuncs((void**) modules.createInterfacesFuncs, modules.pointers, modules.count, "createInterfaces");
-    loadFuncs((void**) modules.strobeUpFuncs, modules.pointers, modules.count, "strobeUp");
-    loadFuncs((void**) modules.strobeDownFuncs, modules.pointers, modules.count, "strobeDown");
-    loadFuncs((void**) modules.destroyFuncs, modules.pointers, modules.count, "destroy");
-    loadFuncs((void**) modules.destroyInterfacesFuncs, modules.pointers, modules.count, "destroyInterfaces");
+    if (!loadModuleFunctions()){
+        unloadLibs(modules.pointers, modules.count);
+        exit(2);
+    }
 
     unloadLibs(modules.pointers, modules.count);
     return 0;
