@@ -30,6 +30,10 @@ struct Modules {
     destroyInterfacesPtr* destroyInterfacesFuncs;
 } modules;
 
+void** instances;
+void*** interfaces;
+uint16_t* interfacesElements;
+
 
 bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load libraries from std::vector<string>
 {
@@ -130,19 +134,36 @@ int main()
 
     }
    
-    // loading module functions
-
-    modules.createFuncs = new createPtr[modules.count];
-    modules.createInterfacesFuncs = new createInterfacesPtr[modules.count];
-    modules.strobeUpFuncs = new strobeUpPtr[modules.count];
-    modules.strobeDownFuncs = new strobeDownPtr[modules.count];
-    modules.destroyFuncs = new destroyPtr[modules.count];
-    modules.destroyInterfacesFuncs = new destroyInterfacesPtr[modules.count];
-    
     if (!loadModuleFunctions()){
         unloadLibs(modules.pointers, modules.count);
         exit(2);
     }
+
+    //creating instances and interfaces
+    
+    instances = new void*[instanceCount];
+    Error error;
+
+    for (uint32_t i = 0; i < instanceCount; i++){
+        error = modules.createFuncs[instancesList[i]](&instances[i], instancesParameters[i]);
+        if (error) { cout << "ERROR [" << modules.names[instancesList[i]] << "]: Cannot create instance " << i << " , error " << error << ".\n"; break; }
+    }
+    if (error) { unloadLibs(modules.pointers, modules.count); exit(3); }
+
+    cout << "INFO: All instances created successfully\n";
+
+    interfaces = new void**[interfacesCount];
+    interfacesElements = new uint16_t[interfacesCount];
+    uint16_t tmpModuleId;
+    
+    for (uint32_t i = 0; i < interfacesCount; i++){
+        tmpModuleId = instancesList[interfacesList[i]];
+        error = modules.createInterfacesFuncs[tmpModuleId](&instances[interfacesList[i]], (void**) &interfaces[i], &interfacesElements[i]);
+        if (error) { cout << "ERROR [" << modules.names[tmpModuleId] << "]: Cannot create interfaces " << i << " , error " << error << ".\n"; break; }
+    }
+    if (error) { unloadLibs(modules.pointers, modules.count); exit(4); }
+
+    cout << "INFO: All interfaces created successfully\n";
 
     unloadLibs(modules.pointers, modules.count);
     return 0;
