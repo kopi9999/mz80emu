@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <string>
+#include <chrono>
 
 extern "C" {
     #include "loadlib.h"
@@ -130,13 +131,13 @@ int main()
     if (loadLibs(modules.pointers, modules.names, modules.count))
     {
         unloadLibs(modules.pointers, modules.count);
-        exit(1);
+        return 1;
 
     }
    
     if (!loadModuleFunctions()){
         unloadLibs(modules.pointers, modules.count);
-        exit(2);
+        return 2;
     }
 
     //creating instances and interfaces
@@ -148,7 +149,7 @@ int main()
         error = modules.createFuncs[instancesList[i]](&instances[i], instancesParameters[i]);
         if (error) { cout << "ERROR [" << modules.names[instancesList[i]] << "]: Cannot create instance " << i << " , error " << error << ".\n"; break; }
     }
-    if (error) { unloadLibs(modules.pointers, modules.count); exit(3); }
+    if (error) { unloadLibs(modules.pointers, modules.count); return 3; }
 
     cout << "INFO: All instances created successfully\n";
 
@@ -161,9 +162,41 @@ int main()
         error = modules.createInterfacesFuncs[tmpModuleId](&instances[interfacesList[i]], (void**) &interfaces[i], &interfacesElements[i]);
         if (error) { cout << "ERROR [" << modules.names[tmpModuleId] << "]: Cannot create interfaces " << i << " , error " << error << ".\n"; break; }
     }
-    if (error) { unloadLibs(modules.pointers, modules.count); exit(4); }
+    if (error) { unloadLibs(modules.pointers, modules.count); return 4; }
 
     cout << "INFO: All interfaces created successfully\n";
+
+    //main loop
+
+    chrono::time_point<chrono::high_resolution_clock> start, end;
+    chrono::nanoseconds duration = chrono::nanoseconds(clockPeriod);
+    uint32_t clockState = 0;
+
+    while (true){
+        start = chrono::high_resolution_clock::now();
+        end = start + duration;
+
+        for (uint32_t i = 0; i < instanceCount; i++){
+            if (strobeUpClock[i][clockState]){
+                tmpModuleId = instancesList[strobeUpInstanceList[i]];
+                error = modules.strobeUpFuncs[tmpModuleId](&instances[strobeUpInstanceList[i]], (void**) &interfaces[strobeUpInterfacesList[i]]);
+                if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe up error " << error << ".\n"; break;}
+            }
+        }
+        
+        for (uint32_t i = 0; i < instanceCount; i++){
+            if (strobeDownClock[i][clockState]){
+                tmpModuleId = instancesList[strobeDownInstanceList[i]];
+                error = modules.strobeDownFuncs[tmpModuleId](&instances[strobeDownInstanceList[i]], (void**) &interfaces[strobeDownInterfacesList[i]]);
+                if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe down error " << error << ".\n"; break;}
+            }
+        }
+        
+        do {
+        start = chrono::high_resolution_clock::now();
+        } while (end > start);
+
+    }
 
     unloadLibs(modules.pointers, modules.count);
     return 0;
