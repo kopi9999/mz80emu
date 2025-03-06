@@ -7,7 +7,7 @@ struct Instance{
     char* character;
 };
 
-enum Error create(void* instance, void*__restrict parameters)
+enum Error create(void** instance, void*__restrict parameters)
 {
     struct Instance* instanceTmp = calloc(1, sizeof(struct Instance));
     if(!instanceTmp) {return MALLOC_ERROR;}
@@ -24,20 +24,20 @@ enum Error create(void* instance, void*__restrict parameters)
         *(instanceTmp->character) = 0;
     }
 
-    instance = instanceTmp;
+    *instance = instanceTmp;
     return SUCCESS;
 }
 
 
-enum Error createInterfaces(void*__restrict instance, void** interfaces, uint16_t*__restrict count)
+enum Error createInterfaces(void*__restrict instance, void*** interfaces, uint16_t*__restrict count)
 {
     *count = 1;
 
-    interfaces = calloc(1, sizeof(void*));
-    if (!interfaces) {return MALLOC_ERROR;}
+    *interfaces = calloc(1, sizeof(void*));
+    if (!*interfaces) {return MALLOC_ERROR;}
 
-    interfaces[0] = calloc(1, sizeof(uint8_t));
-    if (!interfaces[0]) {return MALLOC_ERROR;}
+    *interfaces[0] = calloc(1, sizeof(uint8_t));
+    if (!(*interfaces)[0]) {return MALLOC_ERROR;}
     
     *count = 1;
     return SUCCESS;
@@ -47,9 +47,10 @@ enum Error strobeUp(void*__restrict instance, void**__restrict interfaces)
 {
     if(!instance || !interfaces) {return BAD_ARGUMENT;}
     if(!interfaces[0]) {return BAD_ARGUMENT;}
-
-    printf("%d\n", ((struct Instance*)instance)->value);
-    * (uint8_t*) interfaces[0] = rand();
+    
+    struct Instance* instanceTmp = (struct Instance*) instance;
+    printf("%d\n", instanceTmp->value);
+    *(uint8_t*) interfaces[0] = rand();
 
     return SUCCESS;
 }

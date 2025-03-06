@@ -12,8 +12,8 @@ extern "C" {
 
 using namespace std;
 
-typedef enum Error (*createPtr)(void*, void*);
-typedef enum Error (*createInterfacesPtr)(void*, void**, uint16_t*);
+typedef enum Error (*createPtr)(void**, void*);
+typedef enum Error (*createInterfacesPtr)(void*, void***, uint16_t*);
 typedef enum Error (*strobeUpPtr)(void*, void**);
 typedef enum Error (*strobeDownPtr)(void*, void**);
 typedef enum Error (*destroyPtr)(void*);
@@ -106,7 +106,7 @@ int main()
     uint32_t interfacesCount = 1; // number of interfaces
     uint32_t* interfacesList = new uint32_t[interfacesCount]{0}; // id`s of instances for interfaces creation
 
-    uint32_t clockPeriod = 500000000; // 0.5s in nanoseconds
+    uint32_t clockPeriod = 250000000; // 0.5s in nanoseconds
     uint32_t clockDepth = 2; // number of clock states
     
     uint32_t* strobeUpInstanceList = new uint32_t[instanceCount]{0, 1}; // strobe up order (instance id)
@@ -159,7 +159,7 @@ int main()
     
     for (uint32_t i = 0; i < interfacesCount; i++){
         tmpModuleId = instancesList[interfacesList[i]];
-        error = modules.createInterfacesFuncs[tmpModuleId](&instances[interfacesList[i]], (void**) &interfaces[i], &interfacesElements[i]);
+        error = modules.createInterfacesFuncs[tmpModuleId](&instances[interfacesList[i]], &interfaces[i], &interfacesElements[i]);
         if (error) { cout << "ERROR [" << modules.names[tmpModuleId] << "]: Cannot create interfaces " << i << " , error " << error << ".\n"; break; }
     }
     if (error) { unloadLibs(modules.pointers, modules.count); return 4; }
@@ -179,7 +179,7 @@ int main()
         for (uint32_t i = 0; i < instanceCount; i++){
             if (strobeUpClock[i][clockState]){
                 tmpModuleId = instancesList[strobeUpInstanceList[i]];
-                error = modules.strobeUpFuncs[tmpModuleId](&instances[strobeUpInstanceList[i]], (void**) &interfaces[strobeUpInterfacesList[i]]);
+                error = modules.strobeUpFuncs[tmpModuleId](instances[strobeUpInstanceList[i]], (void**) &interfaces[strobeUpInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe up error " << error << ".\n"; break;}
             }
         }
@@ -187,7 +187,7 @@ int main()
         for (uint32_t i = 0; i < instanceCount; i++){
             if (strobeDownClock[i][clockState]){
                 tmpModuleId = instancesList[strobeDownInstanceList[i]];
-                error = modules.strobeDownFuncs[tmpModuleId](&instances[strobeDownInstanceList[i]], (void**) &interfaces[strobeDownInterfacesList[i]]);
+                error = modules.strobeDownFuncs[tmpModuleId](instances[strobeDownInstanceList[i]], (void**) &interfaces[strobeDownInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe down error " << error << ".\n"; break;}
             }
         }
@@ -195,6 +195,9 @@ int main()
         do {
         start = chrono::high_resolution_clock::now();
         } while (end > start);
+
+        ++clockState;
+        if (clockState == clockDepth) {clockState = 0;}
 
     }
 
