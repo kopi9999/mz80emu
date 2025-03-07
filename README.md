@@ -4,7 +4,7 @@ Modular computer emulator
 
 ## Overview
 
-Mz80emu is an computer emulator. Every component is emulated by separate dynamic library, which is linked at runtime. Connection between components are specified in config. Thanks to that, the program can simulate various computer architectures, and other synchronous digital devices.
+Mz80emu is a computer emulator. Every component is emulated by separate dynamic library, which is linked at runtime. Connection between components are specified in config. Thanks to that, the program can simulate various computer architectures, and other synchronous digital devices.
 
 ## Collaborator roles
 
