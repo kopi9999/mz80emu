@@ -10,13 +10,18 @@ Mz80emu is a computer emulator. Every component is emulated by separate dynamic 
 ## How to compile (For Windows)
 Before you try to install the emulator make shure you have Microdoft C++ toolset instaled
 To compile emulator , firstle clone the repositorty
-*git clone https://github.com/kopi9999/mz80emu.git*
-Afterwards enter the repository folder by deflaut it is mz80emu using Native Tools Comands Prompt
-*cd D:\path\to\mz80emu*
-Next create and enter the build folder
-*mkdir build*
-*cd build*
 
+```git clone https://github.com/kopi9999/mz80emu.git```
+
+Afterwards enter the repository folder by deflaut it is mz80emu using Native Tools Comands Prompt
+```cd D:\path\to\mz80emu```
+Next create and enter the build folder
+```mkdir build```
+```cd build```
+After that you can compile the program using cmake
+```cmake ..\```
+```cmake --build .\```
+Congratulation you have sucesfully compile emulator
 
 ## Advantages and Limitations
 
