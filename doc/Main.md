@@ -1,7 +1,7 @@
 # main.cpp
 
 `main.cpp` file is responsible for running emulator by initialization of all necessary modules and supervising clock. It contains:
-- variables storing data of modules, instances and interfaces,
+- variables storing data of modules, their instances and interfaces,
 - defintions of types used to storing pointers to functions in arrays,
 - definition of struct containing modules data.
 
