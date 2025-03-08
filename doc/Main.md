@@ -7,6 +7,18 @@
 
 ## Structs
 
+### `Modules`
+`Modules` is struct used to create `modules` variable storing all data concerning modules (not to be confused with module instances). Its fields includes:
+- `names` - 
+- `count` - 
+- `pointers` - 
+- `createFuncs` - 
+- `createInterfacesFuncs` - 
+- `strobeUpFuncs` - 
+- `strobeDownFuncs` - 
+- `destroyFuncs` - 
+- `destroyInterfacesFuncs` - 
+
 ## Functions
 
 ### `main()`
