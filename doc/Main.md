@@ -9,15 +9,12 @@
 
 ### `Modules`
 `Modules` is struct used to create `modules` variable storing all data concerning modules (not to be confused with module instances). Its fields includes:
-- `names` - 
-- `count` - 
-- `pointers` - 
-- `createFuncs` - 
-- `createInterfacesFuncs` - 
-- `strobeUpFuncs` - 
-- `strobeDownFuncs` - 
-- `destroyFuncs` - 
-- `destroyInterfacesFuncs` - 
+- `names` - vector of all modules names (with added .dll extension), so that it can be used to recognise specific module dll libraries.
+- `count` - number of modules.
+- `pointers` - array of pointers to loaded dll libraries.
+- `createFuncs`, `createInterfacesFuncs`, `strobeUpFuncs`, `strobeDownFuncs`, `destroyFuncs`, `destroyInterfacesFuncs` - arrays of pointers to modules functions having names corresponding to names of these arrays.
+
+In case of arrays and vectors, values at a given index in all of them correspond to the same specific module.
 
 ## Functions
 
