@@ -14,7 +14,7 @@
 | `names` | Vector of all modules names (with added .dll extension), so that it can be used to recognise specific module DLL libraries. |
 | `count` | Number of modules.
 | `pointers` | Array of pointers to loaded DLL libraries. |
-| `createFuncs`, `createInterfacesFuncs`, `strobeUpFuncs`, `strobeDownFuncs`, `destroyFuncs` | Arrays of pointers to modules functions having names corresponding to names of these arrays. |
+| `createFuncs`</br>`createInterfacesFuncs`</br>`strobeUpFuncs`</br>`strobeDownFuncs`</br>`destroyFuncs` | Arrays of pointers to modules functions having names corresponding to names of these arrays. |
 
 In case of arrays and vectors, values at a given index in all of them correspond to the same specific module.
 
