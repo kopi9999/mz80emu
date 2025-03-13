@@ -5,45 +5,64 @@ Modular computer emulator
 
 ## Overview
 
-Mz80emu is a computer emulator. Every component is emulated by separate dynamic library, which is linked at runtime. Connection between components are specified in config. Thanks to that, the program can simulate various computer architectures, and other synchronous digital devices.
+Mz80emu is a computer emulator. Every component is emulated by separate dynamic library, which is linked at runtime. Connections between components are specified in config. Thanks to that, the program can simulate various computer architectures, and other synchronous digital devices.
 
 ## How to compile (For Windows)
-Before you try to install the emulator make shure you have Microdoft C++ toolset instaled
-To compile emulator , firstle clone the repositorty
+Before you try to install the emulator make sure you have Microsoft C++ toolset installed
+To compile emulator , firstly clone the repository
 
-```git clone https://github.com/kopi9999/mz80emu.git```
+```
+git clone https://github.com/kopi9999/mz80emu.git
+```
 
-Afterwards enter the repository folder by deflaut it is mz80emu using Native Tools Comands Prompt
+Afterwards enter the repository folder. By default it is mz80emu using Native Tools Commands Prompt
 
-```cd D:\path\to\mz80emu```
+```
+cd D:\path\to\mz80emu
+```
 
 Next create and enter the build folder
 
-```mkdir build```
-
-```cd build```
+```
+mkdir build
+cd build
+```
 
 After that you can compile the program using cmake
 
-```cmake ..\```
+```
+cmake ..\
+cmake --build .\
+```
 
-```cmake --build .\```
-
-Congratulation you have sucesfully compile emulator
+Congratulations you have successfully compiled emulator
 
 ## Advantages and Limitations
 
+### ✅ Advantages  
+- **Modular architecture** – Each component is a separate dynamic library, allowing for flexibility and easy expansion.  
+- **Multi-platform potential** – While the project is currently Windows-focused, its modular design could allow for Linux/MacOS support in the future.  
+- **Support for multiple architectures** – Thanks to configurable connections between modules, the emulator can potentially simulate various computer architectures and synchronous digital devices.  
+- **Open-source and extensible** – Developers can contribute new modules and extend existing functionality.  
+- **CMake build system** – Simplifies compilation and dependency management.  
+
+### ⚠️ Limitations  
+- **Work in progress** – The project is still under heavy development, and some features may be missing or unstable.  
+- **Windows-only build (for now)** – No official support for Linux/MacOS yet, although it may be possible in the future.  
+-  **No GUI (yet)** – The emulator currently lacks a full graphical user interface, making it harder for non-technical users to interact with it.  
+-  **Performance optimizations needed** – The emulator might not be optimized for speed, especially for complex architectures.  
+-  **Limited documentation** – While the README provides basic setup instructions, more in-depth documentation is needed.  
 
 
 
 ## Collaborator roles
 
-- kopi9999 - Leader, architect, Module developer - https://github.com/kopi9999
-- Daw151 - Module developer - https://github.com/Daw151
-- Kamil Heinrich - Ui developer - https://github.com/HeinrichKamil
-- TheDragonEye1 - Ui developer - https://github.com/TheDragonEye1
+- [kopi9999](https://github.com/kopi9999) - Leader, architect, Module developer
+- [Daw151](https://github.com/Daw151) - Module developer
+- [Kamil Heinrich](https://github.com/HeinrichKamil) - Ui developer
+- [TheDragonEye1](https://github.com/TheDragonEye1) - Ui developer
 
-## Contack us on Discord
+## Contact us on Discord
 
 - kopi9999 - kopi999
 - Daw151 - daw20
