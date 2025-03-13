@@ -19,8 +19,6 @@ In case of arrays and vectors, values at a given index in all of them correspond
 ## Functions
 
 ### `main()`
-**Returns: int** (a number greater than 0 if an error occurs before the main loop starts, 0 in other cases)
-
 `main()` function takes care of loading essential data, correct processing it and running main loop.
 
 At first, function loads data from configuration files and saves it in proper variables and arrays. Next, loads all modules DLL libraries and creates pointers to their functions, saving them in `modules` struct. For this purpose it uses `loadLibs()` and `loadModuleFunctions()`.
