@@ -4,6 +4,19 @@
 
 Every **module** is a dynamic library, which contains functions for emulation of single computer component. **Modules** are meant to be loaded at runtime. Before usage component **instances**, and **interfaces** are created. **Instance** variable holds information about current state of a single component, and **interface** variable contains data on components single input, or output. Those variables have to be destroyed before **module** unload.
 
+
+## Enumerators
+
+#### **`Error`**
+
+This enumerator is used as return value of module functions. It says whether the function was performed in right way. If an error occur, it informs about error type. The enumerator accepts following values:
+| Value | Explanation |
+| - | - |
+| `SUCCESS` | No error occurred. |
+| `BAD_ARGUMENT` | Invalid argument has been passed to the function (it is possible because sometimes function parameters are void pointers). |
+| `MALLOC_ERROR` | Memory allocation failed, e.g. due to insufficient amount of available RAM. |
+
+
 ## Exported Functions
 
 #### **`enum Error create(void* instance, void* parameters)`**
