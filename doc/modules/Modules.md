@@ -12,9 +12,9 @@ Every **module** is a dynamic library, which contains functions for emulation of
 This enumerator is used as return value of module functions. It says whether the function was performed in right way. If an error occur, it informs about error type. The enumerator accepts following values:
 | Value | Explanation |
 | - | - |
-| `SUCCESS` | No error occurred. |
-| `BAD_ARGUMENT` | Invalid argument has been passed to the function (it is possible because sometimes function parameters are void pointers). |
-| `MALLOC_ERROR` | Memory allocation failed, e.g. due to insufficient amount of available RAM. |
+| `SUCCESS`:&nbsp;0 | No error occurred. **Tip:** because `SUCCESS` value is zero, enumerator value can be compared to bool in order to catch errors - `SUCCESS` is `false`, and other values are `true`. |
+| `BAD_ARGUMENT`:&nbsp;1 | Invalid argument has been passed to the function (it is possible because sometimes function parameters are void pointers). |
+| `MALLOC_ERROR`:&nbsp;2 | Memory allocation failed, e.g. due to insufficient amount of available RAM. |
 
 
 ## Exported Functions
