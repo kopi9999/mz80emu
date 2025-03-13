@@ -9,10 +9,12 @@
 
 ### `Modules`
 `Modules` is struct used to create `modules` variable storing all data concerning modules (not to be confused with module instances). Its fields includes:
-- `names` - vector of all modules names (with added .dll extension), so that it can be used to recognise specific module DLL libraries.
-- `count` - number of modules.
-- `pointers` - array of pointers to loaded DLL libraries.
-- `createFuncs`, `createInterfacesFuncs`, `strobeUpFuncs`, `strobeDownFuncs`, `destroyFuncs`, `destroyInterfacesFuncs` - arrays of pointers to modules functions having names corresponding to names of these arrays.
+| Field | Explanation |
+| - | - |
+| `names` | Vector of all modules names (with added .dll extension), so that it can be used to recognise specific module DLL libraries. |
+| `count` | Number of modules.
+| `pointers` | Array of pointers to loaded DLL libraries. |
+| `createFuncs`, `createInterfacesFuncs`, `strobeUpFuncs`, `strobeDownFuncs`, `destroyFuncs` | Arrays of pointers to modules functions having names corresponding to names of these arrays. |
 
 In case of arrays and vectors, values at a given index in all of them correspond to the same specific module.
 
@@ -34,10 +36,11 @@ If an error occurs when program tries to load module, get pointer to module func
 ### `loadLibs(libs, libNames, libCount)`
 **Returns: bool** (true when error occurs, otherwise false)
 
-**Parameters:**
-- **void\*\* libs** - array to be filled with pointers to DLL libraries.
-- **vector\<string> libNames** - vector including names of libraries to load.
-- **uint16_t libCount** - number of libraries to be loaded.
+| Parameter | Explanation |
+| - | - |
+| `void** libs` | Array to be filled with pointers to DLL libraries. |
+| `vector\<string> libNames` | Vector including names of libraries to load. |
+| `uint16_t libCount` | Number of libraries to be loaded. |
 
 `loadLibs()` loads DLL libraries and saves pointers to them in an array provided as an argument. Index of value to which pointer is to be loaded corresponds to index of library name in provided array. When library with specific name does not exist, function shows proper information in console and returns true. It also displays informations about successfully loaded libraries.
 
