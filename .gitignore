@@ -49,3 +49,4 @@ mz80emu.vcxproj
 mz80emu.vcxproj.filters
 x64/
 build/*
+.vs/
