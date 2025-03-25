@@ -1,7 +1,7 @@
 #include "../testdll.h"
 #include <stdbool.h>
 
-#define LENGTH 3
+#define LENGTH 5
 
 bool testIfInstanceIsCreated(){
     void* instance = NULL;
@@ -41,6 +41,37 @@ bool testInstanceCreationPararameters(){
     return true;
 }
 
+bool testIfInterfacesAreCreated(){
+    struct Instance instance = {};
+    void ** interfaces = NULL;
+    uint16_t count = 0;
+    enum Error error;
+
+    error = createInterfaces(&instance, &interfaces, &count);
+
+    if (error) {return false;}
+    if (!interfaces) {return false;}
+    if (!*interfaces) {return false;}
+    if (count != 1) {return false;}
+    return true;
+}
+
+bool testIfCreatedInterfacesAreValid(){
+    struct Instance instance = {};
+    uint8_t ** interfaces = NULL;
+    uint16_t count = 0;
+    enum Error error;
+
+    error = createInterfaces(&instance, &interfaces, &count);
+
+    if (error) {return false;}
+    if (!interfaces) {return false;}
+    if (!*interfaces) {return false;}
+    if (**interfaces != 0) {return false;}
+    if (count != 1) {return false;}
+    return true;
+}
+
 void iterateTests(char* names[], bool (*funcs[])(), uint16_t length)
 {
     uint16_t fails = 0;
@@ -58,8 +89,9 @@ void iterateTests(char* names[], bool (*funcs[])(), uint16_t length)
 
 int main()
 {
-    bool (*funcs[LENGTH])() = {testIfInstanceIsCreated, testIfCreatedInstanceIsValid, testInstanceCreationPararameters};
-    char* names[LENGTH] = {"testIfInstanceIsCreated", "testIfCreatedInstanceIsValid", "testInstanceCreationPararameters"};
+    bool (*funcs[LENGTH])() = {testIfInstanceIsCreated, testIfCreatedInstanceIsValid, testInstanceCreationPararameters, 
+        testIfInterfacesAreCreated, testIfCreatedInterfacesAreValid};
+    char* names[LENGTH] = {"testIfInstanceIsCreated", "testIfCreatedInstanceIsValid", "testInstanceCreationPararameters", "testIfInterfacesAreCreated", "testIfCreatedInterfacesAreValid"};
     iterateTests(names, funcs, LENGTH);
     return 0;
 }
