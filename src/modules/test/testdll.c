@@ -1,11 +1,4 @@
-
-#include <stdio.h>
-#include "../moduleWindows.h"
-
-struct Instance{
-    uint8_t value;
-    char* character;
-};
+#include "testdll.h"
 
 enum Error create(void** instance, void*__restrict parameters)
 {
