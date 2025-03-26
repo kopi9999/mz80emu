@@ -1,5 +1,5 @@
 #include "../testdll.h"
-#include "../../../unitTestLib/unitTest.h"
+#include "../../../unitTestSystem/unitTest.h"
 
 #define LENGTH 5
 
@@ -74,7 +74,7 @@ bool testIfCreatedInterfacesAreValid(){
 
 
 
-int main()
+uint16_t testTestDll()
 {
     bool (*funcs[LENGTH])() = {testIfInstanceIsCreated, testIfCreatedInstanceIsValid, testInstanceCreationPararameters, 
         testIfInterfacesAreCreated, testIfCreatedInterfacesAreValid};
