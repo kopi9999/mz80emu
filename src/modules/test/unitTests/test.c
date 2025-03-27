@@ -1,7 +1,7 @@
 #include "../testdll.h"
 #include "../../../unitTestSystem/unitTest.h"
 
-#define LENGTH 5
+#define LENGTH 10
 
 bool testIfInstanceIsCreated(){
     void* instance = NULL;
@@ -72,16 +72,87 @@ bool testIfCreatedInterfacesAreValid(){
     return true;
 }
 
+bool testStrobeUpBadInstanceDetection(){
+    enum Error error;
 
+    error = strobeUp(NULL, NULL);
+
+    if (error == BAD_ARGUMENT) {return true;}
+    return false;
+}
+
+bool testStrobeUpBadInterfacesDetection(){
+    struct Instance instance = {};
+    enum Error error;
+
+    error = strobeUp(&instance, NULL);
+
+    if (error == BAD_ARGUMENT) {return true;}
+    return false;
+}
+
+bool testStrobeDownBadInstanceDetection(){
+    enum Error error;
+
+    error = strobeDown(NULL, NULL);
+
+    if (error == BAD_ARGUMENT) {return true;}
+    return false;
+}
+
+bool testStrobeDownBadInterfacesDetection(){
+    struct Instance instance = {};
+    enum Error error;
+
+    error = strobeDown(&instance, NULL);
+
+    if (error == BAD_ARGUMENT) {return true;}
+    return false;
+}
+
+bool testStrobeDownInstanceAlteration(){
+    struct Instance instance = {};
+    uint8_t interface_1 = 5;
+    uint8_t* interfaces = &interface_1;
+    enum Error error;
+
+    error = strobeDown(&instance, (void**) &interfaces);
+
+    if (error) {return false;}
+    if (instance.value != 5) {return false;}
+    return true;
+}
 
 struct UnitTestModResult testTestDll()
 {
     struct UnitTestModResult result;
     result.tests = LENGTH;
     
-    bool (*funcs[LENGTH])() = {testIfInstanceIsCreated, testIfCreatedInstanceIsValid, testInstanceCreationPararameters, 
-        testIfInterfacesAreCreated, testIfCreatedInterfacesAreValid};
-    char* names[LENGTH] = {"testIfInstanceIsCreated", "testIfCreatedInstanceIsValid", "testInstanceCreationPararameters", "testIfInterfacesAreCreated", "testIfCreatedInterfacesAreValid"};
+    bool (*funcs[LENGTH])() = {
+        testIfInstanceIsCreated,
+        testIfCreatedInstanceIsValid,
+        testInstanceCreationPararameters, 
+        testIfInterfacesAreCreated,
+        testIfCreatedInterfacesAreValid,
+        testStrobeUpBadInstanceDetection,
+        testStrobeUpBadInterfacesDetection,
+        testStrobeDownBadInstanceDetection,
+        testStrobeDownBadInterfacesDetection,
+        testStrobeDownInstanceAlteration
+    };
+    
+    char* names[LENGTH] = {
+        "testIfInstanceIsCreated", 
+        "testIfCreatedInstanceIsValid", 
+        "testInstanceCreationPararameters", 
+        "testIfInterfacesAreCreated", 
+        "testIfCreatedInterfacesAreValid", 
+        "testStrobeUpBadInstanceDetection", 
+        "testStrobeUpBadInterfacesDetection", 
+        "testStrobeDownBadInstanceDetection", 
+        "testStrobeDownBadInterfacesDetection", 
+        "testStrobeDownInstanceAlteration"
+    };
     result.fails = iterateTests(names, funcs, LENGTH);
     return result;
 }
