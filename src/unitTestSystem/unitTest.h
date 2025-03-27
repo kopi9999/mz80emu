@@ -1,12 +1,16 @@
-#ifndef UNIT_TEST_LIB
-#define UNIT_TEST_LIB
+#ifndef UNIT_TESTS
+#define UNIT_TESTS
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-size_t (*runFuncts[2])();
+struct UnitTestModResult {
+    uint16_t tests;
+    uint16_t fails;
+}; 
 
-extern void iterateTests(char* [], bool (*[])(), uint16_t);
+extern uint16_t iterateTests(char* [], bool (*[])(), uint16_t);
 
 #endif
+

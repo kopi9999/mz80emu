@@ -62,7 +62,7 @@ bool testIfCreatedInterfacesAreValid(){
     uint16_t count = 0;
     enum Error error;
 
-    error = createInterfaces(&instance, &interfaces, &count);
+    error = createInterfaces(&instance, (void***) &interfaces, &count);
 
     if (error) {return false;}
     if (!interfaces) {return false;}
@@ -74,11 +74,14 @@ bool testIfCreatedInterfacesAreValid(){
 
 
 
-uint16_t testTestDll()
+struct UnitTestModResult testTestDll()
 {
+    struct UnitTestModResult result;
+    result.tests = LENGTH;
+    
     bool (*funcs[LENGTH])() = {testIfInstanceIsCreated, testIfCreatedInstanceIsValid, testInstanceCreationPararameters, 
         testIfInterfacesAreCreated, testIfCreatedInterfacesAreValid};
     char* names[LENGTH] = {"testIfInstanceIsCreated", "testIfCreatedInstanceIsValid", "testInstanceCreationPararameters", "testIfInterfacesAreCreated", "testIfCreatedInterfacesAreValid"};
-    iterateTests(names, funcs, LENGTH);
-    return 0;
+    result.fails = iterateTests(names, funcs, LENGTH);
+    return result;
 }
