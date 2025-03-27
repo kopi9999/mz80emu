@@ -1,7 +1,5 @@
-#include "unitTest.h"
-#include "getTestFuncs.h"
-
-void iterateTests(char* names[], bool (*funcs[])(), uint16_t length)
+#include "testFuncs.h"
+uint16_t iterateTests(char* names[], bool (*funcs[])(), uint16_t length)
 {
     uint16_t fails = 0;
     for (uint16_t i = 0; i < length; ++i){
@@ -14,14 +12,19 @@ void iterateTests(char* names[], bool (*funcs[])(), uint16_t length)
         printf("FAIL\n");
     }
     printf("\t\t%u tests ran, %u failed", length, fails);
+    return fails;
 }
 
 int main(){
+    struct UnitTestModResult response;
     uint32_t tests = 0;
-    for (uint16_t i = 0; i < TESTS; i++){
+    uint32_t fails = 0;
+    for (uint16_t i = 0; i < TEST_MODULES; i++){
         printf("\n\nTesting %s:\n", names[i]);
-        tests += testFuncs[i]();
+        response = testFuncs[i]();
+        tests += response.tests;
+        fails += response.fails;
     }
-    printf("\n%d tests ran", tests);
+    printf("\n\n%d tests ran in %d test modules, %d failed", tests, TEST_MODULES, fails);
     return 0;
 }
