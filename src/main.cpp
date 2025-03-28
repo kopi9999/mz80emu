@@ -108,12 +108,20 @@ vector<string> splitString(string str, string delimiter) {
     return result;
 }
 
+bool stringToBool(string str) {
+    if (str == "true") {
+        return true;
+    }
+    return false;
+}
+
 int main()
 {
-    // loading from config file
+    // loading from configuration file
 
     string loadingSteps[] = {
         "None",
+        "Modules",
         "Module instances",
         "Interfaces",
         "Clock period",
@@ -131,6 +139,7 @@ int main()
     string row;
     ifstream ConfigFile("../config.txt");
 
+    vector<string> loadedModules;
     vector<string> loadedModuleInstances;
     vector<string> loadedInterfaces;
     string loadedClockPeriod;
@@ -144,7 +153,7 @@ int main()
 
     while (getline(ConfigFile, row)) {
         loadingStepChange = false;
-        for (uint32_t i = 1; i < numberOfSteps; i++) {
+        for (uint32_t i = 1; i < numberOfSteps; ++i) {
             if (row.rfind(loadingSteps[i], 0) == 0) {
                 loadingStepChange = true;
                 currentLoadingStep = i;
@@ -153,33 +162,36 @@ int main()
         }
         if (!loadingStepChange && !row.empty()) {
             if (currentLoadingStep == 1) {
-                loadedModuleInstances.push_back(row);
+                loadedModules.push_back(row);
             }
             else if (currentLoadingStep == 2) {
-                loadedInterfaces.push_back(row);
+                loadedModuleInstances.push_back(row);
             }
             else if (currentLoadingStep == 3) {
-                loadedClockPeriod = row;
+                loadedInterfaces.push_back(row);
             }
             else if (currentLoadingStep == 4) {
-                loadedClockDepth = row;
+                loadedClockPeriod = row;
             }
             else if (currentLoadingStep == 5) {
-                loadedStrobeUpInstances.push_back(row);
+                loadedClockDepth = row;
             }
             else if (currentLoadingStep == 6) {
-                loadedStrobeUpInterfaces.push_back(row);
+                loadedStrobeUpInstances.push_back(row);
             }
             else if (currentLoadingStep == 7) {
-                loadedStrobeUpClock.push_back(splitString(row, " "));
+                loadedStrobeUpInterfaces.push_back(row);
             }
             else if (currentLoadingStep == 8) {
-                loadedStrobeDownInstances.push_back(row);
+                loadedStrobeUpClock.push_back(splitString(row, " "));
             }
             else if (currentLoadingStep == 9) {
-                loadedStrobeDownInterfaces.push_back(row);
+                loadedStrobeDownInstances.push_back(row);
             }
             else if (currentLoadingStep == 10) {
+                loadedStrobeDownInterfaces.push_back(row);
+            }
+            else if (currentLoadingStep == 11) {
                 loadedStrobeDownClock.push_back(splitString(row, " "));
             }
         }
@@ -187,36 +199,49 @@ int main()
 
     ConfigFile.close();
 
+    // processing data loaded from configuration file
 
+    modules.count = loadedModules.size(); //number of libraries to load
+    modules.names = loadedModules;
 
-    modules.names.push_back("test.dll");
-    modules.count = modules.names.size(); //number of libraries to load
+    uint32_t instanceCount = loadedModuleInstances.size();
+    uint32_t* instancesList = new uint32_t[instanceCount]; // id`s of libraries for instance creation
+    void** instancesParameters = new void* [instanceCount]; // pointers to instance parameters (same id as instancesList)
+    for (size_t i = 0; i < instanceCount; ++i) {
+        instancesList[i] = stoul(loadedModuleInstances[i]);
+        instancesParameters[i] = NULL;
+    }
 
-    uint32_t instanceCount = 2; // number of instances
-    uint32_t* instancesList = new uint32_t[instanceCount]{0, 0}; // id`s of libraries for instance creation
-    void** instancesParameters = new void*[instanceCount]{NULL, NULL}; // pointers to instance parameters (same id as instancesList)
+    uint32_t interfacesCount = loadedInterfaces.size();
+    uint32_t* interfacesList = new uint32_t[interfacesCount]; // id`s of instances for interfaces creation
+    for (size_t i = 0; i < interfacesCount; ++i) {
+        interfacesList[i] = stoul(loadedInterfaces[i]);
+    }
 
-    uint32_t interfacesCount = 1; // number of interfaces
-    uint32_t* interfacesList = new uint32_t[interfacesCount]{0}; // id`s of instances for interfaces creation
+    uint32_t clockPeriod = stoul(loadedClockPeriod); // time in nanoseconds
+    uint32_t clockDepth = stoul(loadedClockDepth); // number of clock states
 
-    uint32_t clockPeriod = 250000000; // 0.5s in nanoseconds
-    uint32_t clockDepth = 2; // number of clock states
-    
-    uint32_t* strobeUpInstanceList = new uint32_t[instanceCount]{0, 1}; // strobe up order (instance id)
-    uint32_t* strobeUpInterfacesList = new uint32_t[instanceCount]{0, 0}; // interfaces given for every strobe up instance (interfaces id)
-    bool** strobeUpClock = new bool*[instanceCount]{
-        new bool[clockDepth]{true, false}, // strobe up activation for first instance
-        new bool[clockDepth]{false, true}  // strobe up activation for second instance (180 deg. phase shift)
-    };
+    uint32_t* strobeUpInstanceList = new uint32_t[instanceCount]; // strobe up order (instance id)
+    uint32_t* strobeUpInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe up instance (interfaces id)
+    bool** strobeUpClock = new bool* [instanceCount]; // strobe up activation for instances
 
-    uint32_t* strobeDownInstanceList = new uint32_t[instanceCount]{0, 1}; // strobe down order (instance id)
-    uint32_t* strobeDownInterfacesList = new uint32_t[instanceCount]{0, 0}; // interfaces given for every strobe down instance (interfaces id)
-    bool** strobeDownClock = new bool*[instanceCount]{
-        new bool[clockDepth]{false, true}, // strobe down activation for first instance
-        new bool[clockDepth]{true, false}  // strobe down activation for second instance (180 deg. phase shift)
-    };
+    uint32_t* strobeDownInstanceList = new uint32_t[instanceCount]; // strobe down order (instance id)
+    uint32_t* strobeDownInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe down instance (interfaces id)
+    bool** strobeDownClock = new bool* [instanceCount]; // strobe down activation for instances
 
-    // end of config file
+    for (size_t i = 0; i < instanceCount; ++i) {
+        strobeUpInstanceList[i] = stoul(loadedStrobeUpInstances[i]);
+        strobeUpInterfacesList[i] = stoul(loadedStrobeUpInterfaces[i]);
+        strobeUpClock[i] = new bool[clockDepth];
+        strobeDownInstanceList[i] = stoul(loadedStrobeDownInstances[i]);
+        strobeDownInterfacesList[i] = stoul(loadedStrobeDownInterfaces[i]);
+        strobeDownClock[i] = new bool[clockDepth];
+        for (size_t j = 0; j < clockDepth; ++j) {
+            strobeUpClock[i][j] = stringToBool(loadedStrobeUpClock[i][j]);
+            strobeDownClock[i][j] = stringToBool(loadedStrobeDownClock[i][j]);
+        }
+    }
+
     // loading modules
     
     modules.pointers = new void*[modules.count];
