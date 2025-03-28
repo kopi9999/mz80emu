@@ -47,6 +47,8 @@ mz80emu.dir/
 mz80emu.sln
 mz80emu.vcxproj
 mz80emu.vcxproj.filters
+test.vcxproj
+test.vcxproj.filters
 x64/
 build/*
 .vs/
