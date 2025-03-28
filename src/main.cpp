@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <chrono>
+#include <fstream>
 
 extern "C" {
     #include "loadlib.h"
@@ -95,6 +96,13 @@ bool loadModuleFunctions()
 int main()
 {
     // loading from config file
+
+    string row;
+    ifstream ConfigFile("../config.txt");
+    while (getline(ConfigFile, row)) {
+        cout << row;
+    }
+    ConfigFile.close();
 
     modules.names.push_back("test.dll");
     modules.count = modules.names.size(); //number of libraries to load
