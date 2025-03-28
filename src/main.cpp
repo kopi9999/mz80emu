@@ -93,6 +93,21 @@ bool loadModuleFunctions()
     return true;
 }
 
+vector<string> splitString(string str, string delimiter) {
+    vector<string> result;
+    size_t start = 0;
+    size_t end = str.find(delimiter);
+
+    while (end != string::npos) {
+        result.push_back(str.substr(start, end - start));
+        start = end + delimiter.length();
+        end = str.find(delimiter, start);
+    }
+
+    result.push_back(str.substr(start));
+    return result;
+}
+
 int main()
 {
     // loading from config file
@@ -112,18 +127,67 @@ int main()
     };
     uint32_t numberOfSteps = sizeof(loadingSteps) / sizeof(loadingSteps[0]);
     uint32_t currentLoadingStep = 0;
+    bool loadingStepChange;
     string row;
     ifstream ConfigFile("../config.txt");
 
+    vector<string> loadedModuleInstances;
+    vector<string> loadedInterfaces;
+    string loadedClockPeriod;
+    string loadedClockDepth;
+    vector<string> loadedStrobeUpInstances;
+    vector<string> loadedStrobeUpInterfaces;
+    vector<vector<string>> loadedStrobeUpClock;
+    vector<string> loadedStrobeDownInstances;
+    vector<string> loadedStrobeDownInterfaces;
+    vector<vector<string>> loadedStrobeDownClock;
+
     while (getline(ConfigFile, row)) {
-        for (uint32_t i = 0; i < numberOfSteps; i++) {
+        loadingStepChange = false;
+        for (uint32_t i = 1; i < numberOfSteps; i++) {
             if (row.rfind(loadingSteps[i], 0) == 0) {
-                cout << row << endl;
+                loadingStepChange = true;
+                currentLoadingStep = i;
+                break;
+            }
+        }
+        if (!loadingStepChange && !row.empty()) {
+            if (currentLoadingStep == 1) {
+                loadedModuleInstances.push_back(row);
+            }
+            else if (currentLoadingStep == 2) {
+                loadedInterfaces.push_back(row);
+            }
+            else if (currentLoadingStep == 3) {
+                loadedClockPeriod = row;
+            }
+            else if (currentLoadingStep == 4) {
+                loadedClockDepth = row;
+            }
+            else if (currentLoadingStep == 5) {
+                loadedStrobeUpInstances.push_back(row);
+            }
+            else if (currentLoadingStep == 6) {
+                loadedStrobeUpInterfaces.push_back(row);
+            }
+            else if (currentLoadingStep == 7) {
+                loadedStrobeUpClock.push_back(splitString(row, " "));
+            }
+            else if (currentLoadingStep == 8) {
+                loadedStrobeDownInstances.push_back(row);
+            }
+            else if (currentLoadingStep == 9) {
+                loadedStrobeDownInterfaces.push_back(row);
+            }
+            else if (currentLoadingStep == 10) {
+                loadedStrobeDownClock.push_back(splitString(row, " "));
             }
         }
     }
 
     ConfigFile.close();
+
+
 
     modules.names.push_back("test.dll");
     modules.count = modules.names.size(); //number of libraries to load
