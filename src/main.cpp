@@ -97,11 +97,32 @@ int main()
 {
     // loading from config file
 
+    string loadingSteps[] = {
+        "None",
+        "Module instances",
+        "Interfaces",
+        "Clock period",
+        "Clock depth",
+        "Strobe up instances",
+        "Strobe up interfaces",
+        "Strobe up clock",
+        "Strobe down instances",
+        "Strobe down interfaces",
+        "Strobe down clock"
+    };
+    uint32_t numberOfSteps = sizeof(loadingSteps) / sizeof(loadingSteps[0]);
+    uint32_t currentLoadingStep = 0;
     string row;
     ifstream ConfigFile("../config.txt");
+
     while (getline(ConfigFile, row)) {
-        cout << row;
+        for (uint32_t i = 0; i < numberOfSteps; i++) {
+            if (row.rfind(loadingSteps[i], 0) == 0) {
+                cout << row << endl;
+            }
+        }
     }
+
     ConfigFile.close();
 
     modules.names.push_back("test.dll");

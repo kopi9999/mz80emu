@@ -1,4 +1,23 @@
-cos
-abc
-aodsoadsjd
--a
+Module instances:
+test.dll
+test.dll
+
+Interfaces:
+0
+
+Clock period: 250000000
+Clock depth: 2
+
+Strobe up instances: 0, 1
+Strobe up interfaces: 0, 0
+
+Strobe up clock:
+true, false
+false, true
+
+Strobe down instances: 0, 1
+Strobe down interfaces: 0, 0
+
+Strobe down clock:
+true, false
+false, true
