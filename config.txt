@@ -1,6 +1,9 @@
+Modules:
+test.dll
+
 Module instances:
-test.dll
-test.dll
+0
+0
 
 Interfaces:
 0
@@ -32,5 +35,5 @@ Strobe down interfaces:
 0
 
 Strobe down clock:
-true false
 false true
+true false
