@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-struct UnitTestModResult {
+struct UnitTestModuleResult {
     uint16_t tests;
     uint16_t fails;
 }; 
