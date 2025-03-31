@@ -7,4 +7,9 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 project(mz80emu)
 add_library(test SHARED src/modules/test/testdll.c)
+add_library(testTestDll src/modules/test/testdll.c src/modules/test/unitTests/test.c)
+
+add_executable(unitTests src/unitTestSystem/unitTest.c)
+target_link_libraries(unitTests PUBLIC testTestDll)
+
 add_executable(mz80emu src/main.cpp src/loadlib.c src/misc.c)

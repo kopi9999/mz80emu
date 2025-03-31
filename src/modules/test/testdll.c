@@ -1,11 +1,4 @@
-
-#include <stdio.h>
-#include "../moduleWindows.h"
-
-struct Instance{
-    uint8_t value;
-    char* character;
-};
+#include "testdll.h"
 
 enum Error create(void** instance, void*__restrict parameters)
 {
@@ -66,26 +59,37 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
     return SUCCESS;
 }
 
+void destroyGarbageCollect(struct Instance* instance)
+{
+    *instance->character = 0;
+    instance->character = NULL;
+    instance->value = 0;
+}
+
 enum Error destroy(void* instance)
 {
     if(!instance){return BAD_ARGUMENT;}
 
     struct Instance* instanceTmp = instance;
-    *instanceTmp->character = 0;
+    destroyGarbageCollect(instanceTmp);
     free(instanceTmp->character);
-    instanceTmp->character = NULL;
-    instanceTmp->value = 0;
     free(instanceTmp);
 
     return SUCCESS;
 }
+
+void destroyInterfacesGarbageCollect(void** interfaces)
+{
+    * (uint8_t*) interfaces[0] = 0;
+}
+
 enum Error destroyInterfaces(void*__restrict instance, void** interfaces, uint16_t count)
 {
-    if (!interfaces) {}
-    * (uint8_t*) interfaces[0] = 0;
+    if (!instance) {return BAD_ARGUMENT;}
+    if (!interfaces) {return BAD_ARGUMENT;}
+    destroyInterfacesGarbageCollect(interfaces);
     free(interfaces[0]);
     interfaces[0] = NULL;
     free(interfaces);
-    interfaces = NULL;
     return SUCCESS;
 }
