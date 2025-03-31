@@ -1,7 +1,7 @@
 #include "../testdll.h"
 #include "../../../unitTestSystem/unitTest.h"
 
-#define LENGTH 10
+#define LENGTH 15
 
 bool testIfInstanceIsCreated(){
     void* instance = NULL;
@@ -112,8 +112,8 @@ bool testStrobeDownBadInterfacesDetection(){
 
 bool testStrobeDownInstanceAlteration(){
     struct Instance instance = {};
-    uint8_t interface_1 = 5;
-    uint8_t* interfaces = &interface_1;
+    uint8_t interface_0 = 5;
+    uint8_t* interfaces = &interface_0;
     enum Error error;
 
     error = strobeDown(&instance, (void**) &interfaces);
@@ -123,35 +123,109 @@ bool testStrobeDownInstanceAlteration(){
     return true;
 }
 
-struct UnitTestModResult testTestDll()
+bool testDestroyBadInstanceDetection(){
+    enum Error error;
+
+    error = destroy(NULL);
+
+    if (error == BAD_ARGUMENT) {return true;}
+    return false;
+}
+
+bool testDestroyGarbageCollection(){
+    struct Instance instance = {};
+    char character = 10;
+    instance.value = 5;
+    instance.character = &character;
+    enum Error error;
+
+    destroyGarbageCollect(&instance);
+
+    if (character != 0) {return false;}
+    if (instance.value != 0) {return false;}
+    return true;
+}
+
+bool testDestroyInterfacesBadInstanceDetection(){
+    uint8_t interface_0 = 0;
+    uint8_t* interfaces = &interface_0;
+    enum Error error;
+
+    error = destroyInterfaces(NULL, (void**) &interfaces, 1);
+
+    if (error == BAD_ARGUMENT) {return true;}
+    return false;
+}
+
+bool testDestroyInterfacesBadInterfacesDetection(){
+    struct Instance instance = {};
+    enum Error error;
+
+    error = destroyInterfaces(&instance, NULL, 1);
+
+    if (error == BAD_ARGUMENT) {return true;}
+    return false;
+}
+
+bool testDestroyInterfacesGarbageCollection(){
+    uint8_t interface_0 = 5;
+    uint8_t* interfaces = &interface_0;
+
+    destroyInterfacesGarbageCollect((void**) &interfaces);
+
+    if (interface_0 != 0) {return false;}
+    return true;
+}
+
+struct UnitTestModuleResult testTestDll()
 {
-    struct UnitTestModResult result;
+    struct UnitTestModuleResult result;
     result.tests = LENGTH;
     
     bool (*funcs[LENGTH])() = {
         testIfInstanceIsCreated,
         testIfCreatedInstanceIsValid,
         testInstanceCreationPararameters, 
+        
         testIfInterfacesAreCreated,
         testIfCreatedInterfacesAreValid,
+        
         testStrobeUpBadInstanceDetection,
         testStrobeUpBadInterfacesDetection,
+        
         testStrobeDownBadInstanceDetection,
         testStrobeDownBadInterfacesDetection,
-        testStrobeDownInstanceAlteration
+        testStrobeDownInstanceAlteration,
+        
+        testDestroyBadInstanceDetection,
+        testDestroyGarbageCollection,
+        
+        testDestroyInterfacesBadInstanceDetection,
+        testDestroyInterfacesBadInterfacesDetection,
+        testDestroyInterfacesGarbageCollection
     };
     
     char* names[LENGTH] = {
         "testIfInstanceIsCreated", 
         "testIfCreatedInstanceIsValid", 
         "testInstanceCreationPararameters", 
+        
         "testIfInterfacesAreCreated", 
         "testIfCreatedInterfacesAreValid", 
+        
         "testStrobeUpBadInstanceDetection", 
         "testStrobeUpBadInterfacesDetection", 
+        
         "testStrobeDownBadInstanceDetection", 
         "testStrobeDownBadInterfacesDetection", 
-        "testStrobeDownInstanceAlteration"
+        "testStrobeDownInstanceAlteration",
+
+        "testDestroyBadInstanceDetection",
+        "testDestroyGarbageCollection",
+
+        "testDestroyInterfacesBadInstanceDetection",
+        "testDestroyInterfacesBadInterfacesDetection",
+        "testDestroyInterfacesGarbageCollection"
     };
     result.fails = iterateTests(names, funcs, LENGTH);
     return result;

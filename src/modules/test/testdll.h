@@ -10,4 +10,7 @@ struct Instance{
     char* character;
 };
 
+extern void destroyGarbageCollect(struct Instance* instance);
+extern void destroyInterfacesGarbageCollect(void** interfaces);
+
 #endif
