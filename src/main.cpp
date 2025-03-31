@@ -150,7 +150,7 @@ int main()
     uint32_t currentLoadingStep = 0;
     bool loadingStepChange;
     string row;
-    ifstream ConfigFile("../../config.txt");
+    ifstream ConfigFile("../../config/config.txt");
     if (!ConfigFile) {
         cout << "ERROR: cannot find config.txt file\n";
         return 5;
