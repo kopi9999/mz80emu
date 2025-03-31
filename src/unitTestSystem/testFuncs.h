@@ -5,7 +5,7 @@
 
 #include "../modules/test/unitTests/test.h"
 
-struct UnitTestModResult (*testFuncs[TEST_MODULES])() = {testTestDll};
+struct UnitTestModuleResult (*testFuncs[TEST_MODULES])() = {testTestDll};
 char* names[TEST_MODULES] = {"testTestDll"};
 
 #endif
