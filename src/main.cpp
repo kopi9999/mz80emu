@@ -115,6 +115,19 @@ bool stringToBool(string str) {
     return false;
 }
 
+void trim(string* str) {
+    int i = 0;
+    while (str[0][i] == ' ' || str[0][i] == '\n' || str[0][i] == '\r' || str[0][i] == '\t') {
+        i++;
+    }
+    *str = str->substr(i);
+    i = 0;
+    while (str[0][i] == ' ' || str[0][i] == '\n' || str[0][i] == '\r' || str[0][i] == '\t') {
+        i--;
+    }
+    *str = str->substr(0, str->length() - i);
+}
+
 int main()
 {
     // loading from configuration file
@@ -152,6 +165,7 @@ int main()
     vector<vector<string>> loadedStrobeDownClock;
 
     while (getline(ConfigFile, row)) {
+        trim(&row);
         loadingStepChange = false;
         for (uint32_t i = 1; i < numberOfSteps; ++i) {
             if (row.rfind(loadingSteps[i], 0) == 0) {
