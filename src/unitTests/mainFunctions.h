@@ -1,7 +1,6 @@
-#ifndef TEST_MAINFUNCTIONS
-#define TEST_MAINFUNCTIONS
+#ifndef MAINFUNCTIONS
+#define MAINFUNCTIONS
 
-#include <stdint.h>
 #include <vector>
 #include <string>
 
