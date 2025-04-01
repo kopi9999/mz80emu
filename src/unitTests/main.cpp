@@ -9,11 +9,24 @@ using namespace std;
 
 #define LENGTH 1
 
+bool compareStringVectors(vector<string> vec1, vector<string> vec2) {
+    if (vec1.size() != vec2.size()) {
+        return false;
+    }
+    for (size_t i = 0; i < vec1.size(); ++i) {
+        if (vec1[i] != vec2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool testSplitString1(){
     string str = "Hello World!";
-    string delimeter = " ";
-    vector<string> result = {"Hello", "World!"};
-    if (splitString(str, delimeter) != result) {return false;}
+    string delimiter = " ";
+    vector<string> result = {}; //splitString(str, delimiter);
+    vector<string> expectedResult = {"Hello", "World!"};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
     return true;
 }
 
