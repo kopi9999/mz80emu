@@ -4,10 +4,8 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
-extern vector<string> splitString(string str, string delimeter);
-extern bool stringToBool(string str);
-extern void trim(string* str);
+extern std::vector<std::string> splitString(std::string, std::string);
+extern bool stringToBool(std::string);
+extern void trim(std::string*);
 
 #endif
