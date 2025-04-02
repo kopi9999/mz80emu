@@ -1,5 +1,7 @@
 #include "misc.hpp"
 
+using namespace std;
+
 vector<string> splitString(string str, string delimiter) {
     vector<string> result;
     size_t start = 0;
