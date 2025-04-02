@@ -1,5 +1,5 @@
-#ifndef MAINFUNCTIONS
-#define MAINFUNCTIONS
+#ifndef MAIN_FUNCTIONS
+#define MAIN_FUNCTIONS
 
 #include <vector>
 #include <string>
