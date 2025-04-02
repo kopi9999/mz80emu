@@ -5,7 +5,7 @@ extern "C" {
 
 using namespace std;
 
-#define LENGTH 18
+#define LENGTH 24
 
 
 bool testCompareStringVectors_equal() {
@@ -102,6 +102,49 @@ bool testSplitString_halfDelimiterOnEnd(){
     return true;
 }
 
+bool testSplitString_emptyString(){
+    string str = "";
+    string delimiter = " ";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
+bool testSplitString_emptyDelimiter(){
+    string str = "Hello World!";
+    string delimiter = "";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
+
+bool testToLower_lowercase() {
+    string str = toLower("hello world!");
+    string expectedResult = "hello world!";
+    return (str == expectedResult);
+}
+
+bool testToLower_uppercase() {
+    string str = toLower("HELLO WORLD!");
+    string expectedResult = "hello world!";
+    return (str == expectedResult);
+}
+
+bool testToLower_capitalization() {
+    string str = toLower("Hello World!");
+    string expectedResult = "hello world!";
+    return (str == expectedResult);
+}
+
+bool testToLower_emptyString() {
+    string str = toLower("");
+    string expectedResult = "";
+    return (str == expectedResult);
+}
+
 
 bool testStringToBool_true() {
     return stringToBool("true");
@@ -152,6 +195,13 @@ struct UnitTestModuleResult testMain()
         testSplitString_twoAndHalfDelimiterInARow,
         testSplitString_halfDelimiterOnStart,
         testSplitString_halfDelimiterOnEnd,
+        testSplitString_emptyString,
+        testSplitString_emptyDelimiter,
+
+        testToLower_lowercase,
+        testToLower_uppercase,
+        testToLower_capitalization,
+        testToLower_emptyString,
 
         testStringToBool_true,
         testStringToBool_True,
@@ -175,7 +225,14 @@ struct UnitTestModuleResult testMain()
         "testSplitString_twoAndHalfDelimiterInARow",
         "testSplitString_halfDelimiterOnStart",
         "testSplitString_halfDelimiterOnEnd",
-        
+        "testSplitString_emptyString",
+        "testSplitString_emptyDelimiter",
+
+        "testToLower_lowercase",
+        "testToLower_uppercase",
+        "testToLower_capitalization",
+        "testToLower_emptyString",
+
         "testStringToBool_true",
         "testStringToBool_True",
         "testStringToBool_TRUE",
