@@ -5,7 +5,7 @@ extern "C" {
 
 using namespace std;
 
-#define LENGTH 1
+#define LENGTH 9
 
 bool compareStringVectors(vector<string> vec1, vector<string> vec2) {
     if (vec1.size() != vec2.size()) {
@@ -109,10 +109,26 @@ struct UnitTestModuleResult testMain()
     
     bool (*funcs[LENGTH])() = {
         testSplitString1,
+        testSplitString2,
+        testSplitString3,
+        testSplitString4,
+        testSplitString5,
+        testSplitString6,
+        testSplitString7,
+        testSplitString8,
+        testSplitString9,
     };
     
     string names[LENGTH] = {
         "testSplitString1",
+        "testSplitString2",
+        "testSplitString3",
+        "testSplitString4",
+        "testSplitString5",
+        "testSplitString6",
+        "testSplitString7",
+        "testSplitString8",
+        "testSplitString9",
     };
 
     char* namesChar[LENGTH];
