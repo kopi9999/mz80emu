@@ -5,18 +5,18 @@ extern "C" {
 
 using namespace std;
 
-#define LENGTH 9
+#define LENGTH 11
 
-bool compareStringVectors(vector<string> vec1, vector<string> vec2) {
-    if (vec1.size() != vec2.size()) {
-        return false;
-    }
-    for (size_t i = 0; i < vec1.size(); ++i) {
-        if (vec1[i] != vec2[i]) {
-            return false;
-        }
-    }
-    return true;
+bool testCompareStringVectorsEqual() {
+    vector<string> vec1 = {"Hello", "World!"};
+    vector<string> vec2 = {"Hello", "World!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testCompareStringVectorsDifferent() {
+    vector<string> vec1 = {"Hello", "World!"};
+    vector<string> vec2 = {"World!", "Hello"};
+    return !compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString1(){
@@ -108,6 +108,8 @@ struct UnitTestModuleResult testMain()
     result.tests = LENGTH;
     
     bool (*funcs[LENGTH])() = {
+        testCompareStringVectorsEqual,
+        testCompareStringVectorsDifferent,
         testSplitString1,
         testSplitString2,
         testSplitString3,
@@ -120,6 +122,8 @@ struct UnitTestModuleResult testMain()
     };
     
     string names[LENGTH] = {
+        "testCompareStringVectorsEqual",
+        "testCompareStringVectorsDifferent",
         "testSplitString1",
         "testSplitString2",
         "testSplitString3",
