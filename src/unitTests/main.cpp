@@ -28,6 +28,78 @@ bool testSplitString1(){
     return true;
 }
 
+bool testSplitString2(){
+    string str = "1, 2, 3, 4, 5";
+    string delimiter = ", ";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {"1", "2", "3", "4", "5"};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
+bool testSplitString3(){
+    string str = " Hello World!";
+    string delimiter = " ";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {"", "Hello", "World!"};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
+bool testSplitString4(){
+    string str = "Hello World! ";
+    string delimiter = " ";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {"Hello", "World!", ""};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
+bool testSplitString5(){
+    string str = "Hello  World!";
+    string delimiter = " ";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {"Hello", "", "World!"};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
+bool testSplitString6(){
+    string str = "Hello    World!";
+    string delimiter = "  ";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {"Hello", "", "World!"};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
+bool testSplitString7(){
+    string str = "Hello     World!";
+    string delimiter = "  ";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {"Hello", "", " World!"};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
+bool testSplitString8(){
+    string str = " Hello, World!";
+    string delimiter = ", ";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {" Hello", "World!"};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
+bool testSplitString9(){
+    string str = "Hello, World!,";
+    string delimiter = ", ";
+    vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {" Hello", "World!,"};
+    if (!compareStringVectors(result, expectedResult)) {return false;}
+    return true;
+}
+
 extern "C" struct UnitTestModuleResult testMain();
 
 struct UnitTestModuleResult testMain()
