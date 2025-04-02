@@ -95,7 +95,7 @@ bool testSplitString9(){
     string str = "Hello, World!,";
     string delimiter = ", ";
     vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {" Hello", "World!,"};
+    vector<string> expectedResult = {"Hello", "World!,"};
     if (!compareStringVectors(result, expectedResult)) {return false;}
     return true;
 }
