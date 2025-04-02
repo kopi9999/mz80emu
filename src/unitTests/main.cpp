@@ -1,9 +1,7 @@
 extern "C" {
     #include "../unitTestSystem/unitTest.h"
 }
-#include "mainFunctions.h"
-#include <string>
-#include <vector>
+#include "../main.hpp"
 
 using namespace std;
 
@@ -24,7 +22,7 @@ bool compareStringVectors(vector<string> vec1, vector<string> vec2) {
 bool testSplitString1(){
     string str = "Hello World!";
     string delimiter = " ";
-    vector<string> result = {}; //splitString(str, delimiter);
+    vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {"Hello", "World!"};
     if (!compareStringVectors(result, expectedResult)) {return false;}
     return true;
