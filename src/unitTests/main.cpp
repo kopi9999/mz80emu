@@ -5,7 +5,7 @@ extern "C" {
 
 using namespace std;
 
-#define LENGTH 30
+#define LENGTH 31
 
 
 bool testCompareStringVectors_equal() {
@@ -18,6 +18,12 @@ bool testCompareStringVectors_different() {
     vector<string> vec1 = {"Hello", "World!"};
     vector<string> vec2 = {"World!", "Hello"};
     return !compareStringVectors(vec1, vec2);
+}
+
+bool testCompareStringVectors_emptyVector() {
+    vector<string> vec1 = {};
+    vector<string> vec2 = {};
+    return compareStringVectors(vec1, vec2);
 }
 
 
@@ -155,12 +161,12 @@ bool testStringToBool_helloWorld() {
     return !stringToBool("Hello World!");
 }
 
-bool testStringToBool_emptyString() {
-    return !stringToBool("");
-}
-
 bool testStringToBool_tabulator() {
     return !stringToBool("\t");
+}
+
+bool testStringToBool_emptyString() {
+    return !stringToBool("");
 }
 
 
@@ -217,6 +223,7 @@ struct UnitTestModuleResult testMain()
     bool (*funcs[LENGTH])() = {
         testCompareStringVectors_equal,
         testCompareStringVectors_different,
+        testCompareStringVectors_emptyVector,
 
         testSplitString_oneCharDelimiter,
         testSplitString_twoCharsDelimiter,
@@ -240,8 +247,8 @@ struct UnitTestModuleResult testMain()
         testStringToBool_TRUE,
         testStringToBool_false,
         testStringToBool_helloWorld,
-        testStringToBool_emptyString,
         testStringToBool_tabulator,
+        testStringToBool_emptyString,
         
         testTrim_spaceOnStart,
         testTrim_spaceOnEnd,
@@ -254,6 +261,7 @@ struct UnitTestModuleResult testMain()
     string names[LENGTH] = {
         "testCompareStringVectors_equal",
         "testCompareStringVectors_different",
+        "testCompareStringVectors_emptyVector",
 
         "testSplitString_oneCharDelimiter",
         "testSplitString_twoCharsDelimiter",
@@ -277,8 +285,8 @@ struct UnitTestModuleResult testMain()
         "testStringToBool_TRUE",
         "testStringToBool_false",
         "testStringToBool_helloWorld",
-        "testStringToBool_emptyString",
         "testStringToBool_tabulator",
+        "testStringToBool_emptyString",
         
         "testTrim_spaceOnStart",
         "testTrim_spaceOnEnd",
