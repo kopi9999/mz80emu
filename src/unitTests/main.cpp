@@ -1,7 +1,7 @@
 extern "C" {
     #include "../unitTestSystem/unitTest.h"
 }
-#include "../main.hpp"
+#include "../misc.hpp"
 
 using namespace std;
 
