@@ -5,7 +5,7 @@ extern "C" {
 
 using namespace std;
 
-#define LENGTH 24
+#define LENGTH 30
 
 
 bool testCompareStringVectors_equal() {
@@ -26,8 +26,7 @@ bool testSplitString_oneCharDelimiter(){
     string delimiter = " ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {"Hello", "World!"};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_twoCharsDelimiter(){
@@ -35,8 +34,7 @@ bool testSplitString_twoCharsDelimiter(){
     string delimiter = ", ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {"1", "2", "3", "4", "5"};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_delimiterOnStart(){
@@ -44,8 +42,7 @@ bool testSplitString_delimiterOnStart(){
     string delimiter = " ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {"", "Hello", "World!"};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_delimiterOnEnd(){
@@ -53,8 +50,7 @@ bool testSplitString_delimiterOnEnd(){
     string delimiter = " ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {"Hello", "World!", ""};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_oneCharTwoDelimitersInARow(){
@@ -62,8 +58,7 @@ bool testSplitString_oneCharTwoDelimitersInARow(){
     string delimiter = " ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {"Hello", "", "World!"};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_twoCharsTwoDelimitersInARow(){
@@ -71,8 +66,7 @@ bool testSplitString_twoCharsTwoDelimitersInARow(){
     string delimiter = "  ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {"Hello", "", "World!"};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_twoAndHalfDelimiterInARow(){
@@ -80,8 +74,7 @@ bool testSplitString_twoAndHalfDelimiterInARow(){
     string delimiter = "  ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {"Hello", "", " World!"};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_halfDelimiterOnStart(){
@@ -89,8 +82,7 @@ bool testSplitString_halfDelimiterOnStart(){
     string delimiter = ", ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {" Hello", "World!"};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_halfDelimiterOnEnd(){
@@ -98,8 +90,7 @@ bool testSplitString_halfDelimiterOnEnd(){
     string delimiter = ", ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {"Hello", "World!,"};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_emptyString(){
@@ -107,8 +98,7 @@ bool testSplitString_emptyString(){
     string delimiter = " ";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 bool testSplitString_emptyDelimiter(){
@@ -116,8 +106,7 @@ bool testSplitString_emptyDelimiter(){
     string delimiter = "";
     vector<string> result = splitString(str, delimiter);
     vector<string> expectedResult = {};
-    if (!compareStringVectors(result, expectedResult)) {return false;}
-    return true;
+    return compareStringVectors(result, expectedResult);
 }
 
 
@@ -175,6 +164,49 @@ bool testStringToBool_tabulator() {
 }
 
 
+bool testTrim_spaceOnStart() {
+    string str = " HelloWorld!";
+    trim(&str);
+    string expectedResult = "HelloWorld!";
+    return (str == expectedResult);
+}
+
+bool testTrim_spaceOnEnd() {
+    string str = "HelloWorld! ";
+    trim(&str);
+    string expectedResult = "HelloWorld!";
+    return (str == expectedResult);
+}
+
+bool testTrim_variousWhitespaceChars() {
+    string str = "\r\t \nHelloWorld! \n\t\r";
+    trim(&str);
+    string expectedResult = "HelloWorld!";
+    return (str == expectedResult);
+}
+
+bool testTrim_whitespaceInsideString() {
+    string str = "Hello World!";
+    trim(&str);
+    string expectedResult = "Hello World!";
+    return (str == expectedResult);
+}
+
+bool testTrim_noWhitespace() {
+    string str = "HelloWorld!";
+    trim(&str);
+    string expectedResult = "HelloWorld!";
+    return (str == expectedResult);
+}
+
+bool testTrim_emptyString() {
+    string str = "";
+    trim(&str);
+    string expectedResult = "";
+    return (str == expectedResult);
+}
+
+
 extern "C" struct UnitTestModuleResult testMain();
 
 struct UnitTestModuleResult testMain()
@@ -210,6 +242,13 @@ struct UnitTestModuleResult testMain()
         testStringToBool_helloWorld,
         testStringToBool_emptyString,
         testStringToBool_tabulator,
+        
+        testTrim_spaceOnStart,
+        testTrim_spaceOnEnd,
+        testTrim_variousWhitespaceChars,
+        testTrim_whitespaceInsideString,
+        testTrim_noWhitespace,
+        testTrim_emptyString,
     };
     
     string names[LENGTH] = {
@@ -240,6 +279,13 @@ struct UnitTestModuleResult testMain()
         "testStringToBool_helloWorld",
         "testStringToBool_emptyString",
         "testStringToBool_tabulator",
+        
+        "testTrim_spaceOnStart",
+        "testTrim_spaceOnEnd",
+        "testTrim_variousWhitespaceChars",
+        "testTrim_whitespaceInsideString",
+        "testTrim_noWhitespace",
+        "testTrim_emptyString",
     };
 
     char* namesChar[LENGTH];
