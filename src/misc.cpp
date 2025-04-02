@@ -49,14 +49,19 @@ bool stringToBool(string str) {
 }
 
 void trim(string* str) {
-    int i = 0;
+    if (*str == "") {
+        return;
+    }
+
+    uint32_t i = 0;
     while (str[0][i] == ' ' || str[0][i] == '\n' || str[0][i] == '\r' || str[0][i] == '\t') {
         i++;
     }
     *str = str->substr(i);
-    i = 0;
-    while (str[0][i] == ' ' || str[0][i] == '\n' || str[0][i] == '\r' || str[0][i] == '\t') {
+
+    i = str->length();
+    while (str[0][i-1] == ' ' || str[0][i-1] == '\n' || str[0][i-1] == '\r' || str[0][i-1] == '\t') {
         i--;
     }
-    *str = str->substr(0, str->length() - i);
+    *str = str->substr(0, i);
 }
