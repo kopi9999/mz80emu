@@ -1,9 +1,8 @@
 #include <iostream>
 #include <stdlib.h>
-#include <vector>
-#include <string>
 #include <chrono>
 #include <fstream>
+#include "main.hpp"
 
 extern "C" {
     #include "loadlib.h"
