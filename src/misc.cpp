@@ -29,8 +29,16 @@ vector<string> splitString(string str, string delimiter) {
     return result;
 }
 
+string toLower(string str) {
+    string result = "";
+    for (size_t i = 0; i < str.length(); ++i) {
+        result += tolower(str[i]);
+    }
+    return result;
+}
+
 bool stringToBool(string str) {
-    if (str == "true") {
+    if (toLower(str) == "true") {
         return true;
     }
     return false;
