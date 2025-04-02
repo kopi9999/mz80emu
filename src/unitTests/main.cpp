@@ -7,19 +7,19 @@ using namespace std;
 
 #define LENGTH 11
 
-bool testCompareStringVectorsEqual() {
+bool testCompareStringVectors_equal() {
     vector<string> vec1 = {"Hello", "World!"};
     vector<string> vec2 = {"Hello", "World!"};
     return compareStringVectors(vec1, vec2);
 }
 
-bool testCompareStringVectorsDifferent() {
+bool testCompareStringVectors_different() {
     vector<string> vec1 = {"Hello", "World!"};
     vector<string> vec2 = {"World!", "Hello"};
     return !compareStringVectors(vec1, vec2);
 }
 
-bool testSplitString1(){
+bool testSplitString_oneCharDelimiter(){
     string str = "Hello World!";
     string delimiter = " ";
     vector<string> result = splitString(str, delimiter);
@@ -28,7 +28,7 @@ bool testSplitString1(){
     return true;
 }
 
-bool testSplitString2(){
+bool testSplitString_twoCharsDelimiter(){
     string str = "1, 2, 3, 4, 5";
     string delimiter = ", ";
     vector<string> result = splitString(str, delimiter);
@@ -37,7 +37,7 @@ bool testSplitString2(){
     return true;
 }
 
-bool testSplitString3(){
+bool testSplitString_delimiterOnStart(){
     string str = " Hello World!";
     string delimiter = " ";
     vector<string> result = splitString(str, delimiter);
@@ -46,7 +46,7 @@ bool testSplitString3(){
     return true;
 }
 
-bool testSplitString4(){
+bool testSplitString_delimiterOnEnd(){
     string str = "Hello World! ";
     string delimiter = " ";
     vector<string> result = splitString(str, delimiter);
@@ -55,7 +55,7 @@ bool testSplitString4(){
     return true;
 }
 
-bool testSplitString5(){
+bool testSplitString_oneCharTwoDelimitersInARow(){
     string str = "Hello  World!";
     string delimiter = " ";
     vector<string> result = splitString(str, delimiter);
@@ -64,7 +64,7 @@ bool testSplitString5(){
     return true;
 }
 
-bool testSplitString6(){
+bool testSplitString_twoCharsTwoDelimitersInARow(){
     string str = "Hello    World!";
     string delimiter = "  ";
     vector<string> result = splitString(str, delimiter);
@@ -73,7 +73,7 @@ bool testSplitString6(){
     return true;
 }
 
-bool testSplitString7(){
+bool testSplitString_twoAndHalfDelimiterInARow(){
     string str = "Hello     World!";
     string delimiter = "  ";
     vector<string> result = splitString(str, delimiter);
@@ -82,7 +82,7 @@ bool testSplitString7(){
     return true;
 }
 
-bool testSplitString8(){
+bool testSplitString_halfDelimiterOnStart(){
     string str = " Hello, World!";
     string delimiter = ", ";
     vector<string> result = splitString(str, delimiter);
@@ -91,7 +91,7 @@ bool testSplitString8(){
     return true;
 }
 
-bool testSplitString9(){
+bool testSplitString_halfDelimiterOnEnd(){
     string str = "Hello, World!,";
     string delimiter = ", ";
     vector<string> result = splitString(str, delimiter);
@@ -108,31 +108,31 @@ struct UnitTestModuleResult testMain()
     result.tests = LENGTH;
     
     bool (*funcs[LENGTH])() = {
-        testCompareStringVectorsEqual,
-        testCompareStringVectorsDifferent,
-        testSplitString1,
-        testSplitString2,
-        testSplitString3,
-        testSplitString4,
-        testSplitString5,
-        testSplitString6,
-        testSplitString7,
-        testSplitString8,
-        testSplitString9,
+        testCompareStringVectors_equal,
+        testCompareStringVectors_different,
+        testSplitString_oneCharDelimiter,
+        testSplitString_twoCharsDelimiter,
+        testSplitString_delimiterOnStart,
+        testSplitString_delimiterOnEnd,
+        testSplitString_oneCharTwoDelimitersInARow,
+        testSplitString_twoCharsTwoDelimitersInARow,
+        testSplitString_twoAndHalfDelimiterInARow,
+        testSplitString_halfDelimiterOnStart,
+        testSplitString_halfDelimiterOnEnd,
     };
     
     string names[LENGTH] = {
-        "testCompareStringVectorsEqual",
-        "testCompareStringVectorsDifferent",
-        "testSplitString1",
-        "testSplitString2",
-        "testSplitString3",
-        "testSplitString4",
-        "testSplitString5",
-        "testSplitString6",
-        "testSplitString7",
-        "testSplitString8",
-        "testSplitString9",
+        "testCompareStringVectors_equal",
+        "testCompareStringVectors_different",
+        "testSplitString_oneCharDelimiter",
+        "testSplitString_twoCharsDelimiter",
+        "testSplitString_delimiterOnStart",
+        "testSplitString_delimiterOnEnd",
+        "testSplitString_oneCharTwoDelimitersInARow",
+        "testSplitString_twoCharsTwoDelimitersInARow",
+        "testSplitString_twoAndHalfDelimiterInARow",
+        "testSplitString_halfDelimiterOnStart",
+        "testSplitString_halfDelimiterOnEnd",
     };
 
     char* namesChar[LENGTH];
