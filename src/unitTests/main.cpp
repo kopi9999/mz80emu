@@ -5,7 +5,8 @@ extern "C" {
 
 using namespace std;
 
-#define LENGTH 11
+#define LENGTH 18
+
 
 bool testCompareStringVectors_equal() {
     vector<string> vec1 = {"Hello", "World!"};
@@ -18,6 +19,7 @@ bool testCompareStringVectors_different() {
     vector<string> vec2 = {"World!", "Hello"};
     return !compareStringVectors(vec1, vec2);
 }
+
 
 bool testSplitString_oneCharDelimiter(){
     string str = "Hello World!";
@@ -100,6 +102,36 @@ bool testSplitString_halfDelimiterOnEnd(){
     return true;
 }
 
+
+bool testStringToBool_true() {
+    return stringToBool("true");
+}
+
+bool testStringToBool_True() {
+    return stringToBool("True");
+}
+
+bool testStringToBool_TRUE() {
+    return stringToBool("TRUE");
+}
+
+bool testStringToBool_false() {
+    return !stringToBool("false");
+}
+
+bool testStringToBool_helloWorld() {
+    return !stringToBool("Hello World!");
+}
+
+bool testStringToBool_emptyString() {
+    return !stringToBool("");
+}
+
+bool testStringToBool_tabulator() {
+    return !stringToBool("\t");
+}
+
+
 extern "C" struct UnitTestModuleResult testMain();
 
 struct UnitTestModuleResult testMain()
@@ -110,6 +142,7 @@ struct UnitTestModuleResult testMain()
     bool (*funcs[LENGTH])() = {
         testCompareStringVectors_equal,
         testCompareStringVectors_different,
+
         testSplitString_oneCharDelimiter,
         testSplitString_twoCharsDelimiter,
         testSplitString_delimiterOnStart,
@@ -119,11 +152,20 @@ struct UnitTestModuleResult testMain()
         testSplitString_twoAndHalfDelimiterInARow,
         testSplitString_halfDelimiterOnStart,
         testSplitString_halfDelimiterOnEnd,
+
+        testStringToBool_true,
+        testStringToBool_True,
+        testStringToBool_TRUE,
+        testStringToBool_false,
+        testStringToBool_helloWorld,
+        testStringToBool_emptyString,
+        testStringToBool_tabulator,
     };
     
     string names[LENGTH] = {
         "testCompareStringVectors_equal",
         "testCompareStringVectors_different",
+
         "testSplitString_oneCharDelimiter",
         "testSplitString_twoCharsDelimiter",
         "testSplitString_delimiterOnStart",
@@ -133,6 +175,14 @@ struct UnitTestModuleResult testMain()
         "testSplitString_twoAndHalfDelimiterInARow",
         "testSplitString_halfDelimiterOnStart",
         "testSplitString_halfDelimiterOnEnd",
+        
+        "testStringToBool_true",
+        "testStringToBool_True",
+        "testStringToBool_TRUE",
+        "testStringToBool_false",
+        "testStringToBool_helloWorld",
+        "testStringToBool_emptyString",
+        "testStringToBool_tabulator",
     };
 
     char* namesChar[LENGTH];
