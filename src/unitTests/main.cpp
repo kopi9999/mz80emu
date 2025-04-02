@@ -10,13 +10,13 @@ using namespace std;
 bool testCompareStringVectorsEqual() {
     vector<string> vec1 = {"Hello", "World!"};
     vector<string> vec2 = {"Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
+    return compareStringVectors(vec1, vec2);
 }
 
 bool testCompareStringVectorsDifferent() {
     vector<string> vec1 = {"Hello", "World!"};
     vector<string> vec2 = {"World!", "Hello"};
-    return !compareStringVectors(result, expectedResult);
+    return !compareStringVectors(vec1, vec2);
 }
 
 bool testSplitString1(){
