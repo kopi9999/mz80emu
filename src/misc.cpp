@@ -15,6 +15,10 @@ bool compareStringVectors(vector<string> vec1, vector<string> vec2) {
 }
 
 vector<string> splitString(string str, string delimiter) {
+    if (str == "" || delimiter == "") {
+        return {};
+    }
+
     vector<string> result;
     size_t start = 0;
     size_t end = str.find(delimiter);
