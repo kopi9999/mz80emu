@@ -50,3 +50,4 @@ mz80emu.vcxproj.filters
 x64/
 build/*
 .vs/
+wxWidgets/
