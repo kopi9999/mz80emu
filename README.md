@@ -26,10 +26,12 @@ Mz80emu is a computer emulator. Every component is emulated by separate dynamic 
 ## How to compile (For Windows)
 
 Before you try to install the emulator make sure you have Microsoft C++ toolset installed
-To compile emulator , firstly clone the repository
+To compile emulator firstly clone the repositories of the emulator and wxWidgets library
 
 ```
 git clone https://github.com/kopi9999/mz80emu.git
+cd mz80emu
+git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git
 ```
 
 Afterwards enter the repository folder. By default it is mz80emu using Native Tools Commands Prompt
