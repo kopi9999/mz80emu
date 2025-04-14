@@ -212,13 +212,14 @@ int main()
         interfacesList[i] = stoul(loadedInterfaces[i]);
     }
 
-    uint32_t** derivedInterfacesList = new uint32_t*[derivedInterfacesCount];
+    DerivedInterfaceIds** derivedInterfacesList = new DerivedInterfaceIds*[derivedInterfacesCount];
     for (size_t i = 0; i < derivedInterfacesCount; ++i) {
-        uint32_t* derivedInterface = new uint32_t[2]; // Instead of 2 should be length of derived interface
-        for (size_t j = 0; i < 2; ++i) {
-            struct DerivedInterfaceIds derivedInterface = {0, 0}; // Loaded ids
-            uint32_t derivedInterface[j] = derivedInterface;
+        DerivedInterfaceIds* derivedInterface = new DerivedInterfaceIds[2]; // Instead of 2 should be length of derived interface
+        for (size_t j = 0; j < 2; ++j) {
+            struct DerivedInterfaceIds derivedInterfaceIds = {0, 0}; // Loaded ids
+            derivedInterface[j] = derivedInterfaceIds;
         }
+        derivedInterfacesList[i] = derivedInterface;
     }
 
     uint32_t clockPeriod = stoul(loadedClockPeriod); // time in nanoseconds
