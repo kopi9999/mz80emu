@@ -31,6 +31,11 @@ struct Modules {
     destroyInterfacesPtr* destroyInterfacesFuncs;
 } modules;
 
+struct DerivedInterfaceIds {
+    uint32_t interfacesId;
+    uint32_t interfaceId;
+};
+
 void** instances;
 void*** interfaces;
 uint16_t* interfacesElements;
@@ -101,6 +106,7 @@ int main()
         "Modules",
         "Module instances",
         "Interfaces",
+        "Derived interfaces",
         "Clock period",
         "Clock depth",
         "Strobe up instances",
@@ -111,7 +117,7 @@ int main()
         "Strobe down clock"
     };
     uint32_t numberOfSteps = sizeof(loadingSteps) / sizeof(loadingSteps[0]);
-    uint32_t currentLoadingStep = 0;
+    string currentLoadingStep = "None";
     bool loadingStepChange;
     string row;
     ifstream ConfigFile("../../config/config.txt");
@@ -123,6 +129,7 @@ int main()
     vector<string> loadedModules;
     vector<string> loadedModuleInstances;
     vector<string> loadedInterfaces;
+    vector<vector<vector<string>>> loadedDerivedInterfaces;
     string loadedClockPeriod;
     string loadedClockDepth;
     vector<string> loadedStrobeUpInstances;
@@ -138,42 +145,45 @@ int main()
         for (uint32_t i = 1; i < numberOfSteps; ++i) {
             if (row.rfind(loadingSteps[i], 0) == 0) {
                 loadingStepChange = true;
-                currentLoadingStep = i;
+                currentLoadingStep = loadingSteps[i];
                 break;
             }
         }
         if (!loadingStepChange && !row.empty()) {
-            if (currentLoadingStep == 1) {
+            if (currentLoadingStep == "Modules") {
                 loadedModules.push_back(row);
             }
-            else if (currentLoadingStep == 2) {
+            else if (currentLoadingStep == "Module instances") {
                 loadedModuleInstances.push_back(row);
             }
-            else if (currentLoadingStep == 3) {
+            else if (currentLoadingStep == "Interfaces") {
                 loadedInterfaces.push_back(row);
             }
-            else if (currentLoadingStep == 4) {
+            else if (currentLoadingStep == "Derived interfaces") {
+                
+            }
+            else if (currentLoadingStep == "Clock period") {
                 loadedClockPeriod = row;
             }
-            else if (currentLoadingStep == 5) {
+            else if (currentLoadingStep == "Clock depth") {
                 loadedClockDepth = row;
             }
-            else if (currentLoadingStep == 6) {
+            else if (currentLoadingStep == "Strobe up instances") {
                 loadedStrobeUpInstances.push_back(row);
             }
-            else if (currentLoadingStep == 7) {
+            else if (currentLoadingStep == "Strobe up interfaces") {
                 loadedStrobeUpInterfaces.push_back(row);
             }
-            else if (currentLoadingStep == 8) {
+            else if (currentLoadingStep == "Strobe up clock") {
                 loadedStrobeUpClock.push_back(splitString(row, " "));
             }
-            else if (currentLoadingStep == 9) {
+            else if (currentLoadingStep == "Strobe down instances") {
                 loadedStrobeDownInstances.push_back(row);
             }
-            else if (currentLoadingStep == 10) {
+            else if (currentLoadingStep == "Strobe down interfaces") {
                 loadedStrobeDownInterfaces.push_back(row);
             }
-            else if (currentLoadingStep == 11) {
+            else if (currentLoadingStep == "Strobe down clock") {
                 loadedStrobeDownClock.push_back(splitString(row, " "));
             }
         }
@@ -195,9 +205,20 @@ int main()
     }
 
     uint32_t interfacesCount = loadedInterfaces.size();
-    uint32_t* interfacesList = new uint32_t[interfacesCount]; // id`s of instances for interfaces creation
+    uint32_t derivedInterfacesCount = loadedDerivedInterfaces.size();
+    uint32_t totalInterfacesCount = interfacesCount + derivedInterfacesCount;
+    uint32_t* interfacesList = new uint32_t[totalInterfacesCount]; // id`s of instances for interfaces creation
     for (size_t i = 0; i < interfacesCount; ++i) {
         interfacesList[i] = stoul(loadedInterfaces[i]);
+    }
+
+    uint32_t** derivedInterfacesList = new uint32_t*[derivedInterfacesCount];
+    for (size_t i = 0; i < derivedInterfacesCount; ++i) {
+        uint32_t* derivedInterface = new uint32_t[2]; // Instead of 2 should be length of derived interface
+        for (size_t j = 0; i < 2; ++i) {
+            struct DerivedInterfaceIds derivedInterface = {0, 0}; // Loaded ids
+            uint32_t derivedInterface[j] = derivedInterface;
+        }
     }
 
     uint32_t clockPeriod = stoul(loadedClockPeriod); // time in nanoseconds
