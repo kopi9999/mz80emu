@@ -160,7 +160,12 @@ int main()
                 loadedInterfaces.push_back(row);
             }
             else if (currentLoadingStep == "Derived interfaces") {
-                
+                if (row == "new") {
+                    loadedDerivedInterfaces.push_back({});
+                }
+                else {
+                    loadedDerivedInterfaces[loadedDerivedInterfaces.size() - 1].push_back(splitString(row, " "));
+                }
             }
             else if (currentLoadingStep == "Clock period") {
                 loadedClockPeriod = row;
@@ -214,9 +219,9 @@ int main()
 
     DerivedInterfaceIds** derivedInterfacesList = new DerivedInterfaceIds*[derivedInterfacesCount];
     for (size_t i = 0; i < derivedInterfacesCount; ++i) {
-        DerivedInterfaceIds* derivedInterface = new DerivedInterfaceIds[2]; // Instead of 2 should be length of derived interface
-        for (size_t j = 0; j < 2; ++j) {
-            struct DerivedInterfaceIds derivedInterfaceIds = {0, 0}; // Loaded ids
+        DerivedInterfaceIds* derivedInterface = new DerivedInterfaceIds[loadedDerivedInterfaces[i].size()];
+        for (size_t j = 0; j < loadedDerivedInterfaces[i].size(); ++j) {
+            struct DerivedInterfaceIds derivedInterfaceIds = {stoul(loadedDerivedInterfaces[i][j][0]), stoul(loadedDerivedInterfaces[i][j][1])};
             derivedInterface[j] = derivedInterfaceIds;
         }
         derivedInterfacesList[i] = derivedInterface;
