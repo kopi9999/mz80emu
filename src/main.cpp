@@ -97,6 +97,37 @@ bool loadModuleFunctions()
     return true;
 }
 
+bool validateStringIsInteger(string str, string loadingStep) {
+    string digits = "0123456789";
+    for (int i=0; i<str.length(); i++) {
+        if (digits.find(str[i]) == string::npos) {
+            cout << "ERROR: Value \"" << str << "\" is not an integer (\"" << loadingStep << "\" section of config.txt).\n";
+            return false;
+        }
+    }
+    return true;
+}
+
+bool validateStringIsBool(string str, string loadingStep) {
+    if (toLower(str) != "true" && toLower(str) != "false") {
+        cout << "ERROR: Value \"" << str << "\" is not a boolean value (\"" << loadingStep << "\" section of config.txt).\n";
+        return false;
+    }
+    return true;
+}
+
+bool validateVectorSize(vector<string> vec, size_t size, string loadingStep) {
+    if (vec.size() != size) {
+        cout << "ERROR: Invalid number of values - \"";
+        for (int i=0; i<vec.size()-1; i++) {
+            cout << vec[i] << " ";
+        }
+        cout << vec[vec.size()-1] << "\" - expected " << size << " values (\"" << loadingStep << "\" section of config.txt).\n";
+        return false;
+    }
+    return true;
+}
+
 int main()
 {
     // loading from configuration file
@@ -120,6 +151,7 @@ int main()
     string currentLoadingStep = "None";
     bool loadingStepChange;
     string row;
+    vector<string> splittedRow;
     ifstream ConfigFile("../../config/config.txt");
     if (!ConfigFile) {
         cout << "ERROR: cannot find config.txt file\n";
@@ -154,9 +186,11 @@ int main()
                 loadedModules.push_back(row);
             }
             else if (currentLoadingStep == "Module instances") {
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
                 loadedModuleInstances.push_back(row);
             }
             else if (currentLoadingStep == "Interfaces") {
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
                 loadedInterfaces.push_back(row);
             }
             else if (currentLoadingStep == "Derived interfaces") {
@@ -164,32 +198,49 @@ int main()
                     loadedDerivedInterfaces.push_back({});
                 }
                 else {
-                    loadedDerivedInterfaces[loadedDerivedInterfaces.size() - 1].push_back(splitString(row, " "));
+                    splittedRow = splitString(row, " ");
+                    if (!validateVectorSize(splittedRow, 2, currentLoadingStep)) {return 8;};
+                    if (!validateStringIsInteger(splittedRow[0], currentLoadingStep) || !validateStringIsInteger(splittedRow[1], currentLoadingStep)) {return 6;};
+                    loadedDerivedInterfaces[loadedDerivedInterfaces.size() - 1].push_back(splittedRow);
                 }
             }
             else if (currentLoadingStep == "Clock period") {
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
                 loadedClockPeriod = row;
             }
             else if (currentLoadingStep == "Clock depth") {
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
                 loadedClockDepth = row;
             }
             else if (currentLoadingStep == "Strobe up instances") {
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
                 loadedStrobeUpInstances.push_back(row);
             }
             else if (currentLoadingStep == "Strobe up interfaces") {
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
                 loadedStrobeUpInterfaces.push_back(row);
             }
             else if (currentLoadingStep == "Strobe up clock") {
-                loadedStrobeUpClock.push_back(splitString(row, " "));
+                splittedRow = splitString(row, " ");
+                for (int i=0; i<splittedRow.size(); i++) {
+                    if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;};
+                }
+                loadedStrobeUpClock.push_back(splittedRow);
             }
             else if (currentLoadingStep == "Strobe down instances") {
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
                 loadedStrobeDownInstances.push_back(row);
             }
             else if (currentLoadingStep == "Strobe down interfaces") {
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
                 loadedStrobeDownInterfaces.push_back(row);
             }
             else if (currentLoadingStep == "Strobe down clock") {
-                loadedStrobeDownClock.push_back(splitString(row, " "));
+                splittedRow = splitString(row, " ");
+                for (int i=0; i<splittedRow.size(); i++) {
+                    if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;};
+                }
+                loadedStrobeDownClock.push_back(splittedRow);
             }
         }
     }
