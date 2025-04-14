@@ -10,7 +10,7 @@ Interfaces:
 1
 
 Derived interfaces:
-new 2
+new
 0 0
 1 0
 
