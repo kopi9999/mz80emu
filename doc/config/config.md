@@ -31,16 +31,22 @@ Section with a bit more complex syntax of elements, which describe derived inter
 `Clock depth` also defines one value - number of clock states. Similarly to the case of previous section, only the last value will be taken into account when more than one number is given.
 
 ### `Strobe up instances`
+Section defining order of calling `strobeUp()` function of module instances. First instance in this section will be handled first. All numbers representing instances indicate elements of `Module instances` section.
 
 ### `Strobe up interfaces`
+Describes which interfaces will be passed to the `strobeUp()` function of module instances. Elements refer to `Interfaces` section. These elements are related to the ones in `Strobe up instances` section - when the instance in `Strobe up instances` is being handled, to its `strobeUp()` function is passed the interface in `Strobe up interfaces`.
 
 ### `Strobe up clock`
+Specifies on which clock states the `strobeUp()` function of module instances will be called. Elements in this section are related to elements in `Strobe up instances` section - each row represents one instance. Number of values in a row should be equal to the number of clock states. These values have to be divided with spaces. Acceptable values are `true` and `false` (letter case does not matter). `True` means that `strobeUp()` will be called on specific clock state, while `false` means the opposite.
 
 ### `Strobe down instances`
+See `Strobe up instances` - referring to `strobeDown()` instead of `strobeUp()`.
 
 ### `Strobe down interfaces`
+See `Strobe up interfaces` - referring to `strobeDown()` instead of `strobeUp()`.
 
 ### `Strobe down clock`
+See `Strobe up clock` - referring to `strobeDown()` instead of `strobeUp()`.
 
 ## Example structure of file`
 
