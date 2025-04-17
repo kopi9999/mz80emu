@@ -33,6 +33,31 @@ vector<string> splitString(string str, string delimiter) {
     return result;
 }
 
+vector<string> splitByWhitespace(string str) {
+    vector<string> result;
+    size_t start = 0;
+    bool startSet = false;
+
+    for (size_t i=0; i<str.size(); ++i) {
+        if (str[i] == ' ' || str[i] == '\n' || str[i] == '\r' || str[i] == '\t') {
+            if (startSet) {
+                result.push_back(str.substr(start, i - start));
+                startSet = false;
+            }
+        }
+        else if (!startSet) {
+            start = i;
+            startSet = true;
+        }
+    }
+
+    if (startSet) {
+        result.push_back(str.substr(start));
+    }
+
+    return result;
+}
+
 string toLower(string str) {
     string result = "";
     for (size_t i = 0; i < str.length(); ++i) {
