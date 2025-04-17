@@ -5,7 +5,7 @@ extern "C" {
 
 using namespace std;
 
-#define LENGTH 31
+#define LENGTH 42
 
 
 bool testCompareStringVectors_equal() {
@@ -111,6 +111,84 @@ bool testSplitString_emptyDelimiter(){
     string str = "Hello World!";
     string delimiter = "";
     vector<string> result = splitString(str, delimiter);
+    vector<string> expectedResult = {};
+    return compareStringVectors(result, expectedResult);
+}
+
+
+bool testSplitByWhitespace_oneSpace(){
+    string str = "Hello World!";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {"Hello", "World!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_severalSpaces(){
+    string str = "Hello   World!";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {"Hello", "World!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_severalVariousChars(){
+    string str = "Hello\r \t\nWorld!";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {"Hello", "World!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_spaceOnStart(){
+    string str = " HelloWorld!";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {"HelloWorld!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_spaceOnEnd(){
+    string str = "HelloWorld! ";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {"HelloWorld!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_scatteredSingleChars(){
+    string str = "Hello World!\nHello\tWorld! Hello\rWorld!";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {"Hello", "World!", "Hello", "World!", "Hello", "World!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_scatteredGroupedVariousChars(){
+    string str = "Hello \tWorld!\n\rHello \nWorld!";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {"Hello", "World!", "Hello", "World!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_scatteredGroupedRepeatingChars(){
+    string str = "Hello\t\tWorld!\n\nHello  World!\r\rHello  World!";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {"Hello", "World!", "Hello", "World!", "Hello", "World!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_noWhitespace(){
+    string str = "HelloWorld!";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {"HelloWorld!"};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_onlyWhitespace(){
+    string str = " \n\r\t";
+    vector<string> result = splitByWhitespace(str);
+    vector<string> expectedResult = {};
+    return compareStringVectors(result, expectedResult);
+}
+
+bool testSplitByWhitespace_emptyString(){
+    string str = "";
+    vector<string> result = splitByWhitespace(str);
     vector<string> expectedResult = {};
     return compareStringVectors(result, expectedResult);
 }
@@ -237,6 +315,18 @@ struct UnitTestModuleResult testMain()
         testSplitString_emptyString,
         testSplitString_emptyDelimiter,
 
+        testSplitByWhitespace_oneSpace,
+        testSplitByWhitespace_severalSpaces,
+        testSplitByWhitespace_severalVariousChars,
+        testSplitByWhitespace_spaceOnStart,
+        testSplitByWhitespace_spaceOnEnd,
+        testSplitByWhitespace_scatteredSingleChars,
+        testSplitByWhitespace_scatteredGroupedVariousChars,
+        testSplitByWhitespace_scatteredGroupedRepeatingChars,
+        testSplitByWhitespace_noWhitespace,
+        testSplitByWhitespace_onlyWhitespace,
+        testSplitByWhitespace_emptyString,
+
         testToLower_lowercase,
         testToLower_uppercase,
         testToLower_capitalization,
@@ -274,6 +364,18 @@ struct UnitTestModuleResult testMain()
         "testSplitString_halfDelimiterOnEnd",
         "testSplitString_emptyString",
         "testSplitString_emptyDelimiter",
+
+        "testSplitByWhitespace_oneSpace",
+        "testSplitByWhitespace_severalSpaces",
+        "testSplitByWhitespace_severalVariousChars",
+        "testSplitByWhitespace_spaceOnStart",
+        "testSplitByWhitespace_spaceOnEnd",
+        "testSplitByWhitespace_scatteredSingleChars",
+        "testSplitByWhitespace_scatteredGroupedVariousChars",
+        "testSplitByWhitespace_scatteredGroupedRepeatingChars",
+        "testSplitByWhitespace_noWhitespace",
+        "testSplitByWhitespace_onlyWhitespace",
+        "testSplitByWhitespace_emptyString",
 
         "testToLower_lowercase",
         "testToLower_uppercase",

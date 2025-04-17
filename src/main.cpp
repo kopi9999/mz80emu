@@ -198,7 +198,7 @@ int main()
                     loadedDerivedInterfaces.push_back({});
                 }
                 else {
-                    splittedRow = splitString(row, " ");
+                    splittedRow = splitByWhitespace(row);
                     if (!validateVectorSize(splittedRow, 2, currentLoadingStep)) {return 8;};
                     if (!validateStringIsInteger(splittedRow[0], currentLoadingStep) || !validateStringIsInteger(splittedRow[1], currentLoadingStep)) {return 6;};
                     loadedDerivedInterfaces[loadedDerivedInterfaces.size() - 1].push_back(splittedRow);
@@ -221,7 +221,7 @@ int main()
                 loadedStrobeUpInterfaces.push_back(row);
             }
             else if (currentLoadingStep == "Strobe up clock") {
-                splittedRow = splitString(row, " ");
+                splittedRow = splitByWhitespace(row);
                 for (int i=0; i<splittedRow.size(); i++) {
                     if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;};
                 }
@@ -236,7 +236,7 @@ int main()
                 loadedStrobeDownInterfaces.push_back(row);
             }
             else if (currentLoadingStep == "Strobe down clock") {
-                splittedRow = splitString(row, " ");
+                splittedRow = splitByWhitespace(row);
                 for (int i=0; i<splittedRow.size(); i++) {
                     if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;};
                 }
