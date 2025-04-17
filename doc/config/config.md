@@ -6,8 +6,8 @@
 ## File structure
 
 Data stored in the file is organized into sections marked with headers. Header row have to start with an appropriate text defining start of section, but it can also contain another characters (which are ignored by the program). For example, user can add a colon after header in order to improve legibility. All headers are given below, in "Sections" section.  
-Under the header is located data loaded and used by the emulator. Usually, one row includes only one information, but it depends on the section. Sometimes several informations divided by single spaces are in a row. Anyway, in the section can be located only necessary data and empty rows, which are ignored.  
-An order of the sections is not fixed, so user is not obliged to follow it. It is even possible to divide a section into many parts by creating several sections with the same header - all of them would be loaded correctly.
+Under the header is located data loaded and used by the emulator. Usually, one row includes only one information, but it depends on the section. Sometimes several elements separated by a space are in a row. The config file accepts various whitespace characters to separate elements, including spaces and tabs. Multiple whitespace characters between two elements are also acceptable. In the section can be located only necessary data and empty rows, which are ignored.  
+An order of the sections is not fixed, so user is not obliged to follow it. It is even possible to divide a section into many parts by creating several sections with the same header - all of them will be loaded correctly.
 
 
 ## Sections
