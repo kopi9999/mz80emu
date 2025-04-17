@@ -128,6 +128,60 @@ bool validateVectorSize(vector<string> vec, size_t size, string loadingStep) {
     return true;
 }
 
+bool validateDerivedInterfaceCreated(vector<vector<vector<string>>> loadedDerivedInterfaces) {
+    if (loadedDerivedInterfaces.size() == 0) {
+        cout << "ERROR: New derived interface has not been created, but its values were specified (\"Derived interfaces\" section of config.txt).\n";
+        return false;
+    }
+    return true;
+}
+
+bool validateDerivedInterfaceHasValues(vector<vector<string>> derivedInterface) {
+    if (derivedInterface.size() == 0) {
+        cout << "ERROR: New derived interface has been created, but its values were not specified (\"Derived interfaces\" section of config.txt).\n";
+        return false;
+    }
+    return true;
+}
+
+bool validateIdExist(uint32_t id, uint32_t maxId, string loadingStep) {
+    if (id > maxId) {
+        cout << "ERROR: Specified ID \"" << id << "\" does not exist (\"" << loadingStep << "\" section of config.txt).\n";
+        return false;
+    }
+    return true;
+}
+
+bool validateValueDoesNotEqualZero(uint32_t value, string loadingStep) {
+    if (value == 0) {
+        cout << "ERROR: Specified value equals zero (\"" << loadingStep << "\" section of config.txt).\n";
+        return false;
+    }
+    return true;
+}
+
+bool validateValueEqualsNumberOfInstances(uint32_t value, uint32_t numberOfInstances, string loadingStep) {
+    if (value != numberOfInstances) {
+        cout << "ERROR: Number of values in section does not equal number of module instances (\"" << loadingStep << "\" section of config.txt).\n";
+        return false;
+    }
+    return true;
+}
+
+bool validateVectorHasUniqueValues(vector<string> vec, string loadingStep) {
+    vector<string> values = {};
+    for (size_t i=0; i<vec.size(); ++i) {
+        values.push_back(vec[i]);
+        for (size_t j=0; j<values.size()-1; ++j) {
+            if (values[j] == vec[i]) {
+                cout << "ERROR: Values in section are not unique (\"" << loadingStep << "\" section of config.txt).\n";
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 int main()
 {
     // loading from configuration file
@@ -186,11 +240,11 @@ int main()
                 loadedModules.push_back(row);
             }
             else if (currentLoadingStep == "Module instances") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
                 loadedModuleInstances.push_back(row);
             }
             else if (currentLoadingStep == "Interfaces") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
                 loadedInterfaces.push_back(row);
             }
             else if (currentLoadingStep == "Derived interfaces") {
@@ -198,47 +252,48 @@ int main()
                     loadedDerivedInterfaces.push_back({});
                 }
                 else {
+                    if (!validateDerivedInterfaceCreated(loadedDerivedInterfaces)) {return 9;}
                     splittedRow = splitByWhitespace(row);
-                    if (!validateVectorSize(splittedRow, 2, currentLoadingStep)) {return 8;};
-                    if (!validateStringIsInteger(splittedRow[0], currentLoadingStep) || !validateStringIsInteger(splittedRow[1], currentLoadingStep)) {return 6;};
+                    if (!validateVectorSize(splittedRow, 2, currentLoadingStep)) {return 8;}
+                    if (!validateStringIsInteger(splittedRow[0], currentLoadingStep) || !validateStringIsInteger(splittedRow[1], currentLoadingStep)) {return 6;}
                     loadedDerivedInterfaces[loadedDerivedInterfaces.size() - 1].push_back(splittedRow);
                 }
             }
             else if (currentLoadingStep == "Clock period") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
                 loadedClockPeriod = row;
             }
             else if (currentLoadingStep == "Clock depth") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
                 loadedClockDepth = row;
             }
             else if (currentLoadingStep == "Strobe up instances") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
                 loadedStrobeUpInstances.push_back(row);
             }
             else if (currentLoadingStep == "Strobe up interfaces") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
                 loadedStrobeUpInterfaces.push_back(row);
             }
             else if (currentLoadingStep == "Strobe up clock") {
                 splittedRow = splitByWhitespace(row);
                 for (int i=0; i<splittedRow.size(); i++) {
-                    if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;};
+                    if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;}
                 }
                 loadedStrobeUpClock.push_back(splittedRow);
             }
             else if (currentLoadingStep == "Strobe down instances") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
                 loadedStrobeDownInstances.push_back(row);
             }
             else if (currentLoadingStep == "Strobe down interfaces") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;};
+                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
                 loadedStrobeDownInterfaces.push_back(row);
             }
             else if (currentLoadingStep == "Strobe down clock") {
                 splittedRow = splitByWhitespace(row);
                 for (int i=0; i<splittedRow.size(); i++) {
-                    if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;};
+                    if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;}
                 }
                 loadedStrobeDownClock.push_back(splittedRow);
             }
@@ -256,6 +311,7 @@ int main()
     uint32_t* instancesList = new uint32_t[instanceCount]; // id`s of libraries for instance creation
     void** instancesParameters = new void* [instanceCount]; // pointers to instance parameters (same id as instancesList)
     for (size_t i = 0; i < instanceCount; ++i) {
+        if (!validateIdExist(stoul(loadedModuleInstances[i]), modules.count - 1, "Module instances")) {return 11;}
         instancesList[i] = stoul(loadedModuleInstances[i]);
         instancesParameters[i] = NULL;
     }
@@ -265,19 +321,24 @@ int main()
     uint32_t totalInterfacesCount = interfacesCount + derivedInterfacesCount;
     uint32_t* interfacesList = new uint32_t[totalInterfacesCount]; // id`s of instances for interfaces creation
     for (size_t i = 0; i < interfacesCount; ++i) {
+        if (!validateIdExist(stoul(loadedInterfaces[i]), instanceCount - 1, "Interfaces")) {return 11;}
         interfacesList[i] = stoul(loadedInterfaces[i]);
     }
 
     DerivedInterfaceIds** derivedInterfacesList = new DerivedInterfaceIds*[derivedInterfacesCount];
     for (size_t i = 0; i < derivedInterfacesCount; ++i) {
+        if (!validateDerivedInterfaceHasValues(loadedDerivedInterfaces[i])) {return 10;}
         DerivedInterfaceIds* derivedInterface = new DerivedInterfaceIds[loadedDerivedInterfaces[i].size()];
         for (size_t j = 0; j < loadedDerivedInterfaces[i].size(); ++j) {
+            if (!validateIdExist(stoul(loadedDerivedInterfaces[i][j][0]), interfacesCount - 1, "Derived interfaces")) {return 11;}
             struct DerivedInterfaceIds derivedInterfaceIds = {stoul(loadedDerivedInterfaces[i][j][0]), stoul(loadedDerivedInterfaces[i][j][1])};
             derivedInterface[j] = derivedInterfaceIds;
         }
         derivedInterfacesList[i] = derivedInterface;
     }
 
+    if (!validateValueDoesNotEqualZero(stoul(loadedClockPeriod), "Clock period")) {return 12;}
+    if (!validateValueDoesNotEqualZero(stoul(loadedClockDepth), "Clock depth")) {return 12;}
     uint32_t clockPeriod = stoul(loadedClockPeriod); // time in nanoseconds
     uint32_t clockDepth = stoul(loadedClockDepth); // number of clock states
 
@@ -289,7 +350,21 @@ int main()
     uint32_t* strobeDownInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe down instance (interfaces id)
     bool** strobeDownClock = new bool* [instanceCount]; // strobe down activation for instances
 
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeUpInstances.size(), instanceCount, "Strobe up instances")) {return 13;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeUpInterfaces.size(), instanceCount, "Strobe up interfaces")) {return 13;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeUpClock.size(), instanceCount, "Strobe up clock")) {return 13;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeDownInstances.size(), instanceCount, "Strobe down instances")) {return 13;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeDownInterfaces.size(), instanceCount, "Strobe down interfaces")) {return 13;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeDownClock.size(), instanceCount, "Strobe down clock")) {return 13;}
+    if (!validateVectorHasUniqueValues(loadedStrobeUpInstances, "Strobe up instances")) {return 14;}
+    if (!validateVectorHasUniqueValues(loadedStrobeDownInstances, "Strobe down instances")) {return 14;}
     for (size_t i = 0; i < instanceCount; ++i) {
+        if (!validateIdExist(stoul(loadedStrobeUpInstances[i]), instanceCount - 1, "Strobe up instances")) {return 11;}
+        if (!validateIdExist(stoul(loadedStrobeUpInterfaces[i]), interfacesCount - 1, "Strobe up interfaces")) {return 11;}
+        if (!validateIdExist(stoul(loadedStrobeDownInstances[i]), instanceCount - 1, "Strobe down instances")) {return 11;}
+        if (!validateIdExist(stoul(loadedStrobeDownInterfaces[i]), interfacesCount - 1, "Strobe down interfaces")) {return 11;}
+        if (!validateVectorSize(loadedStrobeUpClock[i], clockDepth, "Strobe up clock")) {return 8;}
+        if (!validateVectorSize(loadedStrobeDownClock[i], clockDepth, "Strobe down clock")) {return 8;}
         strobeUpInstanceList[i] = stoul(loadedStrobeUpInstances[i]);
         strobeUpInterfacesList[i] = stoul(loadedStrobeUpInterfaces[i]);
         strobeUpClock[i] = new bool[clockDepth];
