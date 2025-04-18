@@ -241,10 +241,13 @@ int main()
     }
 
     DerivedInterfaceIds** derivedInterfacesList = new DerivedInterfaceIds*[derivedInterfacesCount];
+    uint32_t* derivedInterfacesLengths = new uint32_t[derivedInterfacesCount]; // lengths of all derived interfaces tables
+    DerivedInterfaceIds* derivedInterface;
     for (size_t i = 0; i < derivedInterfacesCount; ++i) {
         if (!validateDerivedInterfaceHasValues(loadedDerivedInterfaces[i])) {return 10;}
-        DerivedInterfaceIds* derivedInterface = new DerivedInterfaceIds[loadedDerivedInterfaces[i].size()];
-        for (size_t j = 0; j < loadedDerivedInterfaces[i].size(); ++j) {
+        derivedInterfacesLengths[i] = loadedDerivedInterfaces[i].size();
+        derivedInterface = new DerivedInterfaceIds[derivedInterfacesLengths[i]];
+        for (size_t j = 0; j < derivedInterfacesLengths[i]; ++j) {
             if (!validateIdExist(stoul(loadedDerivedInterfaces[i][j][0]), interfacesCount - 1, "Derived interfaces")) {return 11;}
             struct DerivedInterfaceIds derivedInterfaceIds = {stoul(loadedDerivedInterfaces[i][j][0]), stoul(loadedDerivedInterfaces[i][j][1])};
             derivedInterface[j] = derivedInterfaceIds;
@@ -321,7 +324,7 @@ int main()
 
     cout << "INFO: All instances created successfully\n";
 
-    interfaces = new void**[interfacesCount];
+    interfaces = new void**[totalInterfacesCount];
     interfacesElements = new uint16_t[interfacesCount];
     uint16_t tmpModuleId;
     
@@ -331,6 +334,13 @@ int main()
         if (error) { cout << "ERROR [" << modules.names[tmpModuleId] << "]: Cannot create interfaces " << i << " , error " << error << ".\n"; break; }
     }
     if (error) { unloadLibs(modules.pointers, modules.count); return 4; }
+
+    for (uint32_t i = 0; i < derivedInterfacesCount; i++){
+       interfaces[i + interfacesCount] = new void*[derivedInterfacesLengths[i]];
+       for (uint32_t j = 0; j < derivedInterfacesLengths[i]; j++){
+            interfaces[i + interfacesCount][j] = interfaces[derivedInterfacesList[i][j].interfacesId][derivedInterfacesList[i][j].interfaceId];
+       }
+    }
 
     cout << "INFO: All interfaces created successfully\n";
 
