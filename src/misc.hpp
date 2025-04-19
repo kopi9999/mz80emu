@@ -10,5 +10,6 @@ extern std::vector<std::string> splitByWhitespace(std::string);
 extern std::string toLower(std::string);
 extern bool stringToBool(std::string);
 extern void trim(std::string*);
+extern void trimLeadingZeros(std::string*);
 
 #endif
