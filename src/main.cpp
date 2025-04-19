@@ -338,6 +338,7 @@ int main()
     for (uint32_t i = 0; i < derivedInterfacesCount; i++){
        interfaces[i + interfacesCount] = new void*[derivedInterfacesLengths[i]];
        for (uint32_t j = 0; j < derivedInterfacesLengths[i]; j++){
+            if (!validateIdExist(derivedInterfacesList[i][j].interfaceId, interfacesElements[derivedInterfacesList[i][j].interfacesId] - 1, "Derived interfaces")) {return 11;}
             interfaces[i + interfacesCount][j] = interfaces[derivedInterfacesList[i][j].interfacesId][derivedInterfacesList[i][j].interfaceId];
        }
     }

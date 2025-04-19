@@ -5,7 +5,7 @@ extern "C" {
 
 using namespace std;
 
-#define LENGTH 42
+#define LENGTH 48
 
 
 bool testCompareStringVectors_equal() {
@@ -291,6 +291,49 @@ bool testTrim_emptyString() {
 }
 
 
+bool testTrimLeadingZeros_oneZero() {
+    string str = "0123";
+    trimLeadingZeros(&str);
+    string expectedResult = "123";
+    return (str == expectedResult);
+}
+
+bool testTrimLeadingZeros_severalZeros() {
+    string str = "00000123";
+    trimLeadingZeros(&str);
+    string expectedResult = "123";
+    return (str == expectedResult);
+}
+
+bool testTrimLeadingZeros_noZeros() {
+    string str = "123";
+    trimLeadingZeros(&str);
+    string expectedResult = "123";
+    return (str == expectedResult);
+}
+
+bool testTrimLeadingZeros_zeroOnEnd() {
+    string str = "1230";
+    trimLeadingZeros(&str);
+    string expectedResult = "1230";
+    return (str == expectedResult);
+}
+
+bool testTrimLeadingZeros_zeroAfterSpace() {
+    string str = " 0123";
+    trimLeadingZeros(&str);
+    string expectedResult = " 0123";
+    return (str == expectedResult);
+}
+
+bool testTrimLeadingZeros_emptyString() {
+    string str = "";
+    trimLeadingZeros(&str);
+    string expectedResult = "";
+    return (str == expectedResult);
+}
+
+
 extern "C" struct UnitTestModuleResult testMain();
 
 struct UnitTestModuleResult testMain()
@@ -346,6 +389,13 @@ struct UnitTestModuleResult testMain()
         testTrim_whitespaceInsideString,
         testTrim_noWhitespace,
         testTrim_emptyString,
+
+        testTrimLeadingZeros_oneZero,
+        testTrimLeadingZeros_severalZeros,
+        testTrimLeadingZeros_noZeros,
+        testTrimLeadingZeros_zeroOnEnd,
+        testTrimLeadingZeros_zeroAfterSpace,
+        testTrimLeadingZeros_emptyString,
     };
     
     string names[LENGTH] = {
@@ -396,6 +446,13 @@ struct UnitTestModuleResult testMain()
         "testTrim_whitespaceInsideString",
         "testTrim_noWhitespace",
         "testTrim_emptyString",
+        
+        "testTrimLeadingZeros_oneZero",
+        "testTrimLeadingZeros_severalZeros",
+        "testTrimLeadingZeros_noZeros",
+        "testTrimLeadingZeros_zeroOnEnd",
+        "testTrimLeadingZeros_zeroAfterSpace",
+        "testTrimLeadingZeros_emptyString",
     };
 
     char* namesChar[LENGTH];

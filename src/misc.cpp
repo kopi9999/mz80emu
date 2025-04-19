@@ -90,3 +90,15 @@ void trim(string* str) {
     }
     *str = str->substr(0, i);
 }
+
+void trimLeadingZeros(string* str) {
+    if (*str == "") {
+        return;
+    }
+
+    uint32_t i = 0;
+    while (str[0][i] == '0') {
+        i++;
+    }
+    *str = str->substr(i);
+}
