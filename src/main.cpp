@@ -268,14 +268,11 @@ int main()
     uint32_t* strobeDownInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe down instance (interfaces id)
     bool** strobeDownClock = new bool* [instanceCount]; // strobe down activation for instances
 
-    if (!validateValueEqualsNumberOfInstances(loadedStrobeUpInstances.size(), instanceCount, "Strobe up instances")) {return 13;}
-    if (!validateValueEqualsNumberOfInstances(loadedStrobeUpInterfaces.size(), instanceCount, "Strobe up interfaces")) {return 13;}
-    if (!validateValueEqualsNumberOfInstances(loadedStrobeUpClock.size(), instanceCount, "Strobe up clock")) {return 13;}
-    if (!validateValueEqualsNumberOfInstances(loadedStrobeDownInstances.size(), instanceCount, "Strobe down instances")) {return 13;}
-    if (!validateValueEqualsNumberOfInstances(loadedStrobeDownInterfaces.size(), instanceCount, "Strobe down interfaces")) {return 13;}
-    if (!validateValueEqualsNumberOfInstances(loadedStrobeDownClock.size(), instanceCount, "Strobe down clock")) {return 13;}
-    if (!validateVectorHasUniqueValues(loadedStrobeUpInstances, "Strobe up instances")) {return 14;}
-    if (!validateVectorHasUniqueValues(loadedStrobeDownInstances, "Strobe down instances")) {return 14;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeUpInterfaces.size(), loadedStrobeUpInstances.size(), "Strobe up interfaces")) {return 13;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeUpClock.size(), loadedStrobeUpInstances.size(), "Strobe up clock")) {return 13;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeDownInstances.size(), loadedStrobeUpInstances.size(), "Strobe down instances")) {return 13;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeDownInterfaces.size(), loadedStrobeUpInstances.size(), "Strobe down interfaces")) {return 13;}
+    if (!validateValueEqualsNumberOfInstances(loadedStrobeDownClock.size(), loadedStrobeUpInstances.size(), "Strobe down clock")) {return 13;}
     for (size_t i = 0; i < instanceCount; ++i) {
         if (!validateIdExist(stoul(loadedStrobeUpInstances[i]), instanceCount - 1, "Strobe up instances")) {return 11;}
         if (!validateIdExist(stoul(loadedStrobeUpInterfaces[i]), interfacesCount - 1, "Strobe up interfaces")) {return 11;}
