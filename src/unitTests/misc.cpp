@@ -334,9 +334,9 @@ bool testTrimLeadingZeros_emptyString() {
 }
 
 
-extern "C" struct UnitTestModuleResult testMain();
+extern "C" struct UnitTestModuleResult testMisc();
 
-struct UnitTestModuleResult testMain()
+struct UnitTestModuleResult testMisc()
 {
     struct UnitTestModuleResult result;
     result.tests = LENGTH;
