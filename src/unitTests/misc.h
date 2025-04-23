@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-extern struct UnitTestModuleResult testMain();
+extern struct UnitTestModuleResult testMisc();
 
 #endif
