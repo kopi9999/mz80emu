@@ -68,7 +68,7 @@ bool validateValueDoesNotEqualZero(uint32_t value, string loadingStep) {
 
 bool validateValueEqualsNumberOfInstances(uint32_t value, uint32_t numberOfInstances, string loadingStep) {
     if (value != numberOfInstances) {
-        cout << "ERROR: Number of values in section does not equal number of module instances (\"" << loadingStep << "\" section of config.txt).\n";
+        cout << "ERROR: Number of values in section does not equal number of strobe up instances (\"" << loadingStep << "\" section of config.txt).\n";
         return false;
     }
     return true;
