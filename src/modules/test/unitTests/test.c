@@ -137,7 +137,6 @@ bool testDestroyGarbageCollection(){
     char character = 10;
     instance.value = 5;
     instance.character = &character;
-    enum Error error;
 
     destroyGarbageCollect(&instance);
 
