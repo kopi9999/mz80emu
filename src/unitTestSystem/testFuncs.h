@@ -4,9 +4,9 @@
 #include "unitTest.h"
 
 #include "../modules/test/unitTests/test.h"
-#include "../unitTests/main.h"
+#include "../unitTests/misc.h"
 
-struct UnitTestModuleResult (*testFuncs[TEST_MODULES])() = {testTestDll, testMain};
-char* names[TEST_MODULES] = {"testTestDll", "testMain"};
+struct UnitTestModuleResult (*testFuncs[TEST_MODULES])() = {testTestDll, testMisc};
+char* names[TEST_MODULES] = {"testTestDll", "testMisc"};
 
 #endif
