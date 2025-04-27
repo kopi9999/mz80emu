@@ -12,5 +12,5 @@ add_executable(mz80emu src/main.cpp src/loadlib.c src/misc.c)
 set(wxBUILD_SHARED OFF)
 
 add_subdirectory(wxWidgets)
-add_executable(emulator_ui src/ui/MainFrame.cpp src/ui/App.cpp)
+add_executable(emulator_ui src/ui/MainFrame.cpp src/ui/App.cpp src/ui/FileOperations.cpp)
 target_link_libraries(emulator_ui wx::net wx::core wx::base)
