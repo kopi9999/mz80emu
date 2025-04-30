@@ -25,26 +25,6 @@ vector<vector<string>> loadedStrobeDownClock;
 
 
 
-uint32_t instanceCount;
-uint32_t* instancesList;
-void** instancesParameters;
-
-uint32_t interfacesCount;
-uint32_t derivedInterfacesCount;
-uint32_t totalInterfacesCount;
-uint32_t* interfacesList;
-DerivedInterfaceIds** derivedInterfacesList;
-uint32_t* derivedInterfacesLengths;
-
-uint32_t clockPeriod;
-uint32_t clockDepth;
-
-uint32_t* strobeUpInstanceList;
-uint32_t* strobeUpInterfacesList;
-bool** strobeUpClock;
-uint32_t* strobeDownInstanceList;
-uint32_t* strobeDownInterfacesList;
-bool** strobeDownClock;
 
 int loadDataFromFile() 
 {
