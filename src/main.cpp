@@ -20,31 +20,16 @@ uint32_t instanceCount;
 uint32_t* instancesList;
 void** instancesParameters;
 
-uint32_t interfacesCount;
-uint32_t derivedInterfacesCount;
-uint32_t totalInterfacesCount;
-uint32_t* interfacesList;
-DerivedInterfaceIds** derivedInterfacesList;
-uint32_t* derivedInterfacesLengths;
-
-uint32_t clockPeriod;
-uint32_t clockDepth;
-
-uint32_t* strobeUpInstanceList;
-uint32_t* strobeUpInterfacesList;
-bool** strobeUpClock;
-uint32_t* strobeDownInstanceList;
-uint32_t* strobeDownInterfacesList;
-bool** strobeDownClock;
-
+struct InterfacesInfo interfacesInfo = {};
+struct ClockInfo clockInfo = {};
 
 int main()
 {
-    loadConfig();
-    init();
+    loadConfig(&interfacesInfo, &clockInfo);
+    init(interfacesInfo);
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
-    chrono::nanoseconds duration = chrono::nanoseconds(clockPeriod);
+    chrono::nanoseconds duration = chrono::nanoseconds(clockInfo.clockPeriod);
     uint16_t tmpModuleId;
     Error error;
     uint32_t clockState = 0;
@@ -54,17 +39,17 @@ int main()
         end = start + duration;
 
         for (uint32_t i = 0; i < instanceCount; i++){
-            if (strobeUpClock[i][clockState]){
-                tmpModuleId = instancesList[strobeUpInstanceList[i]];
-                error = modules.strobeUpFuncs[tmpModuleId](instances[strobeUpInstanceList[i]], (void**) &interfaces[strobeUpInterfacesList[i]]);
+            if (clockInfo.strobeUpClock[i][clockState]){
+                tmpModuleId = instancesList[clockInfo.strobeUpInstanceList[i]];
+                error = modules.strobeUpFuncs[tmpModuleId](instances[clockInfo.strobeUpInstanceList[i]], (void**) &interfaces[clockInfo.strobeUpInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe up error " << error << ".\n"; break;}
             }
         }
         
         for (uint32_t i = 0; i < instanceCount; i++){
-            if (strobeDownClock[i][clockState]){
-                tmpModuleId = instancesList[strobeDownInstanceList[i]];
-                error = modules.strobeDownFuncs[tmpModuleId](instances[strobeDownInstanceList[i]], (void**) &interfaces[strobeDownInterfacesList[i]]);
+            if (clockInfo.strobeDownClock[i][clockState]){
+                tmpModuleId = instancesList[clockInfo.strobeDownInstanceList[i]];
+                error = modules.strobeDownFuncs[tmpModuleId](instances[clockInfo.strobeDownInstanceList[i]], (void**) &interfaces[clockInfo.strobeDownInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe down error " << error << ".\n"; break;}
             }
         }
@@ -74,7 +59,7 @@ int main()
         } while (end > start);
 
         ++clockState;
-        if (clockState == clockDepth) {clockState = 0;}
+        if (clockState == clockInfo.clockDepth) {clockState = 0;}
 
     }
 

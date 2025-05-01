@@ -147,43 +147,50 @@ int processRawData()
         instancesList[i] = stoul(loadedModuleInstances[i]);
         instancesParameters[i] = NULL;
     }
+    return 0;
+}
 
-    interfacesCount = loadedInterfaces.size();
-    derivedInterfacesCount = loadedDerivedInterfaces.size();
-    totalInterfacesCount = interfacesCount + derivedInterfacesCount;
-    interfacesList = new uint32_t[totalInterfacesCount]; // id`s of instances for interfaces creation
-    for (size_t i = 0; i < interfacesCount; ++i) {
+int setInterfacesData(struct InterfacesInfo* data)
+{
+    data->interfacesCount = loadedInterfaces.size();
+    data->derivedInterfacesCount = loadedDerivedInterfaces.size();
+    data->totalInterfacesCount = data->interfacesCount + data->derivedInterfacesCount;
+    data->interfacesList = new uint32_t[data->totalInterfacesCount]; // id`s of instances for interfaces creation
+    for (size_t i = 0; i < data->interfacesCount; ++i) {
         if (!validateIdExist(stoul(loadedInterfaces[i]), instanceCount - 1, "Interfaces")) {return 11;}
-        interfacesList[i] = stoul(loadedInterfaces[i]);
+        data->interfacesList[i] = stoul(loadedInterfaces[i]);
     }
 
-    derivedInterfacesList = new DerivedInterfaceIds*[derivedInterfacesCount];
-    derivedInterfacesLengths = new uint32_t[derivedInterfacesCount]; // lengths of all derived interfaces tables
+    data->derivedInterfacesList = new DerivedInterfaceIds*[data->derivedInterfacesCount];
+    data->derivedInterfacesLengths = new uint32_t[data->derivedInterfacesCount]; // lengths of all derived interfaces tables
     DerivedInterfaceIds* derivedInterface;
-    for (size_t i = 0; i < derivedInterfacesCount; ++i) {
+    for (size_t i = 0; i < data->derivedInterfacesCount; ++i) {
         if (!validateDerivedInterfaceHasValues(loadedDerivedInterfaces[i])) {return 10;}
-        derivedInterfacesLengths[i] = loadedDerivedInterfaces[i].size();
-        derivedInterface = new DerivedInterfaceIds[derivedInterfacesLengths[i]];
-        for (size_t j = 0; j < derivedInterfacesLengths[i]; ++j) {
-            if (!validateIdExist(stoul(loadedDerivedInterfaces[i][j][0]), interfacesCount - 1, "Derived interfaces")) {return 11;}
+        data->derivedInterfacesLengths[i] = loadedDerivedInterfaces[i].size();
+        derivedInterface = new DerivedInterfaceIds[data->derivedInterfacesLengths[i]];
+        for (size_t j = 0; j < data->derivedInterfacesLengths[i]; ++j) {
+            if (!validateIdExist(stoul(loadedDerivedInterfaces[i][j][0]), data->interfacesCount - 1, "Derived interfaces")) {return 11;}
             struct DerivedInterfaceIds derivedInterfaceIds = {stoul(loadedDerivedInterfaces[i][j][0]), stoul(loadedDerivedInterfaces[i][j][1])};
             derivedInterface[j] = derivedInterfaceIds;
         }
-        derivedInterfacesList[i] = derivedInterface;
+        data->derivedInterfacesList[i] = derivedInterface;
     }
-
+    return 0;
+}
+int setClockData(struct ClockInfo* data, uint32_t interfacesCount)
+{
     if (!validateValueDoesNotEqualZero(stoul(loadedClockPeriod), "Clock period")) {return 12;}
     if (!validateValueDoesNotEqualZero(stoul(loadedClockDepth), "Clock depth")) {return 12;}
-    clockPeriod = stoul(loadedClockPeriod); // time in nanoseconds
-    clockDepth = stoul(loadedClockDepth); // number of clock states
+    data->clockPeriod = stoul(loadedClockPeriod); // time in nanoseconds
+    data->clockDepth = stoul(loadedClockDepth); // number of clock states
 
-    strobeUpInstanceList = new uint32_t[instanceCount]; // strobe up order (instance id)
-    strobeUpInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe up instance (interfaces id)
-    strobeUpClock = new bool* [instanceCount]; // strobe up activation for instances
+    data->strobeUpInstanceList = new uint32_t[instanceCount]; // strobe up order (instance id)
+    data->strobeUpInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe up instance (interfaces id)
+    data->strobeUpClock = new bool* [instanceCount]; // strobe up activation for instances
 
-    strobeDownInstanceList = new uint32_t[instanceCount]; // strobe down order (instance id)
-    strobeDownInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe down instance (interfaces id)
-    strobeDownClock = new bool* [instanceCount]; // strobe down activation for instances
+    data->strobeDownInstanceList = new uint32_t[instanceCount]; // strobe down order (instance id)
+    data->strobeDownInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe down instance (interfaces id)
+    data->strobeDownClock = new bool* [instanceCount]; // strobe down activation for instances
 
     if (!validateValueEqualsNumberOfInstances(loadedStrobeUpInterfaces.size(), loadedStrobeUpInstances.size(), "Strobe up interfaces")) {return 13;}
     if (!validateValueEqualsNumberOfInstances(loadedStrobeUpClock.size(), loadedStrobeUpInstances.size(), "Strobe up clock")) {return 13;}
@@ -195,23 +202,25 @@ int processRawData()
         if (!validateIdExist(stoul(loadedStrobeUpInterfaces[i]), interfacesCount - 1, "Strobe up interfaces")) {return 11;}
         if (!validateIdExist(stoul(loadedStrobeDownInstances[i]), instanceCount - 1, "Strobe down instances")) {return 11;}
         if (!validateIdExist(stoul(loadedStrobeDownInterfaces[i]), interfacesCount - 1, "Strobe down interfaces")) {return 11;}
-        if (!validateVectorSize(loadedStrobeUpClock[i], clockDepth, "Strobe up clock")) {return 8;}
-        if (!validateVectorSize(loadedStrobeDownClock[i], clockDepth, "Strobe down clock")) {return 8;}
-        strobeUpInstanceList[i] = stoul(loadedStrobeUpInstances[i]);
-        strobeUpInterfacesList[i] = stoul(loadedStrobeUpInterfaces[i]);
-        strobeUpClock[i] = new bool[clockDepth];
-        strobeDownInstanceList[i] = stoul(loadedStrobeDownInstances[i]);
-        strobeDownInterfacesList[i] = stoul(loadedStrobeDownInterfaces[i]);
-        strobeDownClock[i] = new bool[clockDepth];
-        for (size_t j = 0; j < clockDepth; ++j) {
-            strobeUpClock[i][j] = stringToBool(loadedStrobeUpClock[i][j]);
-            strobeDownClock[i][j] = stringToBool(loadedStrobeDownClock[i][j]);
+        if (!validateVectorSize(loadedStrobeUpClock[i], data->clockDepth, "Strobe up clock")) {return 8;}
+        if (!validateVectorSize(loadedStrobeDownClock[i], data->clockDepth, "Strobe down clock")) {return 8;}
+        data->strobeUpInstanceList[i] = stoul(loadedStrobeUpInstances[i]);
+        data->strobeUpInterfacesList[i] = stoul(loadedStrobeUpInterfaces[i]);
+        data->strobeUpClock[i] = new bool[data->clockDepth];
+        data->strobeDownInstanceList[i] = stoul(loadedStrobeDownInstances[i]);
+        data->strobeDownInterfacesList[i] = stoul(loadedStrobeDownInterfaces[i]);
+        data->strobeDownClock[i] = new bool[data->clockDepth];
+        for (size_t j = 0; j < data->clockDepth; ++j) {
+            data->strobeUpClock[i][j] = stringToBool(loadedStrobeUpClock[i][j]);
+            data->strobeDownClock[i][j] = stringToBool(loadedStrobeDownClock[i][j]);
         }
     }
     return 0;
 }
 
-void loadConfig(){
+void loadConfig(struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
     loadDataFromFile();
     processRawData();
+    setInterfacesData(interfacesInfo);
+    setClockData(clockInfo, interfacesInfo->interfacesCount);
 }
