@@ -1,6 +1,6 @@
 #ifndef INIT
 #define INIT
 
-extern int init();
+extern bool init();
 
 #endif
