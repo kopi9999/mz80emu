@@ -1,6 +1,6 @@
 #ifndef INIT
 #define INIT
 
-extern bool init();
+extern bool init(struct InterfacesInfo);
 
 #endif
