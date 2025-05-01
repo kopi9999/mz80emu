@@ -31,6 +31,12 @@ struct DerivedInterfaceIds {
     uint32_t interfaceId;
 };
 
+struct InstanceInfo {
+uint32_t instanceCount;
+uint32_t* instancesList;
+void** instancesParameters;
+};
+
 struct InterfacesInfo {
 uint32_t interfacesCount;
 uint32_t derivedInterfacesCount;
@@ -56,9 +62,7 @@ extern void** instances;
 extern void*** interfaces;
 extern uint16_t* interfacesElements;
 
-extern uint32_t instanceCount;
-extern uint32_t* instancesList;
-extern void** instancesParameters;
+
 
 
 #endif

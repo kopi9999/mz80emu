@@ -16,17 +16,14 @@ void** instances;
 void*** interfaces;
 uint16_t* interfacesElements;
 
-uint32_t instanceCount;
-uint32_t* instancesList;
-void** instancesParameters;
-
+struct InstanceInfo instanceInfo = {};
 struct InterfacesInfo interfacesInfo = {};
 struct ClockInfo clockInfo = {};
 
 int main()
 {
-    loadConfig(&interfacesInfo, &clockInfo);
-    init(interfacesInfo);
+    loadConfig(&instanceInfo, &interfacesInfo, &clockInfo);
+    init(instanceInfo, interfacesInfo);
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
     chrono::nanoseconds duration = chrono::nanoseconds(clockInfo.clockPeriod);
@@ -38,17 +35,17 @@ int main()
         start = chrono::high_resolution_clock::now();
         end = start + duration;
 
-        for (uint32_t i = 0; i < instanceCount; i++){
+        for (uint32_t i = 0; i < instanceInfo.instanceCount; i++){
             if (clockInfo.strobeUpClock[i][clockState]){
-                tmpModuleId = instancesList[clockInfo.strobeUpInstanceList[i]];
+                tmpModuleId = instanceInfo.instancesList[clockInfo.strobeUpInstanceList[i]];
                 error = modules.strobeUpFuncs[tmpModuleId](instances[clockInfo.strobeUpInstanceList[i]], (void**) &interfaces[clockInfo.strobeUpInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe up error " << error << ".\n"; break;}
             }
         }
         
-        for (uint32_t i = 0; i < instanceCount; i++){
+        for (uint32_t i = 0; i < instanceInfo.instanceCount; i++){
             if (clockInfo.strobeDownClock[i][clockState]){
-                tmpModuleId = instancesList[clockInfo.strobeDownInstanceList[i]];
+                tmpModuleId = instanceInfo.instancesList[clockInfo.strobeDownInstanceList[i]];
                 error = modules.strobeDownFuncs[tmpModuleId](instances[clockInfo.strobeDownInstanceList[i]], (void**) &interfaces[clockInfo.strobeDownInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe down error " << error << ".\n"; break;}
             }
