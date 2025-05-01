@@ -134,23 +134,23 @@ int loadDataFromFile()
 }
 
 
-int processRawData()
+int setInstanceData(struct InstanceInfo* instanceInfo)
 {
     modules.count = loadedModules.size(); //number of libraries to load
     modules.names = loadedModules;
 
-    instanceCount = loadedModuleInstances.size();
-    instancesList = new uint32_t[instanceCount]; // id`s of libraries for instance creation
-    instancesParameters = new void* [instanceCount]; // pointers to instance parameters (same id as instancesList)
-    for (size_t i = 0; i < instanceCount; ++i) {
+    instanceInfo->instanceCount = loadedModuleInstances.size();
+    instanceInfo->instancesList = new uint32_t[instanceInfo->instanceCount]; // id`s of libraries for instance creation
+    instanceInfo->instancesParameters = new void* [instanceInfo->instanceCount]; // pointers to instance parameters (same id as instancesList)
+    for (size_t i = 0; i < instanceInfo->instanceCount; ++i) {
         if (!validateIdExist(stoul(loadedModuleInstances[i]), modules.count - 1, "Module instances")) {return 11;}
-        instancesList[i] = stoul(loadedModuleInstances[i]);
-        instancesParameters[i] = NULL;
+        instanceInfo->instancesList[i] = stoul(loadedModuleInstances[i]);
+        instanceInfo->instancesParameters[i] = NULL;
     }
     return 0;
 }
 
-int setInterfacesData(struct InterfacesInfo* data)
+int setInterfacesData(struct InterfacesInfo* data, uint32_t instanceCount)
 {
     data->interfacesCount = loadedInterfaces.size();
     data->derivedInterfacesCount = loadedDerivedInterfaces.size();
@@ -177,7 +177,7 @@ int setInterfacesData(struct InterfacesInfo* data)
     }
     return 0;
 }
-int setClockData(struct ClockInfo* data, uint32_t interfacesCount)
+int setClockData(struct ClockInfo* data, uint32_t instanceCount, uint32_t interfacesCount)
 {
     if (!validateValueDoesNotEqualZero(stoul(loadedClockPeriod), "Clock period")) {return 12;}
     if (!validateValueDoesNotEqualZero(stoul(loadedClockDepth), "Clock depth")) {return 12;}
@@ -218,9 +218,9 @@ int setClockData(struct ClockInfo* data, uint32_t interfacesCount)
     return 0;
 }
 
-void loadConfig(struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
+void loadConfig(struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
     loadDataFromFile();
-    processRawData();
-    setInterfacesData(interfacesInfo);
-    setClockData(clockInfo, interfacesInfo->interfacesCount);
+    setInstanceData(instanceInfo);
+    setInterfacesData(interfacesInfo, instanceInfo->instanceCount);
+    setClockData(clockInfo, instanceInfo->instanceCount, interfacesInfo->interfacesCount);
 }
