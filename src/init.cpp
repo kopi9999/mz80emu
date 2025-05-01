@@ -93,34 +93,34 @@ bool loadInstances()
     return true;
 }
 
-bool loadInterfaces()
+bool loadInterfaces(struct InterfacesInfo interfacesInfo)
 {
     Error error;
     uint16_t tmpModuleId;
     
-    for (uint32_t i = 0; i < interfacesCount; i++){
-        tmpModuleId = instancesList[interfacesList[i]];
-        error = modules.createInterfacesFuncs[tmpModuleId](&instances[interfacesList[i]], &interfaces[i], &interfacesElements[i]);
+    for (uint32_t i = 0; i < interfacesInfo.interfacesCount; i++){
+        tmpModuleId = instancesList[interfacesInfo.interfacesList[i]];
+        error = modules.createInterfacesFuncs[tmpModuleId](&instances[interfacesInfo.interfacesList[i]], &interfaces[i], &interfacesElements[i]);
         if (error) { cout << "ERROR [" << modules.names[tmpModuleId] << "]: Cannot create interfaces " << i << " , error " << error << ".\n"; break; }
     }
     if (error) { unloadLibs(modules.pointers, modules.count); return false; }
     return true;
 }
 
-bool loadDerivedInterfaces()
+bool loadDerivedInterfaces(struct InterfacesInfo interfacesInfo)
 {
-    for (uint32_t i = 0; i < derivedInterfacesCount; i++){
-       interfaces[i + interfacesCount] = new void*[derivedInterfacesLengths[i]];
-       for (uint32_t j = 0; j < derivedInterfacesLengths[i]; j++){
-            if (!validateIdExist(derivedInterfacesList[i][j].interfaceId, interfacesElements[derivedInterfacesList[i][j].interfacesId] - 1, "Derived interfaces")) {return false;}
-            interfaces[i + interfacesCount][j] = interfaces[derivedInterfacesList[i][j].interfacesId][derivedInterfacesList[i][j].interfaceId];
+    for (uint32_t i = 0; i < interfacesInfo.derivedInterfacesCount; i++){
+       interfaces[i + interfacesInfo.interfacesCount] = new void*[interfacesInfo.derivedInterfacesLengths[i]];
+       for (uint32_t j = 0; j < interfacesInfo.derivedInterfacesLengths[i]; j++){
+            if (!validateIdExist(interfacesInfo.derivedInterfacesList[i][j].interfaceId, interfacesElements[interfacesInfo.derivedInterfacesList[i][j].interfacesId] - 1, "Derived interfaces")) {return false;}
+            interfaces[i + interfacesInfo.interfacesCount][j] = interfaces[interfacesInfo.derivedInterfacesList[i][j].interfacesId][interfacesInfo.derivedInterfacesList[i][j].interfaceId];
        }
     }
 
     return true;
 }
 
-bool init()
+bool init(struct InterfacesInfo interfacesInfo)
 {
     uint8_t error;
     modules.pointers = new void*[modules.count];
@@ -142,18 +142,18 @@ bool init()
         cout << "INFO: All instances created successfully\n";
     }
 
-    interfaces = new void**[totalInterfacesCount];
-    interfacesElements = new uint16_t[interfacesCount];
-    if (!loadInterfaces()){
+    interfaces = new void**[interfacesInfo.totalInterfacesCount];
+    interfacesElements = new uint16_t[interfacesInfo.interfacesCount];
+    if (!loadInterfaces(interfacesInfo)){
         cout << "CRITICAL: Could not create needed interfaces\n";
     } else {
         cout << "INFO: All interfaces created successfully\n";
     }
 
-    if(!loadDerivedInterfaces()){
+    if(!loadDerivedInterfaces(interfacesInfo)){
         cout << "CRITICAL: Could not create needed derived interfaces";
     } else {
-        cout << "INFO: All derived interfaces created successfully\n";
+        cout << "INFO: All derived interfaces created successfully.\n";
     }
     
 
