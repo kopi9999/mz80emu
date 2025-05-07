@@ -139,42 +139,42 @@ int setInstanceData(struct Modules* modules, struct InstanceInfo* instanceInfo)
     modules->count = loadedModules.size(); //number of libraries to load
     modules->names = loadedModules;
 
-    instanceInfo->instanceCount = loadedModuleInstances.size();
-    instanceInfo->instancesList = new uint32_t[instanceInfo->instanceCount]; // id`s of libraries for instance creation
-    instanceInfo->instancesParameters = new void* [instanceInfo->instanceCount]; // pointers to instance parameters (same id as instancesList)
-    for (size_t i = 0; i < instanceInfo->instanceCount; ++i) {
+    instanceInfo->count = loadedModuleInstances.size();
+    instanceInfo->list = new uint32_t[instanceInfo->count]; // id`s of libraries for instance creation
+    instanceInfo->parameters = new void* [instanceInfo->count]; // pointers to instance parameters (same id as instancesList)
+    for (size_t i = 0; i < instanceInfo->count; ++i) {
         if (!validateIdExist(stoul(loadedModuleInstances[i]), modules->count - 1, "Module instances")) {return 11;}
-        instanceInfo->instancesList[i] = stoul(loadedModuleInstances[i]);
-        instanceInfo->instancesParameters[i] = NULL;
+        instanceInfo->list[i] = stoul(loadedModuleInstances[i]);
+        instanceInfo->parameters[i] = NULL;
     }
     return 0;
 }
 
 int setInterfacesData(struct InterfacesInfo* data, uint32_t instanceCount)
 {
-    data->interfacesCount = loadedInterfaces.size();
-    data->derivedInterfacesCount = loadedDerivedInterfaces.size();
-    data->totalInterfacesCount = data->interfacesCount + data->derivedInterfacesCount;
-    data->interfacesList = new uint32_t[data->totalInterfacesCount]; // id`s of instances for interfaces creation
-    data->interfacesLengths = new uint16_t[data->interfacesCount];
-    for (size_t i = 0; i < data->interfacesCount; ++i) {
+    data->count = loadedInterfaces.size();
+    data->derivedCount = loadedDerivedInterfaces.size();
+    data->totalCount = data->count + data->derivedCount;
+    data->list = new uint32_t[data->totalCount]; // id`s of instances for interfaces creation
+    data->lengths = new uint16_t[data->count];
+    for (size_t i = 0; i < data->count; ++i) {
         if (!validateIdExist(stoul(loadedInterfaces[i]), instanceCount - 1, "Interfaces")) {return 11;}
-        data->interfacesList[i] = stoul(loadedInterfaces[i]);
+        data->list[i] = stoul(loadedInterfaces[i]);
     }
 
-    data->derivedInterfacesList = new DerivedInterfaceIds*[data->derivedInterfacesCount];
-    data->derivedInterfacesLengths = new uint16_t[data->derivedInterfacesCount]; // lengths of all derived interfaces tables
+    data->derivedList = new DerivedInterfaceIds*[data->derivedCount];
+    data->derivedLengths = new uint16_t[data->derivedCount]; // lengths of all derived interfaces tables
     DerivedInterfaceIds* derivedInterface;
-    for (size_t i = 0; i < data->derivedInterfacesCount; ++i) {
+    for (size_t i = 0; i < data->derivedCount; ++i) {
         if (!validateDerivedInterfaceHasValues(loadedDerivedInterfaces[i])) {return 10;}
-        data->derivedInterfacesLengths[i] = loadedDerivedInterfaces[i].size();
-        derivedInterface = new DerivedInterfaceIds[data->derivedInterfacesLengths[i]];
-        for (size_t j = 0; j < data->derivedInterfacesLengths[i]; ++j) {
-            if (!validateIdExist(stoul(loadedDerivedInterfaces[i][j][0]), data->interfacesCount - 1, "Derived interfaces")) {return 11;}
+        data->derivedLengths[i] = loadedDerivedInterfaces[i].size();
+        derivedInterface = new DerivedInterfaceIds[data->derivedLengths[i]];
+        for (size_t j = 0; j < data->derivedLengths[i]; ++j) {
+            if (!validateIdExist(stoul(loadedDerivedInterfaces[i][j][0]), data->count - 1, "Derived interfaces")) {return 11;}
             struct DerivedInterfaceIds derivedInterfaceIds = {stoul(loadedDerivedInterfaces[i][j][0]), stoul(loadedDerivedInterfaces[i][j][1])};
             derivedInterface[j] = derivedInterfaceIds;
         }
-        data->derivedInterfacesList[i] = derivedInterface;
+        data->derivedList[i] = derivedInterface;
     }
     return 0;
 }
@@ -182,8 +182,8 @@ int setClockData(struct ClockInfo* data, uint32_t instanceCount, uint32_t interf
 {
     if (!validateValueDoesNotEqualZero(stoul(loadedClockPeriod), "Clock period")) {return 12;}
     if (!validateValueDoesNotEqualZero(stoul(loadedClockDepth), "Clock depth")) {return 12;}
-    data->clockPeriod = stoul(loadedClockPeriod); // time in nanoseconds
-    data->clockDepth = stoul(loadedClockDepth); // number of clock states
+    data->period = stoul(loadedClockPeriod); // time in nanoseconds
+    data->depth = stoul(loadedClockDepth); // number of clock states
 
     data->strobeUpInstanceList = new uint32_t[instanceCount]; // strobe up order (instance id)
     data->strobeUpInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe up instance (interfaces id)
@@ -203,15 +203,15 @@ int setClockData(struct ClockInfo* data, uint32_t instanceCount, uint32_t interf
         if (!validateIdExist(stoul(loadedStrobeUpInterfaces[i]), interfacesCount - 1, "Strobe up interfaces")) {return 11;}
         if (!validateIdExist(stoul(loadedStrobeDownInstances[i]), instanceCount - 1, "Strobe down instances")) {return 11;}
         if (!validateIdExist(stoul(loadedStrobeDownInterfaces[i]), interfacesCount - 1, "Strobe down interfaces")) {return 11;}
-        if (!validateVectorSize(loadedStrobeUpClock[i], data->clockDepth, "Strobe up clock")) {return 8;}
-        if (!validateVectorSize(loadedStrobeDownClock[i], data->clockDepth, "Strobe down clock")) {return 8;}
+        if (!validateVectorSize(loadedStrobeUpClock[i], data->depth, "Strobe up clock")) {return 8;}
+        if (!validateVectorSize(loadedStrobeDownClock[i], data->depth, "Strobe down clock")) {return 8;}
         data->strobeUpInstanceList[i] = stoul(loadedStrobeUpInstances[i]);
         data->strobeUpInterfacesList[i] = stoul(loadedStrobeUpInterfaces[i]);
-        data->strobeUpClock[i] = new bool[data->clockDepth];
+        data->strobeUpClock[i] = new bool[data->depth];
         data->strobeDownInstanceList[i] = stoul(loadedStrobeDownInstances[i]);
         data->strobeDownInterfacesList[i] = stoul(loadedStrobeDownInterfaces[i]);
-        data->strobeDownClock[i] = new bool[data->clockDepth];
-        for (size_t j = 0; j < data->clockDepth; ++j) {
+        data->strobeDownClock[i] = new bool[data->depth];
+        for (size_t j = 0; j < data->depth; ++j) {
             data->strobeUpClock[i][j] = stringToBool(loadedStrobeUpClock[i][j]);
             data->strobeDownClock[i][j] = stringToBool(loadedStrobeDownClock[i][j]);
         }
@@ -222,6 +222,6 @@ int setClockData(struct ClockInfo* data, uint32_t instanceCount, uint32_t interf
 void loadConfig(struct Modules* modules, struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
     loadDataFromFile();
     setInstanceData(modules, instanceInfo);
-    setInterfacesData(interfacesInfo, instanceInfo->instanceCount);
-    setClockData(clockInfo, instanceInfo->instanceCount, interfacesInfo->interfacesCount);
+    setInterfacesData(interfacesInfo, instanceInfo->count);
+    setClockData(clockInfo, instanceInfo->count, interfacesInfo->count);
 }
