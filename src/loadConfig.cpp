@@ -134,16 +134,16 @@ int loadDataFromFile()
 }
 
 
-int setInstanceData(struct InstanceInfo* instanceInfo)
+int setInstanceData(struct Modules* modules, struct InstanceInfo* instanceInfo)
 {
-    modules.count = loadedModules.size(); //number of libraries to load
-    modules.names = loadedModules;
+    modules->count = loadedModules.size(); //number of libraries to load
+    modules->names = loadedModules;
 
     instanceInfo->instanceCount = loadedModuleInstances.size();
     instanceInfo->instancesList = new uint32_t[instanceInfo->instanceCount]; // id`s of libraries for instance creation
     instanceInfo->instancesParameters = new void* [instanceInfo->instanceCount]; // pointers to instance parameters (same id as instancesList)
     for (size_t i = 0; i < instanceInfo->instanceCount; ++i) {
-        if (!validateIdExist(stoul(loadedModuleInstances[i]), modules.count - 1, "Module instances")) {return 11;}
+        if (!validateIdExist(stoul(loadedModuleInstances[i]), modules->count - 1, "Module instances")) {return 11;}
         instanceInfo->instancesList[i] = stoul(loadedModuleInstances[i]);
         instanceInfo->instancesParameters[i] = NULL;
     }
@@ -156,13 +156,14 @@ int setInterfacesData(struct InterfacesInfo* data, uint32_t instanceCount)
     data->derivedInterfacesCount = loadedDerivedInterfaces.size();
     data->totalInterfacesCount = data->interfacesCount + data->derivedInterfacesCount;
     data->interfacesList = new uint32_t[data->totalInterfacesCount]; // id`s of instances for interfaces creation
+    data->interfacesLengths = new uint16_t[data->interfacesCount];
     for (size_t i = 0; i < data->interfacesCount; ++i) {
         if (!validateIdExist(stoul(loadedInterfaces[i]), instanceCount - 1, "Interfaces")) {return 11;}
         data->interfacesList[i] = stoul(loadedInterfaces[i]);
     }
 
     data->derivedInterfacesList = new DerivedInterfaceIds*[data->derivedInterfacesCount];
-    data->derivedInterfacesLengths = new uint32_t[data->derivedInterfacesCount]; // lengths of all derived interfaces tables
+    data->derivedInterfacesLengths = new uint16_t[data->derivedInterfacesCount]; // lengths of all derived interfaces tables
     DerivedInterfaceIds* derivedInterface;
     for (size_t i = 0; i < data->derivedInterfacesCount; ++i) {
         if (!validateDerivedInterfaceHasValues(loadedDerivedInterfaces[i])) {return 10;}
@@ -218,9 +219,9 @@ int setClockData(struct ClockInfo* data, uint32_t instanceCount, uint32_t interf
     return 0;
 }
 
-void loadConfig(struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
+void loadConfig(struct Modules* modules, struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
     loadDataFromFile();
-    setInstanceData(instanceInfo);
+    setInstanceData(modules, instanceInfo);
     setInterfacesData(interfacesInfo, instanceInfo->instanceCount);
     setClockData(clockInfo, instanceInfo->instanceCount, interfacesInfo->interfacesCount);
 }
