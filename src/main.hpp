@@ -42,8 +42,9 @@ uint32_t interfacesCount;
 uint32_t derivedInterfacesCount;
 uint32_t totalInterfacesCount;
 uint32_t* interfacesList;
+uint16_t* interfacesLengths;
+uint16_t* derivedInterfacesLengths;
 DerivedInterfaceIds** derivedInterfacesList;
-uint32_t* derivedInterfacesLengths;
 };
 
 struct ClockInfo{
@@ -56,13 +57,5 @@ uint32_t* strobeDownInstanceList;
 uint32_t* strobeDownInterfacesList;
 bool** strobeDownClock;
 };
-
-extern struct Modules modules;
-extern void** instances;
-extern void*** interfaces;
-extern uint16_t* interfacesElements;
-
-
-
 
 #endif

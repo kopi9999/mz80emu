@@ -14,7 +14,6 @@ struct Modules modules = {};
 
 void** instances;
 void*** interfaces;
-uint16_t* interfacesElements;
 
 struct InstanceInfo instanceInfo = {};
 struct InterfacesInfo interfacesInfo = {};
@@ -22,8 +21,8 @@ struct ClockInfo clockInfo = {};
 
 int main()
 {
-    loadConfig(&instanceInfo, &interfacesInfo, &clockInfo);
-    init(instanceInfo, interfacesInfo);
+    loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo);
+    init(&modules, &instances, &interfaces, instanceInfo, interfacesInfo);
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
     chrono::nanoseconds duration = chrono::nanoseconds(clockInfo.clockPeriod);
