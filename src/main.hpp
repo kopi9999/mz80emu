@@ -32,24 +32,24 @@ struct DerivedInterfaceIds {
 };
 
 struct InstanceInfo {
-uint32_t instanceCount;
-uint32_t* instancesList;
-void** instancesParameters;
+uint32_t count;
+uint32_t* list;
+void** parameters;
 };
 
 struct InterfacesInfo {
-uint32_t interfacesCount;
-uint32_t derivedInterfacesCount;
-uint32_t totalInterfacesCount;
-uint32_t* interfacesList;
-uint16_t* interfacesLengths;
-uint16_t* derivedInterfacesLengths;
-DerivedInterfaceIds** derivedInterfacesList;
+uint32_t count;
+uint32_t derivedCount;
+uint32_t totalCount;
+uint32_t* list;
+DerivedInterfaceIds** derivedList;
+uint16_t* lengths;
+uint16_t* derivedLengths;
 };
 
 struct ClockInfo{
-uint32_t clockPeriod;
-uint32_t clockDepth;
+uint32_t period;
+uint32_t depth;
 uint32_t* strobeUpInstanceList;
 uint32_t* strobeUpInterfacesList;
 bool** strobeUpClock;
