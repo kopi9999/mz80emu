@@ -85,9 +85,9 @@ bool loadInstances(struct Modules modules, void** instances, struct InstanceInfo
 {
     Error error;
 
-    for (uint32_t i = 0; i < instanceInfo.instanceCount; i++){
-        error = modules.createFuncs[instanceInfo.instancesList[i]](&instances[i], instanceInfo.instancesParameters[i]);
-        if (error) { cout << "ERROR [" << modules.names[instanceInfo.instancesList[i]] << "]: Cannot create instance " << i << " , error " << error << ".\n"; break; }
+    for (uint32_t i = 0; i < instanceInfo.count; i++){
+        error = modules.createFuncs[instanceInfo.list[i]](&instances[i], instanceInfo.parameters[i]);
+        if (error) { cout << "ERROR [" << modules.names[instanceInfo.list[i]] << "]: Cannot create instance " << i << " , error " << error << ".\n"; break; }
     }
     if (error) { unloadLibs(modules.pointers, modules.count); return false; }
     return true;
@@ -98,9 +98,9 @@ bool loadInterfaces(struct Modules modules, void** instances, void*** interfaces
     Error error;
     uint16_t tmpModuleId;
     
-    for (uint32_t i = 0; i < interfacesInfo.interfacesCount; i++){
-        tmpModuleId = instancesList[interfacesInfo.interfacesList[i]];
-        error = modules.createInterfacesFuncs[tmpModuleId](&instances[interfacesInfo.interfacesList[i]], &interfaces[i], &interfacesInfo.interfacesLengths[i]);
+    for (uint32_t i = 0; i < interfacesInfo.count; i++){
+        tmpModuleId = instancesList[interfacesInfo.list[i]];
+        error = modules.createInterfacesFuncs[tmpModuleId](&instances[interfacesInfo.list[i]], &interfaces[i], &interfacesInfo.lengths[i]);
         if (error) { cout << "ERROR [" << modules.names[tmpModuleId] << "]: Cannot create interfaces " << i << " , error " << error << ".\n"; break; }
     }
     if (error) { unloadLibs(modules.pointers, modules.count); return false; }
@@ -109,11 +109,11 @@ bool loadInterfaces(struct Modules modules, void** instances, void*** interfaces
 
 bool loadDerivedInterfaces(void*** interfaces, struct InterfacesInfo interfacesInfo)
 {
-    for (uint32_t i = 0; i < interfacesInfo.derivedInterfacesCount; i++){
-       interfaces[i + interfacesInfo.interfacesCount] = new void*[interfacesInfo.derivedInterfacesLengths[i]];
-       for (uint32_t j = 0; j < interfacesInfo.derivedInterfacesLengths[i]; j++){
-            if (!validateIdExist(interfacesInfo.derivedInterfacesList[i][j].interfaceId, interfacesInfo.interfacesLengths[interfacesInfo.derivedInterfacesList[i][j].interfacesId] - 1, "Derived interfaces")) {return false;}
-            interfaces[i + interfacesInfo.interfacesCount][j] = interfaces[interfacesInfo.derivedInterfacesList[i][j].interfacesId][interfacesInfo.derivedInterfacesList[i][j].interfaceId];
+    for (uint32_t i = 0; i < interfacesInfo.derivedCount; i++){
+       interfaces[i + interfacesInfo.count] = new void*[interfacesInfo.derivedLengths[i]];
+       for (uint32_t j = 0; j < interfacesInfo.derivedLengths[i]; j++){
+            if (!validateIdExist(interfacesInfo.derivedList[i][j].interfaceId, interfacesInfo.lengths[interfacesInfo.derivedList[i][j].interfacesId] - 1, "Derived interfaces")) {return false;}
+            interfaces[i + interfacesInfo.count][j] = interfaces[interfacesInfo.derivedList[i][j].interfacesId][interfacesInfo.derivedList[i][j].interfaceId];
        }
     }
 
@@ -135,15 +135,15 @@ bool init(struct Modules* modules, void*** instances, void**** interfaces, struc
         cout << "INFO: All modules succesfully loaded\n";
     }
 
-    *instances = new void*[instanceInfo.instanceCount];
+    *instances = new void*[instanceInfo.count];
     if (!loadInstances(*modules, *instances, instanceInfo)){
         cout << "CRITICAL: Could not create needed instances\n";
     } else{
         cout << "INFO: All instances created successfully\n";
     }
 
-    *interfaces = new void**[interfacesInfo.totalInterfacesCount];
-    if (!loadInterfaces(*modules, *instances, *interfaces, instanceInfo.instancesList, interfacesInfo)){
+    *interfaces = new void**[interfacesInfo.totalCount];
+    if (!loadInterfaces(*modules, *instances, *interfaces, instanceInfo.list, interfacesInfo)){
         cout << "CRITICAL: Could not create needed interfaces\n";
     } else {
         cout << "INFO: All interfaces created successfully\n";

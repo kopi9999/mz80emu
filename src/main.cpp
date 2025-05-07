@@ -25,7 +25,7 @@ int main()
     init(&modules, &instances, &interfaces, instanceInfo, interfacesInfo);
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
-    chrono::nanoseconds duration = chrono::nanoseconds(clockInfo.clockPeriod);
+    chrono::nanoseconds duration = chrono::nanoseconds(clockInfo.period);
     uint16_t tmpModuleId;
     Error error;
     uint32_t clockState = 0;
@@ -34,17 +34,17 @@ int main()
         start = chrono::high_resolution_clock::now();
         end = start + duration;
 
-        for (uint32_t i = 0; i < instanceInfo.instanceCount; i++){
+        for (uint32_t i = 0; i < instanceInfo.count; i++){
             if (clockInfo.strobeUpClock[i][clockState]){
-                tmpModuleId = instanceInfo.instancesList[clockInfo.strobeUpInstanceList[i]];
+                tmpModuleId = instanceInfo.list[clockInfo.strobeUpInstanceList[i]];
                 error = modules.strobeUpFuncs[tmpModuleId](instances[clockInfo.strobeUpInstanceList[i]], (void**) &interfaces[clockInfo.strobeUpInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe up error " << error << ".\n"; break;}
             }
         }
         
-        for (uint32_t i = 0; i < instanceInfo.instanceCount; i++){
+        for (uint32_t i = 0; i < instanceInfo.count; i++){
             if (clockInfo.strobeDownClock[i][clockState]){
-                tmpModuleId = instanceInfo.instancesList[clockInfo.strobeDownInstanceList[i]];
+                tmpModuleId = instanceInfo.list[clockInfo.strobeDownInstanceList[i]];
                 error = modules.strobeDownFuncs[tmpModuleId](instances[clockInfo.strobeDownInstanceList[i]], (void**) &interfaces[clockInfo.strobeDownInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe down error " << error << ".\n"; break;}
             }
@@ -55,7 +55,7 @@ int main()
         } while (end > start);
 
         ++clockState;
-        if (clockState == clockInfo.clockDepth) {clockState = 0;}
+        if (clockState == clockInfo.depth) {clockState = 0;}
 
     }
 
