@@ -10,6 +10,24 @@
 
 using namespace std;
 
+enum LoadingSteps {
+    NONE,
+    MODULES,
+    MODULE_INSTANCES,
+    INTERFACES,
+    DERIVED_INTERFACES,
+    CLOCK_PERIOD,
+    CLOCK_DEPTH,
+    STROBE_UP_INSTANCES,
+    STROBE_UP_INTERFACES,
+    STROBE_UP_CLOCK,
+    STROBE_DOWN_INSTANCES,
+    STROBE_DOWN_INTERFACES,
+    STROBE_DOWN_CLOCK,
+
+    NUMBER_OF_STEPS
+};
+
 vector<string> loadedModules;
 vector<string> loadedModuleInstances;
 vector<string> loadedInterfaces;
@@ -24,11 +42,9 @@ vector<string> loadedStrobeDownInterfaces;
 vector<vector<string>> loadedStrobeDownClock;
 
 
-
-
-int loadDataFromFile() 
+enum LoadingSteps detectLoadingStep(string row)
 {
-    string loadingSteps[] = {
+    const string loadingSteps[] = {
         "None",
         "Modules",
         "Module instances",
@@ -43,11 +59,93 @@ int loadDataFromFile()
         "Strobe down interfaces",
         "Strobe down clock"
     };
-    uint32_t numberOfSteps = sizeof(loadingSteps) / sizeof(loadingSteps[0]);
-    string currentLoadingStep = "None";
+    for (uint32_t i = 1; i < NUMBER_OF_STEPS; ++i) {
+       if (row.rfind(loadingSteps[i], 0) == 0){
+            return (enum LoadingSteps) i;
+       } 
+    }
+    return NONE;
+}
+
+int loadLineData(string row, enum LoadingSteps currentLoadingStep)
+{
+    vector<string> splittedRow;
+    switch (currentLoadingStep){
+        case MODULES:
+            loadedModules.push_back(row);
+            break;
+        case MODULE_INSTANCES:
+            if (!validateStringIsInteger(row, "Module instances")) {return 6;}
+            loadedModuleInstances.push_back(row);
+            break;
+        case INTERFACES:
+            if (!validateStringIsInteger(row, "Interfaces")) {return 6;}
+            loadedInterfaces.push_back(row);
+            break;
+        case DERIVED_INTERFACES:
+            if (row == "new") {
+                loadedDerivedInterfaces.push_back({});
+            } else {
+                if (!validateDerivedInterfaceCreated(loadedDerivedInterfaces)) {return 9;}
+                splittedRow = splitByWhitespace(row);
+                if (!validateVectorSize(splittedRow, 2, "Derived interfaces")) {return 8;}
+                if (!validateStringIsInteger(splittedRow[0], "Derived interfaces") || !validateStringIsInteger(splittedRow[1], "Derived interfaces")) {return 6;}
+                loadedDerivedInterfaces[loadedDerivedInterfaces.size() - 1].push_back(splittedRow);
+            }
+            break;
+        case CLOCK_PERIOD:
+            if (!validateStringIsInteger(row, "Clock period")) {return 6;}
+            loadedClockPeriod = row;
+            break;
+        case CLOCK_DEPTH:
+            if (!validateStringIsInteger(row, "Clock depth")) {return 6;}
+            loadedClockDepth = row;
+            break;
+        case STROBE_UP_INSTANCES:
+            if (!validateStringIsInteger(row, "Strobe up instances")) {return 6;}
+            loadedStrobeUpInstances.push_back(row);
+            break;
+        case STROBE_UP_INTERFACES:
+            if (!validateStringIsInteger(row, "Strobe up interfaces")) {return 6;}
+            loadedStrobeUpInterfaces.push_back(row);
+            break;
+        case STROBE_UP_CLOCK:
+            splittedRow = splitByWhitespace(row);
+            for (int i=0; i<splittedRow.size(); i++) {
+                if (!validateStringIsBool(splittedRow[i], "Strobe up clock")) {return 7;}
+            }
+            loadedStrobeUpClock.push_back(splittedRow);
+            break;
+        case STROBE_DOWN_INSTANCES:
+            if (!validateStringIsInteger(row, "Strobe down clock")) {return 6;}
+            loadedStrobeDownInstances.push_back(row);
+            break;
+        case STROBE_DOWN_INTERFACES:
+            if (!validateStringIsInteger(row, "Strobe down interfaces")) {return 6;}
+            loadedStrobeDownInterfaces.push_back(row);
+            break;
+        case STROBE_DOWN_CLOCK:
+            splittedRow = splitByWhitespace(row);
+            for (int i=0; i<splittedRow.size(); i++) {
+                if (!validateStringIsBool(splittedRow[i], "Strobe down clock")) {return 7;}
+            }
+            loadedStrobeDownClock.push_back(splittedRow);
+            break;
+
+        case NONE:
+            return 0;
+        case NUMBER_OF_STEPS:
+            return 0;
+    }
+    return 0;
+}
+
+int loadDataFromFile() 
+{
+    enum LoadingSteps currentLoadingStep = NONE;
+    enum LoadingSteps loadingStep = NONE;
     bool loadingStepChange;
     string row;
-    vector<string> splittedRow;
     ifstream ConfigFile("../../config/config.txt");
     if (!ConfigFile) {
         cout << "ERROR: cannot find config.txt file\n";
@@ -57,82 +155,19 @@ int loadDataFromFile()
     while (getline(ConfigFile, row)) {
         trim(&row);
         loadingStepChange = false;
-        for (uint32_t i = 1; i < numberOfSteps; ++i) {
-            if (row.rfind(loadingSteps[i], 0) == 0) {
-                loadingStepChange = true;
-                currentLoadingStep = loadingSteps[i];
-                break;
-            }
+        loadingStep = detectLoadingStep(row);
+        if (loadingStep) {
+            loadingStepChange = true;
+            currentLoadingStep = loadingStep;
         }
         if (!loadingStepChange && !row.empty()) {
-            if (currentLoadingStep == "Modules") {
-                loadedModules.push_back(row);
-            }
-            else if (currentLoadingStep == "Module instances") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
-                loadedModuleInstances.push_back(row);
-            }
-            else if (currentLoadingStep == "Interfaces") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
-                loadedInterfaces.push_back(row);
-            }
-            else if (currentLoadingStep == "Derived interfaces") {
-                if (row == "new") {
-                    loadedDerivedInterfaces.push_back({});
-                }
-                else {
-                    if (!validateDerivedInterfaceCreated(loadedDerivedInterfaces)) {return 9;}
-                    splittedRow = splitByWhitespace(row);
-                    if (!validateVectorSize(splittedRow, 2, currentLoadingStep)) {return 8;}
-                    if (!validateStringIsInteger(splittedRow[0], currentLoadingStep) || !validateStringIsInteger(splittedRow[1], currentLoadingStep)) {return 6;}
-                    loadedDerivedInterfaces[loadedDerivedInterfaces.size() - 1].push_back(splittedRow);
-                }
-            }
-            else if (currentLoadingStep == "Clock period") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
-                loadedClockPeriod = row;
-            }
-            else if (currentLoadingStep == "Clock depth") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
-                loadedClockDepth = row;
-            }
-            else if (currentLoadingStep == "Strobe up instances") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
-                loadedStrobeUpInstances.push_back(row);
-            }
-            else if (currentLoadingStep == "Strobe up interfaces") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
-                loadedStrobeUpInterfaces.push_back(row);
-            }
-            else if (currentLoadingStep == "Strobe up clock") {
-                splittedRow = splitByWhitespace(row);
-                for (int i=0; i<splittedRow.size(); i++) {
-                    if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;}
-                }
-                loadedStrobeUpClock.push_back(splittedRow);
-            }
-            else if (currentLoadingStep == "Strobe down instances") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
-                loadedStrobeDownInstances.push_back(row);
-            }
-            else if (currentLoadingStep == "Strobe down interfaces") {
-                if (!validateStringIsInteger(row, currentLoadingStep)) {return 6;}
-                loadedStrobeDownInterfaces.push_back(row);
-            }
-            else if (currentLoadingStep == "Strobe down clock") {
-                splittedRow = splitByWhitespace(row);
-                for (int i=0; i<splittedRow.size(); i++) {
-                    if (!validateStringIsBool(splittedRow[i], currentLoadingStep)) {return 7;}
-                }
-                loadedStrobeDownClock.push_back(splittedRow);
-            }
+            loadLineData(row, currentLoadingStep);
         }
     }
 
     ConfigFile.close();
     return 0;
 }
-
 
 int setInstanceData(struct Modules* modules, struct InstanceInfo* instanceInfo)
 {
