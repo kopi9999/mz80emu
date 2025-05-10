@@ -1,6 +1,7 @@
 #include "main.hpp"
 #include "loadConfig.hpp"
 #include "init.hpp"
+#include "misc.hpp"
 #include <chrono>
 #include <iostream>
 
@@ -21,8 +22,12 @@ struct ClockInfo clockInfo = {};
 
 int main()
 {
-    loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo);
-    init(&modules, &instances, &interfaces, instanceInfo, interfacesInfo);
+    enum CrashCode crash;
+    crash = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo);
+    if (crash) {return crash;}
+    
+    crash = init(&modules, &instances, &interfaces, instanceInfo, interfacesInfo);
+    if (crash) {return crash;}
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
     chrono::nanoseconds duration = chrono::nanoseconds(clockInfo.period);
@@ -60,7 +65,7 @@ int main()
     }
 
     unloadLibs(modules.pointers, modules.count);
-    return 0;
+    return convertErrorToCrash(error);
 }
 
 //test jocha
