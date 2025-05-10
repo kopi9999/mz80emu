@@ -1,5 +1,4 @@
 #include "init.hpp"
-#include "main.hpp"
 #include "validation.hpp"
 #include <iostream>
 extern "C" {
@@ -64,20 +63,23 @@ bool loadModuleFunctions(struct Modules* modules)
     return true;
 }
 
-uint8_t loadModules(struct Modules* modules)
+bool loadModules(struct Modules* modules)
 {
     if (loadLibs(modules->pointers, modules->names, modules->count))
     {
         unloadLibs(modules->pointers, modules->count);
-        return 1;
+        return false;
 
     }
-   
+  return true;
+}
+bool loadModuleFunctions(struct Modules modules)
+{
     if (!loadModuleFunctions(modules)){
-        unloadLibs(modules->pointers, modules->count);
-        return 2;
+        unloadLibs(modules.pointers, modules.count);
+        return false;
     }
-    return 0;
+    return true;
 }
 
 
@@ -120,41 +122,40 @@ bool loadDerivedInterfaces(void*** interfaces, struct InterfacesInfo interfacesI
     return true;
 }
 
-bool init(struct Modules* modules, void*** instances, void**** interfaces, struct InstanceInfo instanceInfo, struct InterfacesInfo interfacesInfo)
+enum CrashCode init(struct Modules* modules, void*** instances, void**** interfaces, struct InstanceInfo instanceInfo, struct InterfacesInfo interfacesInfo)
 {
     uint8_t error;
     modules->pointers = new void*[modules->count];
     error = loadModules(modules);
-    if(error == 1){
+    if(!loadModules(modules)){
         cout << "CRITICAL: Could not find all modules\n";
-        return false;
-    } else if (error == 2){
+        return INIT_MODULE_NOT_FOUND;
+    } 
+    if (!loadModuleFunctions(*modules)){
         cout << "CRITICAL: Could not load all modules properly\n";
-        return false;
-    } else {
-        cout << "INFO: All modules succesfully loaded\n";
+        return INIT_MODULE_INVALID;
     }
+    cout << "INFO: All modules succesfully loaded\n";
 
     *instances = new void*[instanceInfo.count];
     if (!loadInstances(*modules, *instances, instanceInfo)){
         cout << "CRITICAL: Could not create needed instances\n";
-    } else{
-        cout << "INFO: All instances created successfully\n";
+        return INIT_INSTANCE_CREATION_ERROR;
     }
+    cout << "INFO: All instances created successfully\n";
 
     *interfaces = new void**[interfacesInfo.totalCount];
     if (!loadInterfaces(*modules, *instances, *interfaces, instanceInfo.list, interfacesInfo)){
         cout << "CRITICAL: Could not create needed interfaces\n";
-    } else {
-        cout << "INFO: All interfaces created successfully\n";
+        return INIT_INTERFACES_CREATION_ERROR;
     }
+    cout << "INFO: All interfaces created successfully\n";
 
     if(!loadDerivedInterfaces(*interfaces, interfacesInfo)){
         cout << "CRITICAL: Could not create needed derived interfaces";
-    } else {
-        cout << "INFO: All derived interfaces created successfully.\n";
+        return INIT_DERIVED_INTERFACES_CREATION_ERROR;
     }
-    
+    cout << "INFO: All derived interfaces created successfully.\n";
 
-    return 0;
+    return RUNNING;
 }
