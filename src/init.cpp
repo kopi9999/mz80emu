@@ -26,62 +26,34 @@ bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load li
     return error;
 }
 
-bool loadModuleFunctions(struct Modules* modules)
-{
-    modules->createFuncs = new createPtr[modules->count];
-    modules->createInterfacesFuncs = new createInterfacesPtr[modules->count];
-    modules->strobeUpFuncs = new strobeUpPtr[modules->count];
-    modules->strobeDownFuncs = new strobeDownPtr[modules->count];
-    modules->destroyFuncs = new destroyPtr[modules->count];
-    modules->destroyInterfacesFuncs = new destroyInterfacesPtr[modules->count];
-
-    if (loadFuncs((void**) modules->createFuncs, modules->pointers, modules->count, "create")){
-        cout << "ERROR [" << modules->names[firstNullPointer((void**) modules->createFuncs, modules->count)] << "]: Cannot load create function.\n";
-        return false;
-    }
-    if (loadFuncs((void**) modules->createInterfacesFuncs, modules->pointers, modules->count, "createInterfaces")){
-        cout << "ERROR [" << modules->names[firstNullPointer((void**) modules->createInterfacesFuncs, modules->count)] << "]: Cannot load createInterfaces function.\n";
-        return false;
-    }
-    if (loadFuncs((void**) modules->strobeUpFuncs, modules->pointers, modules->count, "strobeUp")){
-        cout << "ERROR [" << modules->names[firstNullPointer((void**) modules->strobeUpFuncs, modules->count)] << "]: Cannot load strobeUp function.\n";
-        return false;
-    }
-    if (loadFuncs((void**) modules->strobeDownFuncs, modules->pointers, modules->count, "strobeDown")){
-        cout << "ERROR [" << modules->names[firstNullPointer((void**) modules->strobeDownFuncs, modules->count)] << "]: Cannot load strobeDown function.\n";
-        return false;
-    }
-    if (loadFuncs((void**) modules->destroyFuncs, modules->pointers, modules->count, "destroy")){
-        cout << "ERROR [" << modules->names[firstNullPointer((void**) modules->destroyFuncs, modules->count)] << "]: Cannot load destroy function.\n";
-        return false;
-    }
-    if (loadFuncs((void**) modules->destroyInterfacesFuncs, modules->pointers, modules->count, "destroyInterfaces")){
-        cout << "ERROR [" << modules->names[firstNullPointer((void**) modules->destroyInterfacesFuncs, modules->count)] << "]: Cannot load destroyInterfaces function.\n";
-        return false;
-    }
-
-    return true;
-}
-
-bool loadModules(struct Modules* modules)
-{
-    if (loadLibs(modules->pointers, modules->names, modules->count))
-    {
-        unloadLibs(modules->pointers, modules->count);
-        return false;
-
-    }
-  return true;
-}
 bool loadModuleFunctions(struct Modules modules)
 {
-    if (!loadModuleFunctions(modules)){
-        unloadLibs(modules.pointers, modules.count);
+    if (loadFuncs((void**) modules.createFuncs, modules.pointers, modules.count, "create")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createFuncs, modules.count)] << "]: Cannot load create function.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.createInterfacesFuncs, modules.pointers, modules.count, "createInterfaces")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createInterfacesFuncs, modules.count)] << "]: Cannot load createInterfaces function.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.strobeUpFuncs, modules.pointers, modules.count, "strobeUp")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeUpFuncs, modules.count)] << "]: Cannot load strobeUp function.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.strobeDownFuncs, modules.pointers, modules.count, "strobeDown")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeDownFuncs, modules.count)] << "]: Cannot load strobeDown function.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.destroyFuncs, modules.pointers, modules.count, "destroy")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyFuncs, modules.count)] << "]: Cannot load destroy function.\n";
+        return false;
+    }
+    if (loadFuncs((void**) modules.destroyInterfacesFuncs, modules.pointers, modules.count, "destroyInterfaces")){
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyInterfacesFuncs, modules.count)] << "]: Cannot load destroyInterfaces function.\n";
         return false;
     }
     return true;
 }
-
 
 bool loadInstances(struct Modules modules, void** instances, struct InstanceInfo instanceInfo)
 {
@@ -124,15 +96,22 @@ bool loadDerivedInterfaces(void*** interfaces, struct InterfacesInfo interfacesI
 
 enum CrashCode init(struct Modules* modules, void*** instances, void**** interfaces, struct InstanceInfo instanceInfo, struct InterfacesInfo interfacesInfo)
 {
-    uint8_t error;
     modules->pointers = new void*[modules->count];
-    error = loadModules(modules);
-    if(!loadModules(modules)){
+    if(loadLibs(modules->pointers, modules->names, modules->count)){
         cout << "CRITICAL: Could not find all modules\n";
+        unloadLibs(modules->pointers, modules->count);
         return INIT_MODULE_NOT_FOUND;
-    } 
+    }
+
+    modules->createFuncs = new createPtr[modules->count];
+    modules->createInterfacesFuncs = new createInterfacesPtr[modules->count];
+    modules->strobeUpFuncs = new strobeUpPtr[modules->count];
+    modules->strobeDownFuncs = new strobeDownPtr[modules->count];
+    modules->destroyFuncs = new destroyPtr[modules->count];
+    modules->destroyInterfacesFuncs = new destroyInterfacesPtr[modules->count];
     if (!loadModuleFunctions(*modules)){
         cout << "CRITICAL: Could not load all modules properly\n";
+        unloadLibs(modules->pointers, modules->count);
         return INIT_MODULE_INVALID;
     }
     cout << "INFO: All modules succesfully loaded\n";
