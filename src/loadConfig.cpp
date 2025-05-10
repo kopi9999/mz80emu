@@ -256,9 +256,18 @@ enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, uint
 }
 
 enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
-    loadDataFromFile();
-    setInstanceData(modules, instanceInfo);
-    setInterfacesData(interfacesInfo, instanceInfo->count);
-    setClockData(clockInfo, instanceInfo->count, interfacesInfo->count);
+    enum CrashCode crash;
+    crash = loadDataFromFile();
+    if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
+
+    crash = setInstanceData(modules, instanceInfo);
+    if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
+    
+    crash = setInterfacesData(interfacesInfo, instanceInfo->count);
+    if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
+    
+    crash = setClockData(clockInfo, instanceInfo->count, interfacesInfo->count);
+    if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
+
     return RUNNING;
 }
