@@ -102,3 +102,12 @@ void trimLeadingZeros(string* str) {
     }
     *str = str->substr(i);
 }
+
+enum CrashCode convertErrorToCrash(enum Error error)
+{
+    switch (error){
+        case SUCCESS: return RUNNING;
+        case BAD_ARGUMENT: return MODULE_BAD_ARGUMENT;
+        case MALLOC_ERROR: return MODULE_MALLOC_ERROR;
+    }
+}
