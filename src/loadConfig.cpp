@@ -99,7 +99,7 @@ enum CrashCode loadLineData(
             } else {
                 if (!validateDerivedInterfaceCreated(rawInterfacesInfo->derived)) {return CONFIG_DERIVED_INTERFACE_INVALID;}
                 splittedRow = splitByWhitespace(row);
-                if (!validateVectorSize(splittedRow, 2, "Derived interfaces")) {return CONFIG_TOO_MANY_VALUES;}
+                if (!validateVectorSize(splittedRow, 2, "Derived interfaces")) {return CONFIG_INVALID_NUMBER_OF_VALUES;}
                 if (!validateStringIsInteger(splittedRow[0], "Derived interfaces") || !validateStringIsInteger(splittedRow[1], "Derived interfaces")) {return CONFIG_VALUE_NAN;}
                 rawInterfacesInfo->derived[rawInterfacesInfo->derived.size() - 1].push_back(splittedRow);
             }
@@ -158,9 +158,9 @@ enum CrashCode loadDataFromFile(
         struct RawClockInfo* rawClockInfo
         )
 {
+    enum CrashCode crash = RUNNING;
     enum LoadingSteps currentLoadingStep = NONE;
     enum LoadingSteps loadingStep = NONE;
-    bool loadingStepChange;
     string row;
     ifstream ConfigFile("../../config/config.txt");
     if (!ConfigFile) {
@@ -170,23 +170,21 @@ enum CrashCode loadDataFromFile(
 
     while (getline(ConfigFile, row)) {
         trim(&row);
-        loadingStepChange = false;
         loadingStep = detectLoadingStep(row);
-        if (loadingStep) {
-            loadingStepChange = true;
-            currentLoadingStep = loadingStep;
-        }
-        if (!loadingStepChange && !row.empty()) {
-            loadLineData(row, currentLoadingStep, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
+        if (loadingStep) {currentLoadingStep = loadingStep;}
+        else if (!row.empty()) {
+            crash = loadLineData(row, currentLoadingStep, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
+            if (crash) {break;}
         }
     }
 
     ConfigFile.close();
-    return RUNNING;
+    return crash;
 }
 
 enum CrashCode setInstanceData(struct Modules* modules, struct InstanceInfo* instanceInfo, vector<string> rawModulesInfo, vector<string> rawInstanceInfo)
 {
+    if(!validateVectorHasUniqueValues(rawModulesInfo, "Module instances")) {return CONFIG_INVALID_MODULE_LIST;}
     modules->count = rawModulesInfo.size(); //number of libraries to load
     modules->names = rawModulesInfo;
 
