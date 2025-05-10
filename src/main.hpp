@@ -14,6 +14,26 @@ typedef enum Error (*strobeDownPtr)(void*, void**);
 typedef enum Error (*destroyPtr)(void*);
 typedef enum Error (*destroyInterfacesPtr)(void*, void**, uint16_t);
 
+enum CrashCode{
+    RUNNING,
+    CONFIG_NOT_FOUND,
+    CONFIG_VALUE_NAN,
+    CONFIG_VALUE_NOT_BOOL,
+    CONFIG_VALUE_INVALID,
+    CONFIG_DERIVED_INTERFACE_INVALID,
+    CONFIG_TOO_MANY_VALUES,
+    CONFIG_INVALID_NUMBER_OF_VALUES,
+    CONFIG_ID_DOES_NOT_EXIST,
+    CONFIG_INSTANCE_NUMBER_INCONSISTENT,
+    
+    INIT_MODULE_NOT_FOUND,
+    INIT_MODULE_INVALID,
+    INIT_INSTANCE_CREATION_ERROR,
+    INIT_INTERFACES_CREATION_ERROR,
+    INIT_DERIVED_INTERFACES_CREATION_ERROR,
+
+};
+
 struct Modules {
     std::vector<std::string> names;
     uint16_t count;
