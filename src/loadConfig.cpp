@@ -184,7 +184,7 @@ enum CrashCode loadDataFromFile(
 
 enum CrashCode setInstanceData(struct Modules* modules, struct InstanceInfo* instanceInfo, vector<string> rawModulesInfo, vector<string> rawInstanceInfo)
 {
-    if(!validateVectorHasUniqueValues(rawModulesInfo, "Module instances")) {return CONFIG_INVALID_MODULE_LIST;}
+    if(!validateVectorHasUniqueValues(rawModulesInfo, "Modules")) {return CONFIG_INVALID_MODULE_LIST;}
     modules->count = rawModulesInfo.size(); //number of libraries to load
     modules->names = rawModulesInfo;
 
@@ -242,12 +242,13 @@ enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, uint
     data->strobeDownInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe down instance (interfaces id)
     data->strobeDownClock = new bool* [instanceCount]; // strobe down activation for instances
 
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInterfaces.size(), rawClockInfo.strobeUpInstances.size(), "Strobe up interfaces")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpClock.size(), rawClockInfo.strobeUpInstances.size(), "Strobe up clock")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInstances.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInterfaces.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down interfaces")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownClock.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down clock")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    for (size_t i = 0; i < instanceCount; ++i) {
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInterfaces.size(), data->depth, "Strobe up interfaces")) {return CONFIG_CLOCK_DEPTH_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInterfaces.size(), rawClockInfo.strobeUpInstances.size(), "Strobe up interfaces")) {return CONFIG_CLOCK_DEPTH_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpClock.size(), rawClockInfo.strobeUpInstances.size(), "Strobe up clock")) {return CONFIG_CLOCK_DEPTH_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInstances.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down instances")) {return CONFIG_CLOCK_DEPTH_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInterfaces.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down interfaces")) {return CONFIG_CLOCK_DEPTH_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownClock.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down clock")) {return CONFIG_CLOCK_DEPTH_INCONSISTENT;}
+    for (size_t i = 0; i < data->depth; ++i) {
         if (!validateIdExist(stoul(rawClockInfo.strobeUpInstances[i]), instanceCount - 1, "Strobe up instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
         if (!validateIdExist(stoul(rawClockInfo.strobeUpInterfaces[i]), interfacesCount - 1, "Strobe up interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
         if (!validateIdExist(stoul(rawClockInfo.strobeDownInstances[i]), instanceCount - 1, "Strobe down instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
