@@ -2,7 +2,7 @@
 #include "FileOperations.hpp"
 #include <iostream>
 #include <windows.h>
-
+#include <fstream>
 
 std::string ReturnDirectory() 
 {
@@ -24,4 +24,16 @@ std::string ReturnDirectory()
     }while(FindNextFile(file_handle, &file));
     FindClose(file_handle);
     return output;
+}
+
+void createTextFile(const std::string& filename, const std::string& content) {
+    std::ofstream file(filename); // opens the file (creates if not exists)
+    
+    if (file.is_open()) {
+        file << content;           // write content to the file
+        file.close();              // always close the file
+        std::cout << "File created: " << filename << std::endl;
+    } else {
+        std::cerr << "Failed to create file: " << filename << std::endl;
+    }
 }

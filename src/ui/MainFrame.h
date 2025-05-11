@@ -4,7 +4,11 @@
 
 class MainFrame : public wxFrame
 {
-    public: MainFrame(const wxString&);
+    public: 
+        MainFrame(const wxString&);
+
+    private:
+        void OnButtonClicked(wxCommandEvent& event);
 };
 
 #endif
