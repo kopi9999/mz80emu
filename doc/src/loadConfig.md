@@ -2,6 +2,7 @@
 
 `loadConfig.cpp` file is responsible for loading and validating data from `config.txt` file. This data can then be used in program, for example to initialization.
 
+
 ## Overview
 
 The file contains one main function named `loadConfig`. It uses other functions in the file in appropriate way to load data from configuration file and returns it by pointers provided as function arguments.
@@ -12,6 +13,7 @@ Data immediately after loading and initial validation is still not suitable for 
 
 When the configuration file cannot be found or its structure is invalid, the function returns an error code from `CrashCode` enumeration. When all operations have been processed correctly, it returns `RUNNING` code.
 
+
 ## Enumerations
 
 ### `LoadingSteps`
@@ -21,6 +23,7 @@ Enumeration used to marking which section of config file is currently being load
 | `NONE` | 0 | Used as current section when loading starts. It means that no section has started yet. Data is not loaded when the current section is `NONE`. |
 | Names of configuration file sections, for example `MODULES` or `MODULE_INSTANCES`. | various | Each "standard" enumerator of `LoadingSteps` refers to one section of `config.txt` file. Thanks to that, the program knows which variable the data should be loaded into. |
 | `NUMBER_OF_STEPS` | one more than the number of sections | This enumerator does not indicate any section. However, its value depends on number of sections, so it can be useful when the number of sections is needed. |
+
 
 ## Structs
 
@@ -43,3 +46,31 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | `strobeDownInstances` | `Strobe down instances` | See `strobeUpInstances`. |
 | `strobeDownInterfaces` | `Strobe down interfaces` | See `strobeUpInterfaces`. |
 | `strobeDownClock` | `Strobe down clock` | See `strobeUpClock`. |
+
+
+## Functions
+
+### `loadConfig(modules, instanceInfo, interfacesInfo, clockInfo)`
+
+**Returns: `CrashCode`**
+| Returned value | Explanation |
+| - | - |
+| `RUNNING` | Data was loaded correctly. |
+| `CONFIG_NOT_FOUND` | Configuration file was not found. |
+| `CONFIG_VALUE_NAN` | A value was expected to be an integer, but something else was provided. |
+| `CONFIG_VALUE_NOT_BOOL` | A value was expected to be a boolean, but something else was provided. |
+| `CONFIG_VALUE_INVALID` | A value was invalid in another way (for example, it was zero when it was not allowed). |
+| `CONFIG_INVALID_MODULE_LIST` | The module list was invalid (for example, the same module name was specified more than once). |
+| `CONFIG_DERIVED_INTERFACE_INVALID` | A definition of derived interface was invalid (for example, it did not contain "new" word or no value was specified). |
+| `CONFIG_INVALID_NUMBER_OF_VALUES` | Number of values in a row was invalid. |
+| `CONFIG_ID_DOES_NOT_EXIST` | Specified ID did not exist. |
+| `CONFIG_INSTANCE_NUMBER_INCONSISTENT` | Number of values in a section was not equal to number of module instances. |
+
+| Parameter | Explanation |
+| - | - |
+| `struct Modules* modules` | Pointer to struct where module data will be loaded. |
+| `struct InstanceInfo* instanceInfo` | Pointer to struct where data of module instances will be loaded. |
+| `struct InterfacesInfo* interfacesInfo` | Pointer to struct where data of interfaces and derived interfaces will be loaded. |
+| `struct ClockInfo* clockInfo` | Pointer to struct where data of clock and strobes will be loaded. |
+
+`loadConfig` function loads and validates data from configuration file. If loading was successful, it saves data in pointers provided as function arguments. However, if data is invalid, these pointers may also contain some data loaded before an error was detected. In case an error is found, the function prints an error message.
