@@ -73,7 +73,7 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | `struct InterfacesInfo* interfacesInfo` | Pointer to struct where data of interfaces and derived interfaces will be loaded. |
 | `struct ClockInfo* clockInfo` | Pointer to struct where data of clock and strobes will be loaded. |
 
-`loadConfig()` function loads and validates data from configuration file. If loading was successful, it saves data in pointers provided as function arguments. However, if data is invalid, these pointers may also contain some data loaded before an error was detected. In case an error is found, the function prints an error message.
+`loadConfig()` function loads and validates data from configuration file. If loading was successful, it saves data in pointers provided as function arguments. However, if data is invalid, these pointers may also contain some data loaded before an error was detected. In case an error was found, the function prints an error message.
 
 
 ### `detectLoadingStep(row)`
@@ -115,3 +115,44 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | `struct RawClockInfo* rawClockInfo` | Pointer to the struct where raw data of clock and strobes will be loaded. |
 
 `loadDataFromFile()` loads all data from `config.txt` file into pointers with row data. When the configuration file was not found or an error was detected, the function prints an error message.
+
+
+### `setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo)`
+
+**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+
+| Parameter | Explanation |
+| - | - |
+| `struct Modules* modules` | Pointer to struct where module data will be saved. |
+| `struct InstanceInfo* instanceInfo` | Pointer to struct where data of module instances will be saved. |
+| `vector<string> rawModulesInfo` | Vector where raw module data is stored. |
+| `vector<string> rawInstanceInfo` | Vector where raw data of module instances is stored. |
+
+`setInstanceData()` validates raw data of modules and their instances and saves it in pointers passed as function arguments. When an error was detected, the function prints an error message.
+
+
+### `setInterfacesData(data, instanceCount, rawInterfacesInfo)`
+
+**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+
+| Parameter | Explanation |
+| - | - |
+| `struct InterfacesInfo* data` | Pointer to struct where data of interfaces and derived interfaces will be saved. |
+| `uint32_t instanceCount` | Number of module instances. |
+| `struct RawInterfacesInfo rawInterfacesInfo` | Struct where raw data of interfaces and derived interfaces is stored. |
+
+`setInterfacesData()` validates raw data of interfaces and derived interfaces and saves it in pointer passed as function argument. When an error was detected, the function prints an error message.
+
+
+### `setClockData(data, instanceCount, interfacesCount, rawClockInfo)`
+
+**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+
+| Parameter | Explanation |
+| - | - |
+| `struct ClockInfo* data` | Pointer to struct where data of clock and strobes will be saved. |
+| `uint32_t instanceCount` | Number of module instances. |
+| `uint32_t interfacesCount` | Number of "standard" interfaces (does not include derived interfaces). |
+| `struct RawClockInfo rawClockInfo` | Struct where raw data of clock and strobes is stored. |
+
+`setClockData()` validates raw data of clock and strobes and saves it in pointer passed as function argument. When an error was detected, the function prints an error message.
