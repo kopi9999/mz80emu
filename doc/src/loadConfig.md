@@ -5,7 +5,7 @@
 
 ## Overview
 
-The file contains one main function named `loadConfig`. It uses other functions in the file in appropriate way to load data from configuration file and returns it by pointers provided as function arguments.
+The file contains one main function named `loadConfig()`. It uses other functions in the file in appropriate way to load data from configuration file and returns it by pointers provided as function arguments.
 
 At the beginning the function checks if `config.txt` file exists. Then, it loads data from this file line by line. Simultaneously, there is performed a first part of validation. Each line is validated instantly after loading. When the line is invalid, loading is canceled. First part of validation detects such errors as passing a text when a number is expected or incorrect number of values.
 
@@ -73,4 +73,45 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | `struct InterfacesInfo* interfacesInfo` | Pointer to struct where data of interfaces and derived interfaces will be loaded. |
 | `struct ClockInfo* clockInfo` | Pointer to struct where data of clock and strobes will be loaded. |
 
-`loadConfig` function loads and validates data from configuration file. If loading was successful, it saves data in pointers provided as function arguments. However, if data is invalid, these pointers may also contain some data loaded before an error was detected. In case an error is found, the function prints an error message.
+`loadConfig()` function loads and validates data from configuration file. If loading was successful, it saves data in pointers provided as function arguments. However, if data is invalid, these pointers may also contain some data loaded before an error was detected. In case an error is found, the function prints an error message.
+
+
+### `detectLoadingStep(row)`
+
+**Returns: `LoadingSteps`**
+
+| Parameter | Explanation |
+| - | - |
+| `string row` | Row of text loaded from configuration file. |
+
+`detectLoadingStep()` checks if row starts with one of the section names which are specified in `config.txt` file documentation. If it contais a name of section, corresponding `LoadingSteps` enumerator is returned. In other case, the function returns `NONE`.
+
+
+### `loadLineData(row, currentLoadingStep, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
+
+**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+
+| Parameter | Explanation |
+| - | - |
+| `string row` | Row of text loaded from configuration file. |
+| `enum LoadingSteps currentLoadingStep` | Currently loaded section of configuration file. |
+| `vector<string>* rawModulesInfo` | Pointer to the vector where raw module data will be loaded. |
+| `vector<string>* rawInstanceInfo` | Pointer to the vector where raw data of module instances will be loaded. |
+| `struct RawInterfacesInfo* rawInterfacesInfo` | Pointer to the struct where raw data of interfaces and derived interfaces will be loaded. |
+| `struct RawClockInfo* rawClockInfo` | Pointer to the struct where raw data of clock and strobes will be loaded. |
+
+`loadLineData()` saves data from `row` argument in appropriate pointer with raw data. It uses `currentLoadingStep` to decide how to save the data. If `currentLoadingStep` is `NONE` or `NUMBER_OF_STEPS`, no data will be saved. When an error was detected, the function prints an error message.
+
+
+### `loadDataFromFile(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
+
+**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+
+| Parameter | Explanation |
+| - | - |
+| `vector<string>* rawModulesInfo` | Pointer to the vector where raw module data will be loaded. |
+| `vector<string>* rawInstanceInfo` | Pointer to the vector where raw data of module instances will be loaded. |
+| `struct RawInterfacesInfo* rawInterfacesInfo` | Pointer to the struct where raw data of interfaces and derived interfaces will be loaded. |
+| `struct RawClockInfo* rawClockInfo` | Pointer to the struct where raw data of clock and strobes will be loaded. |
+
+`loadDataFromFile()` loads all data from `config.txt` file into pointers with row data. When the configuration file was not found or an error was detected, the function prints an error message.
