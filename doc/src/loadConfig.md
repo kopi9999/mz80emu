@@ -31,8 +31,8 @@ Enumeration used to marking which section of config file is currently being load
 Stores data of interfaces and derived interfaces after loading and first part of validation.
 | Field | Corresponding section in configuration file | Explanation |
 | - | - | - |
-| `module` | `Interfaces` | Vector of all "standard" interfaces. |
-| `derived` | `Derived interfaces` | Three-dimensional vector of derived interfaces. Outer vector length is equal to number of derived interfaces, each middle vector length is a number of values stored in derived interface and each inner vector stores two numbers, which refer to ID of "standard" interface and ID of its sub-element. |
+| `module` | `Interfaces` | Vector of strings storing data of all "standard" interfaces. |
+| `derived` | `Derived interfaces` | Three-dimensional vector of strings storing derived interfaces data. Outer vector length is equal to number of derived interfaces, each middle vector length is a number of values stored in derived interface and each inner vector stores two numbers, which refer to ID of "standard" interface and ID of its sub-element. |
 
 ### `RawClockInfo`
 Stores clock period, clock depth and all data of strobe up and strobe down after loading and first part of validation.
@@ -40,8 +40,8 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | - | - | - |
 | `period` | `Clock period` | Time between clock ticks in nanoseconds, stored as string. |
 | `depth` | `Clock depth` | Number of clock states, stored as string. |
-| `strobeUpInstances` | `Strobe up instances` | Vector of IDs of module instances, which stores an order of calling `strobeUp()` of these instances. |
-| `strobeUpInterfaces` | `Strobe up interfaces` | Vector of IDs of interfaces, which are used when `strobeUp()` is called. |
+| `strobeUpInstances` | `Strobe up instances` | Vector of strings storing IDs of module instances, which represent an order of calling `strobeUp()` of these instances. |
+| `strobeUpInterfaces` | `Strobe up interfaces` | Vector of strings storing IDs of interfaces, which are used when `strobeUp()` is called. |
 | `strobeUpClock` | `Strobe up clock` | Two-dimensional vector of strings. Outer vector length is number of module instances and each inner vector length is equal to clock depth. Inner vectors store boolean values describing on which clock states `strobeUp()` is called. |
 | `strobeDownInstances` | `Strobe down instances` | See `strobeUpInstances`. |
 | `strobeDownInterfaces` | `Strobe down interfaces` | See `strobeUpInterfaces`. |
