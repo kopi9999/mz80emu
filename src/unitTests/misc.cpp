@@ -1,467 +1,357 @@
-extern "C" {
-    #include "../unitTestSystem/unitTest.h"
-}
+#define BOOST_TEST_MODULE testMisc
+#include <boost/test/unit_test.hpp>
+
 #include "../misc.hpp"
 
 using namespace std;
 
-#define LENGTH 48
 
+BOOST_AUTO_TEST_SUITE( testMisc )
 
-bool testCompareStringVectors_equal() {
-    vector<string> vec1 = {"Hello", "World!"};
-    vector<string> vec2 = {"Hello", "World!"};
-    return compareStringVectors(vec1, vec2);
-}
+    BOOST_AUTO_TEST_SUITE( testCompareStringVectors )
 
-bool testCompareStringVectors_different() {
-    vector<string> vec1 = {"Hello", "World!"};
-    vector<string> vec2 = {"World!", "Hello"};
-    return !compareStringVectors(vec1, vec2);
-}
+        BOOST_AUTO_TEST_CASE ( testCompareStringVectors_equal ) {
+            vector<string> vec1 = {"Hello", "World!"};
+            vector<string> vec2 = {"Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(vec1, vec2) );
+        }
 
-bool testCompareStringVectors_emptyVector() {
-    vector<string> vec1 = {};
-    vector<string> vec2 = {};
-    return compareStringVectors(vec1, vec2);
-}
+        BOOST_AUTO_TEST_CASE ( testCompareStringVectors_different ) {
+            vector<string> vec1 = {"Hello", "World!"};
+            vector<string> vec2 = {"World!", "Hello"};
+            BOOST_TEST ( !compareStringVectors(vec1, vec2) );
+        }
 
+        BOOST_AUTO_TEST_CASE ( testCompareStringVectors_emptyVector ) {
+            vector<string> vec1 = {};
+            vector<string> vec2 = {};
+            BOOST_TEST ( compareStringVectors(vec1, vec2) );
+        }
 
-bool testSplitString_oneCharDelimiter(){
-    string str = "Hello World!";
-    string delimiter = " ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {"Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
+    BOOST_AUTO_TEST_SUITE_END()
 
-bool testSplitString_twoCharsDelimiter(){
-    string str = "1, 2, 3, 4, 5";
-    string delimiter = ", ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {"1", "2", "3", "4", "5"};
-    return compareStringVectors(result, expectedResult);
-}
+    BOOST_AUTO_TEST_SUITE( testSplitString )
 
-bool testSplitString_delimiterOnStart(){
-    string str = " Hello World!";
-    string delimiter = " ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {"", "Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitString_delimiterOnEnd(){
-    string str = "Hello World! ";
-    string delimiter = " ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {"Hello", "World!", ""};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitString_oneCharTwoDelimitersInARow(){
-    string str = "Hello  World!";
-    string delimiter = " ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {"Hello", "", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitString_twoCharsTwoDelimitersInARow(){
-    string str = "Hello    World!";
-    string delimiter = "  ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {"Hello", "", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitString_twoAndHalfDelimiterInARow(){
-    string str = "Hello     World!";
-    string delimiter = "  ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {"Hello", "", " World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitString_halfDelimiterOnStart(){
-    string str = " Hello, World!";
-    string delimiter = ", ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {" Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitString_halfDelimiterOnEnd(){
-    string str = "Hello, World!,";
-    string delimiter = ", ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {"Hello", "World!,"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitString_emptyString(){
-    string str = "";
-    string delimiter = " ";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitString_emptyDelimiter(){
-    string str = "Hello World!";
-    string delimiter = "";
-    vector<string> result = splitString(str, delimiter);
-    vector<string> expectedResult = {};
-    return compareStringVectors(result, expectedResult);
-}
-
-
-bool testSplitByWhitespace_oneSpace(){
-    string str = "Hello World!";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {"Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_severalSpaces(){
-    string str = "Hello   World!";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {"Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_severalVariousChars(){
-    string str = "Hello\r \t\nWorld!";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {"Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_spaceOnStart(){
-    string str = " HelloWorld!";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {"HelloWorld!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_spaceOnEnd(){
-    string str = "HelloWorld! ";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {"HelloWorld!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_scatteredSingleChars(){
-    string str = "Hello World!\nHello\tWorld! Hello\rWorld!";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {"Hello", "World!", "Hello", "World!", "Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_scatteredGroupedVariousChars(){
-    string str = "Hello \tWorld!\n\rHello \nWorld!";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {"Hello", "World!", "Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_scatteredGroupedRepeatingChars(){
-    string str = "Hello\t\tWorld!\n\nHello  World!\r\rHello  World!";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {"Hello", "World!", "Hello", "World!", "Hello", "World!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_noWhitespace(){
-    string str = "HelloWorld!";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {"HelloWorld!"};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_onlyWhitespace(){
-    string str = " \n\r\t";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {};
-    return compareStringVectors(result, expectedResult);
-}
-
-bool testSplitByWhitespace_emptyString(){
-    string str = "";
-    vector<string> result = splitByWhitespace(str);
-    vector<string> expectedResult = {};
-    return compareStringVectors(result, expectedResult);
-}
-
-
-bool testToLower_lowercase() {
-    string str = toLower("hello world!");
-    string expectedResult = "hello world!";
-    return (str == expectedResult);
-}
-
-bool testToLower_uppercase() {
-    string str = toLower("HELLO WORLD!");
-    string expectedResult = "hello world!";
-    return (str == expectedResult);
-}
-
-bool testToLower_capitalization() {
-    string str = toLower("Hello World!");
-    string expectedResult = "hello world!";
-    return (str == expectedResult);
-}
-
-bool testToLower_emptyString() {
-    string str = toLower("");
-    string expectedResult = "";
-    return (str == expectedResult);
-}
-
-
-bool testStringToBool_true() {
-    return stringToBool("true");
-}
-
-bool testStringToBool_True() {
-    return stringToBool("True");
-}
-
-bool testStringToBool_TRUE() {
-    return stringToBool("TRUE");
-}
-
-bool testStringToBool_false() {
-    return !stringToBool("false");
-}
-
-bool testStringToBool_helloWorld() {
-    return !stringToBool("Hello World!");
-}
-
-bool testStringToBool_tabulator() {
-    return !stringToBool("\t");
-}
-
-bool testStringToBool_emptyString() {
-    return !stringToBool("");
-}
-
-
-bool testTrim_spaceOnStart() {
-    string str = " HelloWorld!";
-    trim(&str);
-    string expectedResult = "HelloWorld!";
-    return (str == expectedResult);
-}
-
-bool testTrim_spaceOnEnd() {
-    string str = "HelloWorld! ";
-    trim(&str);
-    string expectedResult = "HelloWorld!";
-    return (str == expectedResult);
-}
-
-bool testTrim_variousWhitespaceChars() {
-    string str = "\r\t \nHelloWorld! \n\t\r";
-    trim(&str);
-    string expectedResult = "HelloWorld!";
-    return (str == expectedResult);
-}
-
-bool testTrim_whitespaceInsideString() {
-    string str = "Hello World!";
-    trim(&str);
-    string expectedResult = "Hello World!";
-    return (str == expectedResult);
-}
-
-bool testTrim_noWhitespace() {
-    string str = "HelloWorld!";
-    trim(&str);
-    string expectedResult = "HelloWorld!";
-    return (str == expectedResult);
-}
-
-bool testTrim_emptyString() {
-    string str = "";
-    trim(&str);
-    string expectedResult = "";
-    return (str == expectedResult);
-}
-
-
-bool testTrimLeadingZeros_oneZero() {
-    string str = "0123";
-    trimLeadingZeros(&str);
-    string expectedResult = "123";
-    return (str == expectedResult);
-}
-
-bool testTrimLeadingZeros_severalZeros() {
-    string str = "00000123";
-    trimLeadingZeros(&str);
-    string expectedResult = "123";
-    return (str == expectedResult);
-}
-
-bool testTrimLeadingZeros_noZeros() {
-    string str = "123";
-    trimLeadingZeros(&str);
-    string expectedResult = "123";
-    return (str == expectedResult);
-}
-
-bool testTrimLeadingZeros_zeroOnEnd() {
-    string str = "1230";
-    trimLeadingZeros(&str);
-    string expectedResult = "1230";
-    return (str == expectedResult);
-}
-
-bool testTrimLeadingZeros_zeroAfterSpace() {
-    string str = " 0123";
-    trimLeadingZeros(&str);
-    string expectedResult = " 0123";
-    return (str == expectedResult);
-}
-
-bool testTrimLeadingZeros_emptyString() {
-    string str = "";
-    trimLeadingZeros(&str);
-    string expectedResult = "";
-    return (str == expectedResult);
-}
-
-
-extern "C" struct UnitTestModuleResult testMisc();
-
-struct UnitTestModuleResult testMisc()
-{
-    struct UnitTestModuleResult result;
-    result.tests = LENGTH;
-    
-    bool (*funcs[LENGTH])() = {
-        testCompareStringVectors_equal,
-        testCompareStringVectors_different,
-        testCompareStringVectors_emptyVector,
-
-        testSplitString_oneCharDelimiter,
-        testSplitString_twoCharsDelimiter,
-        testSplitString_delimiterOnStart,
-        testSplitString_delimiterOnEnd,
-        testSplitString_oneCharTwoDelimitersInARow,
-        testSplitString_twoCharsTwoDelimitersInARow,
-        testSplitString_twoAndHalfDelimiterInARow,
-        testSplitString_halfDelimiterOnStart,
-        testSplitString_halfDelimiterOnEnd,
-        testSplitString_emptyString,
-        testSplitString_emptyDelimiter,
-
-        testSplitByWhitespace_oneSpace,
-        testSplitByWhitespace_severalSpaces,
-        testSplitByWhitespace_severalVariousChars,
-        testSplitByWhitespace_spaceOnStart,
-        testSplitByWhitespace_spaceOnEnd,
-        testSplitByWhitespace_scatteredSingleChars,
-        testSplitByWhitespace_scatteredGroupedVariousChars,
-        testSplitByWhitespace_scatteredGroupedRepeatingChars,
-        testSplitByWhitespace_noWhitespace,
-        testSplitByWhitespace_onlyWhitespace,
-        testSplitByWhitespace_emptyString,
-
-        testToLower_lowercase,
-        testToLower_uppercase,
-        testToLower_capitalization,
-        testToLower_emptyString,
-
-        testStringToBool_true,
-        testStringToBool_True,
-        testStringToBool_TRUE,
-        testStringToBool_false,
-        testStringToBool_helloWorld,
-        testStringToBool_tabulator,
-        testStringToBool_emptyString,
+        BOOST_AUTO_TEST_CASE ( testSplitString_oneCharDelimiter ){
+            string str = "Hello World!";
+            string delimiter = " ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {"Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
         
-        testTrim_spaceOnStart,
-        testTrim_spaceOnEnd,
-        testTrim_variousWhitespaceChars,
-        testTrim_whitespaceInsideString,
-        testTrim_noWhitespace,
-        testTrim_emptyString,
-
-        testTrimLeadingZeros_oneZero,
-        testTrimLeadingZeros_severalZeros,
-        testTrimLeadingZeros_noZeros,
-        testTrimLeadingZeros_zeroOnEnd,
-        testTrimLeadingZeros_zeroAfterSpace,
-        testTrimLeadingZeros_emptyString,
-    };
-    
-    string names[LENGTH] = {
-        "testCompareStringVectors_equal",
-        "testCompareStringVectors_different",
-        "testCompareStringVectors_emptyVector",
-
-        "testSplitString_oneCharDelimiter",
-        "testSplitString_twoCharsDelimiter",
-        "testSplitString_delimiterOnStart",
-        "testSplitString_delimiterOnEnd",
-        "testSplitString_oneCharTwoDelimitersInARow",
-        "testSplitString_twoCharsTwoDelimitersInARow",
-        "testSplitString_twoAndHalfDelimiterInARow",
-        "testSplitString_halfDelimiterOnStart",
-        "testSplitString_halfDelimiterOnEnd",
-        "testSplitString_emptyString",
-        "testSplitString_emptyDelimiter",
-
-        "testSplitByWhitespace_oneSpace",
-        "testSplitByWhitespace_severalSpaces",
-        "testSplitByWhitespace_severalVariousChars",
-        "testSplitByWhitespace_spaceOnStart",
-        "testSplitByWhitespace_spaceOnEnd",
-        "testSplitByWhitespace_scatteredSingleChars",
-        "testSplitByWhitespace_scatteredGroupedVariousChars",
-        "testSplitByWhitespace_scatteredGroupedRepeatingChars",
-        "testSplitByWhitespace_noWhitespace",
-        "testSplitByWhitespace_onlyWhitespace",
-        "testSplitByWhitespace_emptyString",
-
-        "testToLower_lowercase",
-        "testToLower_uppercase",
-        "testToLower_capitalization",
-        "testToLower_emptyString",
-
-        "testStringToBool_true",
-        "testStringToBool_True",
-        "testStringToBool_TRUE",
-        "testStringToBool_false",
-        "testStringToBool_helloWorld",
-        "testStringToBool_tabulator",
-        "testStringToBool_emptyString",
+        BOOST_AUTO_TEST_CASE ( testSplitString_twoCharsDelimiter ){
+            string str = "1, 2, 3, 4, 5";
+            string delimiter = ", ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {"1", "2", "3", "4", "5"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
         
-        "testTrim_spaceOnStart",
-        "testTrim_spaceOnEnd",
-        "testTrim_variousWhitespaceChars",
-        "testTrim_whitespaceInsideString",
-        "testTrim_noWhitespace",
-        "testTrim_emptyString",
+        BOOST_AUTO_TEST_CASE ( testSplitString_delimiterOnStart ){
+            string str = " Hello World!";
+            string delimiter = " ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {"", "Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
         
-        "testTrimLeadingZeros_oneZero",
-        "testTrimLeadingZeros_severalZeros",
-        "testTrimLeadingZeros_noZeros",
-        "testTrimLeadingZeros_zeroOnEnd",
-        "testTrimLeadingZeros_zeroAfterSpace",
-        "testTrimLeadingZeros_emptyString",
-    };
+        BOOST_AUTO_TEST_CASE ( testSplitString_delimiterOnEnd ){
+            string str = "Hello World! ";
+            string delimiter = " ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {"Hello", "World!", ""};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitString_oneCharTwoDelimitersInARow ){
+            string str = "Hello  World!";
+            string delimiter = " ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {"Hello", "", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitString_twoCharsTwoDelimitersInARow ){
+            string str = "Hello    World!";
+            string delimiter = "  ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {"Hello", "", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitString_twoAndHalfDelimiterInARow ){
+            string str = "Hello     World!";
+            string delimiter = "  ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {"Hello", "", " World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitString_halfDelimiterOnStart ){
+            string str = " Hello, World!";
+            string delimiter = ", ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {" Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitString_halfDelimiterOnEnd ){
+            string str = "Hello, World!,";
+            string delimiter = ", ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {"Hello", "World!,"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitString_emptyString ){
+            string str = "";
+            string delimiter = " ";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitString_emptyDelimiter ){
+            string str = "Hello World!";
+            string delimiter = "";
+            vector<string> result = splitString(str, delimiter);
+            vector<string> expectedResult = {};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
 
-    char* namesChar[LENGTH];
+    BOOST_AUTO_TEST_SUITE_END()
 
-    for (uint16_t i = 0; i < LENGTH; i++){
-        namesChar[i] = new char[names[i].length() + 1];
-        namesChar[i] = strcpy(namesChar[i], names[i].c_str());
-    }
+    BOOST_AUTO_TEST_SUITE( testSplitByWhitespace )
 
-    result.fails = iterateTests(namesChar, funcs, LENGTH);
-    return result;
-}
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_oneSpace ){
+            string str = "Hello World!";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {"Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_severalSpaces ){
+            string str = "Hello   World!";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {"Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_severalVariousChars ){
+            string str = "Hello\r \t\nWorld!";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {"Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_spaceOnStart ){
+            string str = " HelloWorld!";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {"HelloWorld!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_spaceOnEnd ){
+            string str = "HelloWorld! ";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {"HelloWorld!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_scatteredSingleChars ){
+            string str = "Hello World!\nHello\tWorld! Hello\rWorld!";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {"Hello", "World!", "Hello", "World!", "Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_scatteredGroupedVariousChars ){
+            string str = "Hello \tWorld!\n\rHello \nWorld!";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {"Hello", "World!", "Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_scatteredGroupedRepeatingChars ){
+            string str = "Hello\t\tWorld!\n\nHello  World!\r\rHello  World!";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {"Hello", "World!", "Hello", "World!", "Hello", "World!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_noWhitespace ){
+            string str = "HelloWorld!";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {"HelloWorld!"};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_onlyWhitespace ){
+            string str = " \n\r\t";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_emptyString ){
+            string str = "";
+            vector<string> result = splitByWhitespace(str);
+            vector<string> expectedResult = {};
+            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
+
+    BOOST_AUTO_TEST_SUITE( testToLower )
+
+        BOOST_AUTO_TEST_CASE ( testToLower_lowercase ){
+            string str = toLower("hello world!");
+            string expectedResult = "hello world!";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testToLower_uppercase ){
+            string str = toLower("HELLO WORLD!");
+            string expectedResult = "hello world!";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testToLower_capitalization ){
+            string str = toLower("Hello World!");
+            string expectedResult = "hello world!";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testToLower_emptyString ){
+            string str = toLower("");
+            string expectedResult = "";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+    BOOST_AUTO_TEST_SUITE_END()
+        
+    BOOST_AUTO_TEST_SUITE( testStringToBool )
+        
+        BOOST_AUTO_TEST_CASE ( testStringToBool_true ){
+            BOOST_TEST ( stringToBool("true") );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testStringToBool_True ){
+            BOOST_TEST ( stringToBool("True") );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testStringToBool_TRUE ){
+            BOOST_TEST ( stringToBool("TRUE") );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testStringToBool_false ){
+            BOOST_TEST ( !stringToBool("false") );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testStringToBool_helloWorld ){
+            BOOST_TEST ( !stringToBool("Hello World!") );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testStringToBool_tabulator ){
+            BOOST_TEST ( !stringToBool("\t") );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testStringToBool_emptyString ){
+            BOOST_TEST ( !stringToBool("") );
+        }
+        
+    BOOST_AUTO_TEST_SUITE_END()
+        
+    BOOST_AUTO_TEST_SUITE( testTrim )
+        
+        BOOST_AUTO_TEST_CASE ( testTrim_spaceOnStart ){
+            string str = " HelloWorld!";
+            trim(&str);
+            string expectedResult = "HelloWorld!";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrim_spaceOnEnd ){
+            string str = "HelloWorld! ";
+            trim(&str);
+            string expectedResult = "HelloWorld!";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrim_variousWhitespaceChars ){
+            string str = "\r\t \nHelloWorld! \n\t\r";
+            trim(&str);
+            string expectedResult = "HelloWorld!";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrim_whitespaceInsideString ){
+            string str = "Hello World!";
+            trim(&str);
+            string expectedResult = "Hello World!";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrim_noWhitespace ){
+            string str = "HelloWorld!";
+            trim(&str);
+            string expectedResult = "HelloWorld!";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrim_emptyString ){
+            string str = "";
+            trim(&str);
+            string expectedResult = "";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
+
+    BOOST_AUTO_TEST_SUITE( testTrimLeadingZeros )
+
+        BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_oneZero ){
+            string str = "0123";
+            trimLeadingZeros(&str);
+            string expectedResult = "123";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_severalZeros ){
+            string str = "00000123";
+            trimLeadingZeros(&str);
+            string expectedResult = "123";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_noZeros ){
+            string str = "123";
+            trimLeadingZeros(&str);
+            string expectedResult = "123";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_zeroOnEnd ){
+            string str = "1230";
+            trimLeadingZeros(&str);
+            string expectedResult = "1230";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_zeroAfterSpace ){
+            string str = " 0123";
+            trimLeadingZeros(&str);
+            string expectedResult = " 0123";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_emptyString ){
+            string str = "";
+            trimLeadingZeros(&str);
+            string expectedResult = "";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_SUITE_END()
