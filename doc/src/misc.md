@@ -46,3 +46,65 @@ When provided string or delimiter is an empty string, the function returns an em
 Several whitespace characters are recognized as a simple delimiter. When any whitespace characters are located at the beginning or end of the string, they are ignored.
 
 When provided string is an empty string, the function returns an empty vector.
+
+
+### `toLower(str)`
+
+**Returns: string**
+
+| Parameter | Explanation |
+| - | - |
+| `string str` | String to convert to lowercase. |
+
+`toLower()` converts all uppercase characters in the provided string to lowercase and returns the resulting string.
+
+
+### `stringToBool(str)`
+
+**Returns: bool**
+
+| Parameter | Explanation |
+| - | - |
+| `string str` | String to convert to boolean. |
+
+`stringToBool()` checks if the given string is "true". If this is the case, the function returns true; otherwise, it returns false. The letter case does not matter - the function uses `toLower()` function to convert the string to lowercase.
+
+
+### `trim(str)`
+
+**Returns: void**
+
+| Parameter | Explanation |
+| - | - |
+| `string* str` | Pointer to string which will be trimmed. |
+
+`trim()` removes all whitespace characters from the beginning and end of the provided string. The whitespace characters include: " " (space), "\n" (new line), "\r" (carriage return) and "\t" (tab).
+
+
+### `trimLeadingZeros(str)`
+
+**Returns: void**
+
+| Parameter | Explanation |
+| - | - |
+| `string* str` | Pointer to string which will be trimmed. |
+
+`trimLeadingZeros()` removes all zero characters from the beginning of the provided string.
+
+
+### `convertErrorToCrash(error)`
+
+**Returns: `CrashCode`**
+
+| Parameter | Explanation |
+| - | - |
+| `enum Error error` | `Error` enumerator which will be converted to `CrashCode` enumerator. |
+
+| Argument | Returned value |
+| - | - |
+| `SUCCESS` | `RUNNING` |
+| `BAD_ARGUMENT` | `MODULE_BAD_ARGUMENT` |
+| `MALLOC_ERROR` | `MODULE_MALLOC_ERROR` |
+| other value | `RUNNING` |
+
+`convertErrorToCrash()` returns a `CrashCode` enumerator basing on which `Error` enumerator was provided as a function argument.
