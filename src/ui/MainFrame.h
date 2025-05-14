@@ -8,6 +8,8 @@ class MainFrame : public wxFrame
         MainFrame(const wxString&);
 
     private:
+        wxTextCtrl* numberInput;
+
         void OnButtonClicked(wxCommandEvent& event);
 };
 
