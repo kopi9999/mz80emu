@@ -13,7 +13,7 @@ add_executable(mz80emu src/main.cpp src/loadlib.c src/misc.c src/misc.cpp src/va
 include_directories(boost)
 link_directories(boost/stage/lib)
 
-add_executable(test_mz80emu src/unitTests/misc.cpp src/misc.cpp)
+add_executable(test_mz80emu src/unitTests/misc.cpp src/unitTests/validation.cpp src/misc.cpp src/validation.cpp )
 add_executable(test_testDll src/modules/test/testdll.c src/modules/test/unitTests/test.cpp)
 
 include(Ctest)

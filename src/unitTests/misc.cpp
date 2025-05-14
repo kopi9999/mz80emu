@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE testMisc
+#define BOOST_TEST_MODULE testMz80emu
 #include <boost/test/unit_test.hpp>
 
 #include "../misc.hpp"
