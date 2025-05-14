@@ -2,6 +2,9 @@
 #include <boost/test/unit_test.hpp>
 
 #include "../misc.hpp"
+extern "C" {
+    #include "../misc.c"
+}
 
 using namespace std;
 
@@ -351,6 +354,74 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             trimLeadingZeros(&str);
             string expectedResult = "";
             BOOST_TEST ( (str == expectedResult) );
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
+
+    BOOST_AUTO_TEST_SUITE( testConvertErrorToCrash )
+    
+        BOOST_AUTO_TEST_CASE ( testConvertErrorToCrash_SUUCESS ){
+            enum Error test = SUCCESS;
+            enum CrashCode output = convertErrorToCrash(test);
+            BOOST_TEST ( output == RUNNING );
+        }
+
+        BOOST_AUTO_TEST_CASE ( testConvertErrorToCrash_BAD_ARGUMENT ){
+            enum Error test = BAD_ARGUMENT;
+            enum CrashCode output = convertErrorToCrash(test);
+            BOOST_TEST ( output == MODULE_BAD_ARGUMENT );
+        }
+
+        BOOST_AUTO_TEST_CASE ( testConvertErrorToCrash_MALLOC_ERROR ){
+            enum Error test = MALLOC_ERROR;
+            enum CrashCode output = convertErrorToCrash(test);
+            BOOST_TEST ( output == MODULE_MALLOC_ERROR );
+        }
+
+        BOOST_AUTO_TEST_CASE ( testConvertErrorToCrash_invalid ){
+            enum Error test = (enum Error) 34;
+            enum CrashCode output = convertErrorToCrash(test);
+            BOOST_TEST ( output == MODULE_INVALID_ERROR );
+        }
+
+        BOOST_AUTO_TEST_CASE ( testConvertErrorToCrash_NULL ){
+            enum Error test = (enum Error) NULL;
+            enum CrashCode output = convertErrorToCrash(test);
+            BOOST_TEST ( output == RUNNING );
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
+    
+    BOOST_AUTO_TEST_SUITE( testFirstNullPointer )
+
+        BOOST_AUTO_TEST_CASE ( testFirstNullPointer_nullPointerInside ){
+            void** test = new void*[5] {(void*) 123, (void*) 456, (void*) 789, NULL, (void*) 321};
+            BOOST_TEST ( firstNullPointer(test, 5) == 3 );
+            free(test);
+        }
+
+        BOOST_AUTO_TEST_CASE ( testFirstNullPointer_firstNullPointer ){
+            void** test = new void*[5] {NULL, (void*) 123, (void*) 456, (void*) 789, (void*) 321};
+            BOOST_TEST ( firstNullPointer(test, 5) == 0 );
+            free(test);
+        }
+
+        BOOST_AUTO_TEST_CASE ( testFirstNullPointer_lastNullPointer ){
+            void** test = new void*[5] {(void*) 123, (void*) 456, (void*) 789, (void*) 321, NULL};
+            BOOST_TEST ( firstNullPointer(test, 5) == 4 );
+            free(test);
+        }
+
+        BOOST_AUTO_TEST_CASE ( testFirstNullPointer_noNullPointer ){
+            void** test = new void*[5] {(void*) 123, (void*) 456, (void*) 789, (void*) 987, (void*) 321};
+            BOOST_TEST ( firstNullPointer(test, 5) == 5 );
+            free(test);
+        }
+
+        BOOST_AUTO_TEST_CASE ( testFirstNullPointer_arrayNullr ){
+            void** test = NULL;
+            BOOST_TEST ( firstNullPointer(test, 0) == 0 );
+            free(test);
         }
 
     BOOST_AUTO_TEST_SUITE_END()
