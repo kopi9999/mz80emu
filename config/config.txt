@@ -1,5 +1,5 @@
 Modules:
-test.dll
+testMod.dll
 
 Module instances:
 0
