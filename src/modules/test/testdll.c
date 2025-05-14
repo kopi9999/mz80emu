@@ -62,7 +62,6 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
 void destroyGarbageCollect(struct Instance* instance)
 {
     *instance->character = 0;
-    instance->character = NULL;
     instance->value = 0;
 }
 
@@ -73,7 +72,8 @@ enum Error destroy(void* instance)
     struct Instance* instanceTmp = instance;
     destroyGarbageCollect(instanceTmp);
     free(instanceTmp->character);
-    free(instanceTmp);
+    instanceTmp->character = NULL;
+    free(instance);
 
     return SUCCESS;
 }
