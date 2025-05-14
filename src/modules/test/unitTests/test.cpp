@@ -9,13 +9,16 @@ BOOST_AUTO_TEST_SUITE( testTestDll )
     BOOST_AUTO_TEST_SUITE( testCreate )
 
         BOOST_AUTO_TEST_CASE ( testCreate_isInstanceCreated ){
-            void* instance = NULL;
+            Instance* instance = NULL;
             enum Error error;
         
-            error = create(&instance, NULL);
+            error = create((void**) &instance, NULL);
         
             BOOST_TEST ( !error );
             BOOST_TEST ( instance );
+
+            free (instance->character);
+            free(instance);
         }
         
         BOOST_AUTO_TEST_CASE ( testCreate_validateInstance ){
@@ -28,6 +31,9 @@ BOOST_AUTO_TEST_SUITE( testTestDll )
             BOOST_TEST ( !instance->value );
             BOOST_TEST ( instance->character );
             BOOST_TEST ( !*instance->character );
+
+            free (instance->character);
+            free(instance);
         }
         
         BOOST_AUTO_TEST_CASE ( testCreate_instancePararameters ){
@@ -41,6 +47,9 @@ BOOST_AUTO_TEST_SUITE( testTestDll )
             BOOST_TEST ( instance->value == 5 );
             BOOST_TEST ( instance->character );
             BOOST_TEST ( *instance->character == 10 );
+
+            free (instance->character);
+            free(instance);
         }
         
     BOOST_AUTO_TEST_SUITE_END()
@@ -59,6 +68,9 @@ BOOST_AUTO_TEST_SUITE( testTestDll )
             BOOST_TEST ( interfaces );
             BOOST_TEST ( *interfaces );
             BOOST_TEST ( count == 1 );
+
+            free(interfaces[0]);
+            free(interfaces);
         }
         
         BOOST_AUTO_TEST_CASE ( testCreateInterfaces_validateInterfaces ){
@@ -74,6 +86,9 @@ BOOST_AUTO_TEST_SUITE( testTestDll )
             BOOST_TEST ( *interfaces );
             BOOST_TEST ( **interfaces == 0 );
             BOOST_TEST ( count == 1 );
+
+            free(interfaces[0]);
+            free(interfaces);
         }
         
     BOOST_AUTO_TEST_SUITE_END()
