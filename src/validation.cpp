@@ -5,11 +5,14 @@ using namespace std;
 
 bool validateStringIsInteger(string str, string loadingStep) {
     string digits = "0123456789";
+    bool isInteger = false;
     for (int i=0; i<str.length(); i++) {
-        if (digits.find(str[i]) == string::npos) {
-            cout << "ERROR: Value \"" << str << "\" is not an integer (\"" << loadingStep << "\" section of config.txt).\n";
-            return false;
-        }
+        isInteger = true;
+        if (digits.find(str[i]) == string::npos) {isInteger = false; break;}
+    }
+    if (!isInteger){
+        cout << "ERROR: Value \"" << str << "\" is not an integer (\"" << loadingStep << "\" section of config.txt).\n";
+        return false;
     }
     return true;
 }
@@ -24,11 +27,15 @@ bool validateStringIsBool(string str, string loadingStep) {
 
 bool validateVectorSize(vector<string> vec, size_t size, string loadingStep) {
     if (vec.size() != size) {
+        if (vec.size() == 0) {cout << "ERROR: Invalid number of values - \"";}
+        else {
         cout << "ERROR: Invalid number of values - \"";
         for (int i=0; i<vec.size()-1; i++) {
             cout << vec[i] << " ";
         }
-        cout << vec[vec.size()-1] << "\" - expected " << size << " values (\"" << loadingStep << "\" section of config.txt).\n";
+        cout << vec[vec.size()-1];
+        }
+        cout << "\" - expected " << size << " values (\"" << loadingStep << "\" section of config.txt).\n";
         return false;
     }
     return true;

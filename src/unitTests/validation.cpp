@@ -10,7 +10,12 @@ BOOST_AUTO_TEST_SUITE( testValidation )
     BOOST_AUTO_TEST_SUITE( testStringIsInteger )
    
         BOOST_AUTO_TEST_CASE( testStringIsInteger_emptyString ) {
+            stringstream string_buffer;
+            cout.rdbuf(string_buffer.rdbuf());
             BOOST_TEST( !validateStringIsInteger("", "test") );
+            cout.rdbuf(buffer);
+            string output = string_buffer.str();
+            BOOST_TEST( output == "ERROR: Value \"\" is not an integer (\"test\" section of config.txt).\n" );
         }
 
         BOOST_AUTO_TEST_CASE( testStringIsInteger_singleDigit ) {
@@ -140,8 +145,8 @@ BOOST_AUTO_TEST_SUITE( testValidation )
         
         BOOST_AUTO_TEST_CASE ( testVectorSize_empty_badValue ){
             stringstream string_buffer;
+            vector<string> test = {};
             cout.rdbuf(string_buffer.rdbuf());
-            vector<string> test;
             BOOST_TEST ( !validateVectorSize(test, 6, "test") );
             cout.rdbuf(buffer);
             string output = string_buffer.str();
@@ -293,8 +298,33 @@ BOOST_AUTO_TEST_SUITE( testValidation )
         
     BOOST_AUTO_TEST_SUITE_END()
     
-    BOOST_AUTO_TEST_SUITE( validateVectorHasUniqueValues )
+    BOOST_AUTO_TEST_SUITE( testVectorHasUniqueValues )
     
+        BOOST_AUTO_TEST_CASE ( testVectorHasUniqueValues_emptyVector ){
+            vector<string> test = {};
+            BOOST_TEST ( validateVectorHasUniqueValues(test, "test") );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testVectorHasUniqueValues_singleElement ){
+            vector<string> test = {"test"};
+            BOOST_TEST ( validateVectorHasUniqueValues(test, "test") );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testVectorHasUniqueValues_doubleElement_equal ){
+            stringstream string_buffer;
+            cout.rdbuf(string_buffer.rdbuf());
+            vector<string> test = {"test", "test"};
+            BOOST_TEST ( !validateVectorHasUniqueValues(test, "test") );
+            cout.rdbuf(buffer);
+            string output = string_buffer.str();
+            BOOST_TEST( output == "ERROR: Values in section are not unique (\"test\" section of config.txt).\n" );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testVectorHasUniqueValues_doubleElement_unique ){
+            vector<string> test = {"testA", "testB"};
+            BOOST_TEST ( validateVectorHasUniqueValues(test, "test") );
+        }
+        
     BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
