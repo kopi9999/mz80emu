@@ -35,6 +35,8 @@ enum CrashCode{
 
     MODULE_BAD_ARGUMENT,
     MODULE_MALLOC_ERROR,
+
+    MODULE_INVALID_ERROR,
 };
 
 struct Modules {

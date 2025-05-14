@@ -110,5 +110,5 @@ enum CrashCode convertErrorToCrash(enum Error error)
         case BAD_ARGUMENT: return MODULE_BAD_ARGUMENT;
         case MALLOC_ERROR: return MODULE_MALLOC_ERROR;
     }
-    return RUNNING;
+    return MODULE_INVALID_ERROR;
 }
