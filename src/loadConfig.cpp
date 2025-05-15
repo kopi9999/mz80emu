@@ -249,6 +249,9 @@ enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, uint
     if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInstances.size(), instanceCount, "Strobe down instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
     if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInterfaces.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down interfaces")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
     if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownClock.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down clock")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+
+    if (!validateVectorHasUniqueValues(rawClockInfo.strobeUpInstances, "Strobe up instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+    if (!validateVectorHasUniqueValues(rawClockInfo.strobeDownInstances, "Strobe down instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
     for (size_t i = 0; i < instanceCount; ++i) {
         if (!validateIdExist(stoul(rawClockInfo.strobeUpInstances[i]), instanceCount - 1, "Strobe up instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
         if (!validateIdExist(stoul(rawClockInfo.strobeUpInterfaces[i]), interfacesCount - 1, "Strobe up interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
