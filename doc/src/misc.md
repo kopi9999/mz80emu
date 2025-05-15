@@ -105,6 +105,6 @@ When provided string is an empty string, the function returns an empty vector.
 | `SUCCESS` | `RUNNING` |
 | `BAD_ARGUMENT` | `MODULE_BAD_ARGUMENT` |
 | `MALLOC_ERROR` | `MODULE_MALLOC_ERROR` |
-| other value | `RUNNING` |
+| other value | `MODULE_INVALID_ERROR` |
 
 `convertErrorToCrash()` returns a `CrashCode` enumerator basing on which `Error` enumerator was provided as a function argument.
