@@ -26,13 +26,24 @@ Mz80emu is a computer emulator. Every component is emulated by separate dynamic 
 ## How to compile (For Windows)
 
 Before you try to install the emulator make sure you have Microsoft C++ toolset installed
+You also need to download `boost.test` library
 To compile emulator , firstly clone the repository
 
 ```
 git clone https://github.com/kopi9999/mz80emu.git
 ```
+Next, you have to create `boost` folder in the root folder of mz80emu, and copy the contents of boost.test library.
+It is required for the library headers to be in `mz80emu\boost\boost`, and static library files in `mz80emu\boost\stage\lib`.
 
-Afterwards enter the repository folder. By default it is mz80emu using Native Tools Commands Prompt
+Here is an example how to compile `boost.test` library (can be done in standard Windows cmd)
+
+```
+cd D:\path\to\mz80emu\boost
+bootstrap.bat
+b2.exe link=static
+```
+
+Afterwards enter the root mz80emu folder using Native Tools Commands Prompt
 
 ```
 cd D:\path\to\mz80emu
