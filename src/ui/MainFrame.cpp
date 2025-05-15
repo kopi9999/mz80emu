@@ -1,26 +1,41 @@
 #include "MainFrame.h"
-#include "FileOperations.hpp"
 #include <wx/wx.h>
-#include <filesystem>
 
 MainFrame::MainFrame(const wxString& title)
-    : wxFrame(nullptr, wxID_ANY, title)
+    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400))
 {
-    wxTextValidator validator(wxFILTER_DIGITS);
+    wxPanel* panel = new wxPanel(this);
 
-    new wxStaticText(this, wxID_ANY, ReturnDirectory(), wxPoint(50, 50)); // (pozycja x=50, y=50)
+    availableModulesList = new wxListBox(panel, wxID_ANY, wxPoint(20, 20), wxSize(200, 250));
+    selectedModulesList = new wxListBox(panel, wxID_ANY, wxPoint(360, 20), wxSize(200, 250));
 
-    numberInput = new wxTextCtrl(this, wxID_ANY, "", wxPoint(200, 20), wxSize(200, 30), 0, validator);
+    addModuleButton = new wxButton(panel, wxID_ANY, "Add Module", wxPoint(240, 120));
 
-    wxButton* button = new wxButton(this, wxID_ANY, "Click Me", wxPoint(200, 70));
-    
-    // Connect the button click event to the handler
-    button->Bind(wxEVT_BUTTON, &MainFrame::OnButtonClicked, this);
+    LoadModules();
+
+    addModuleButton->Bind(wxEVT_BUTTON, &MainFrame::OnAddModuleClicked, this);
 }
 
-void MainFrame::OnButtonClicked(wxCommandEvent& event) {
-    wxString val = numberInput->GetValue();
+void MainFrame::LoadModules()
+{
+    // Hardcoded na teraz, potem z pliku .dll można wczytać
+    moduleNames = {"test.dll", "core.dll", "ram.dll"};
 
-    wxMessageBox("Button was clicked!" + val, "Info", wxOK | wxICON_INFORMATION);
-    createTextFile("output.txt" , "Hello from C++! ");
+    for (const auto& name : moduleNames) {
+        availableModulesList->Append(name);
+    }
+}
+
+void MainFrame::OnAddModuleClicked(wxCommandEvent& event)
+{
+    int selected = availableModulesList->GetSelection();
+    if (selected == wxNOT_FOUND) {
+        wxMessageBox("No module selected.", "Error", wxOK | wxICON_ERROR);
+        return;
+    }
+
+    wxString module = availableModulesList->GetString(selected);
+
+    selectedModulesList->Append(module);
+    availableModulesList->Delete(selected);
 }
