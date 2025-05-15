@@ -1,16 +1,24 @@
 #ifndef FRAME
 #define FRAME
+
 #include <wx/wx.h>
+#include <vector>
+#include <string>
 
 class MainFrame : public wxFrame
 {
-    public: 
-        MainFrame(const wxString&);
+public:
+    MainFrame(const wxString&);
 
-    private:
-        wxTextCtrl* numberInput;
+private:
+    wxListBox* availableModulesList;
+    wxListBox* selectedModulesList;
+    wxButton* addModuleButton;
 
-        void OnButtonClicked(wxCommandEvent& event);
+    std::vector<std::string> moduleNames;
+
+    void OnAddModuleClicked(wxCommandEvent& event);
+    void LoadModules();
 };
 
 #endif
