@@ -325,6 +325,16 @@ BOOST_AUTO_TEST_SUITE( testValidation )
             BOOST_TEST ( validateVectorHasUniqueValues(test, "test") );
         }
         
+        BOOST_AUTO_TEST_CASE ( testVectorHasUniqueValues_doubleElement_equal_zeroFirst ){
+            stringstream string_buffer;
+            cout.rdbuf(string_buffer.rdbuf());
+            vector<string> test = {"00test", "test"};
+            BOOST_TEST ( !validateVectorHasUniqueValues(test, "test") );
+            cout.rdbuf(buffer);
+            string output = string_buffer.str();
+            BOOST_TEST( output == "ERROR: Values in section are not unique (\"test\" section of config.txt).\n" );
+        }
+        
     BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
