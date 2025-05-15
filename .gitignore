@@ -52,3 +52,5 @@ test.vcxproj.filters
 x64/
 build/*
 .vs/
+boost/
+compile_flags.txt
