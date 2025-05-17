@@ -3,6 +3,6 @@
 
 #include "main.hpp"
 
-extern enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo*, struct InterfacesInfo*, struct ClockInfo*);
+__declspec(dllexport) enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo*, struct InterfacesInfo*, struct ClockInfo*);
 
 #endif
