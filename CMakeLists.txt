@@ -7,8 +7,10 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 project(mz80emu)
 add_library(testMod SHARED src/modules/test/testdll.c)
+add_library(config SHARED src/loadConfig.cpp src/validation.cpp src/misc.cpp)
 
-add_executable(mz80emu src/main.cpp src/loadlib.c src/misc.c src/misc.cpp src/validation.cpp src/loadConfig.cpp src/init.cpp)
+add_executable(mz80emu src/main.cpp src/loadlib.c src/misc.c src/misc.cpp src/validation.cpp src/init.cpp)
+target_link_libraries(mz80emu PRIVATE config)
 
 include_directories(boost)
 link_directories(boost/stage/lib)
