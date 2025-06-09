@@ -71,7 +71,7 @@ enum LoadingSteps detectLoadingStep(string row)
     return NONE;
 }
 
-enum CrashCode loadLineData(
+void loadLineData(
         string row,
         enum LoadingSteps currentLoadingStep,
         vector<string>* rawModulesInfo,
@@ -95,6 +95,9 @@ enum CrashCode loadLineData(
             if (row == "new") {
                 rawInterfacesInfo->derived.push_back({});
             } else {
+                if (rawInterfacesInfo->derived.size() == 0) {
+                    rawInterfacesInfo->derived.push_back({});
+                }
                 splittedRow = splitByWhitespace(row);
                 rawInterfacesInfo->derived[rawInterfacesInfo->derived.size() - 1].push_back(splittedRow);
             }
@@ -131,10 +134,9 @@ enum CrashCode loadLineData(
         case NUMBER_OF_STEPS:
             break;
     }
-    return RUNNING;
 }
 
-enum CrashCode loadDataFromFile( 
+enum CrashCode loadRowData( 
         vector<string>* rawModulesInfo,
         vector<string>* rawInstanceInfo,
         struct RawInterfacesInfo* rawInterfacesInfo,
@@ -156,13 +158,12 @@ enum CrashCode loadDataFromFile(
         loadingStep = detectLoadingStep(row);
         if (loadingStep) {currentLoadingStep = loadingStep;}
         else if (!row.empty()) {
-            crash = loadLineData(row, currentLoadingStep, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
-            if (crash) {break;}
+            loadLineData(row, currentLoadingStep, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
         }
     }
 
     ConfigFile.close();
-    return crash;
+    return RUNNING;
 }
 
 
@@ -176,7 +177,54 @@ enum CrashCode validateRawData(
     if(!validateVectorHasUniqueValues(rawModulesInfo, "Module")) {return CONFIG_INVALID_MODULE_LIST;}
 
     for (size_t i = 0; i < rawInstanceInfo.size(); ++i) {
-        if (!validateIdExist(stoul(rawInstanceInfo[i]), rawModulesInfo.size(), "Module instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
+        if (!validateStringIsInteger(rawInstanceInfo[i], "Module instances")) {return CONFIG_VALUE_NAN;}
+        if (!validateIdExist(stoul(rawInstanceInfo[i]), rawModulesInfo.size() - 1, "Module instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
+    }
+    
+    for (size_t i = 0; i < rawInterfacesInfo.module.size(); ++i) {
+        if (!validateStringIsInteger(rawInterfacesInfo.module[i], "Interfaces")) {return CONFIG_VALUE_NAN;}
+        if (!validateIdExist(stoul(rawInterfacesInfo.module[i]), rawInstanceInfo.size() - 1, "Interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
+    }
+
+    for (size_t i = 0; i < rawInterfacesInfo.derived.size(); ++i) {
+        if (!validateDerivedInterfaceHasValues(rawInterfacesInfo.derived[i])) {return CONFIG_DERIVED_INTERFACE_INVALID;}
+        for (size_t j = 0; j < rawInterfacesInfo.derived[i].size(); ++j) {
+            if (!validateVectorSize(rawInterfacesInfo.derived[i][j], 2, "Derived interfaces")) {return CONFIG_INVALID_NUMBER_OF_VALUES;}
+            if (!validateStringIsInteger(rawInterfacesInfo.derived[i][j][0], "Derived interfaces") || !validateStringIsInteger(rawInterfacesInfo.derived[i][j][1], "Derived interfaces")) {return CONFIG_VALUE_NAN;}
+            if (!validateIdExist(stoul(rawInterfacesInfo.derived[i][j][0]), rawInterfacesInfo.module.size() - 1, "Derived interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
+        }
+    }
+    
+    if (!validateStringIsInteger(rawClockInfo.period, "Clock period")) {return CONFIG_VALUE_NAN;}
+    if (!validateStringIsInteger(rawClockInfo.depth, "Clock depth")) {return CONFIG_VALUE_NAN;}
+    if (!validateValueDoesNotEqualZero(stoul(rawClockInfo.period), "Clock period")) {return CONFIG_VALUE_INVALID;}
+    if (!validateValueDoesNotEqualZero(stoul(rawClockInfo.depth), "Clock depth")) {return CONFIG_VALUE_INVALID;}
+
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInstances.size(), rawInstanceInfo.size(), "Strobe up instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInterfaces.size(), rawInstanceInfo.size(), "Strobe up interfaces")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpClock.size(), rawInstanceInfo.size(), "Strobe up clock")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInstances.size(), rawInstanceInfo.size(), "Strobe down instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInterfaces.size(), rawInstanceInfo.size(), "Strobe down interfaces")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownClock.size(), rawInstanceInfo.size(), "Strobe down clock")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+
+    if (!validateVectorHasUniqueValues(rawClockInfo.strobeUpInstances, "Strobe up instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+    if (!validateVectorHasUniqueValues(rawClockInfo.strobeDownInstances, "Strobe down instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
+
+    for (size_t i = 0; i < rawInstanceInfo.size(); ++i) {
+        if (!validateStringIsInteger(rawClockInfo.strobeUpInstances[i], "Strobe up instances")) {return CONFIG_VALUE_NAN;}
+        if (!validateStringIsInteger(rawClockInfo.strobeUpInterfaces[i], "Strobe up interfaces")) {return CONFIG_VALUE_NAN;}
+        if (!validateStringIsInteger(rawClockInfo.strobeDownInstances[i], "Strobe down clock")) {return CONFIG_VALUE_NAN;}
+        if (!validateStringIsInteger(rawClockInfo.strobeDownInterfaces[i], "Strobe down interfaces")) {return CONFIG_VALUE_NAN;}
+        if (!validateIdExist(stoul(rawClockInfo.strobeUpInstances[i]), rawInstanceInfo.size() - 1, "Strobe up instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
+        if (!validateIdExist(stoul(rawClockInfo.strobeUpInterfaces[i]), rawInstanceInfo.size() - 1, "Strobe up interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
+        if (!validateIdExist(stoul(rawClockInfo.strobeDownInstances[i]), rawInstanceInfo.size() - 1, "Strobe down instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
+        if (!validateIdExist(stoul(rawClockInfo.strobeDownInterfaces[i]), rawInstanceInfo.size() - 1, "Strobe down interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
+        if (!validateVectorSize(rawClockInfo.strobeUpClock[i], stoul(rawClockInfo.depth), "Strobe up clock")) {return CONFIG_INVALID_NUMBER_OF_VALUES;}
+        if (!validateVectorSize(rawClockInfo.strobeDownClock[i], stoul(rawClockInfo.depth), "Strobe down clock")) {return CONFIG_INVALID_NUMBER_OF_VALUES;}
+        for (size_t j = 0; j < stoul(rawClockInfo.depth); ++j) {
+            if (!validateStringIsBool(rawClockInfo.strobeUpClock[i][j], "Strobe up clock")) {return CONFIG_VALUE_NOT_BOOL;}
+            if (!validateStringIsBool(rawClockInfo.strobeDownClock[i][j], "Strobe down clock")) {return CONFIG_VALUE_NOT_BOOL;}
+        }
     }
 
     return RUNNING;
@@ -206,7 +254,6 @@ enum CrashCode setInterfacesData(struct InterfacesInfo* data, uint32_t instanceC
     data->list = new uint32_t[data->totalCount]; // id`s of instances for interfaces creation
     data->lengths = new uint16_t[data->count];
     for (size_t i = 0; i < data->count; ++i) {
-        if (!validateIdExist(stoul(rawInterfacesInfo.module[i]), instanceCount - 1, "Interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
         data->list[i] = stoul(rawInterfacesInfo.module[i]);
     }
 
@@ -214,11 +261,9 @@ enum CrashCode setInterfacesData(struct InterfacesInfo* data, uint32_t instanceC
     data->derivedLengths = new uint16_t[data->derivedCount]; // lengths of all derived interfaces tables
     DerivedInterfaceIds* derivedInterface;
     for (size_t i = 0; i < data->derivedCount; ++i) {
-        if (!validateDerivedInterfaceHasValues(rawInterfacesInfo.derived[i])) {return CONFIG_DERIVED_INTERFACE_INVALID;}
         data->derivedLengths[i] = rawInterfacesInfo.derived[i].size();
         derivedInterface = new DerivedInterfaceIds[data->derivedLengths[i]];
         for (size_t j = 0; j < data->derivedLengths[i]; ++j) {
-            if (!validateIdExist(stoul(rawInterfacesInfo.derived[i][j][0]), data->count - 1, "Derived interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
             struct DerivedInterfaceIds derivedInterfaceIds = {stoul(rawInterfacesInfo.derived[i][j][0]), stoul(rawInterfacesInfo.derived[i][j][1])};
             derivedInterface[j] = derivedInterfaceIds;
         }
@@ -228,8 +273,6 @@ enum CrashCode setInterfacesData(struct InterfacesInfo* data, uint32_t instanceC
 }
 enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, uint32_t interfacesCount, struct RawClockInfo rawClockInfo)
 {
-    if (!validateValueDoesNotEqualZero(stoul(rawClockInfo.period), "Clock period")) {return CONFIG_VALUE_INVALID;}
-    if (!validateValueDoesNotEqualZero(stoul(rawClockInfo.depth), "Clock depth")) {return CONFIG_VALUE_INVALID;}
     data->period = stoul(rawClockInfo.period); // time in nanoseconds
     data->depth = stoul(rawClockInfo.depth); // number of clock states
 
@@ -241,23 +284,7 @@ enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, uint
     data->strobeDownInterfacesList = new uint32_t[instanceCount]; // interfaces given for every strobe down instance (interfaces id)
     data->strobeDownClock = new bool* [instanceCount]; // strobe down activation for instances
 
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInstances.size(), instanceCount, "Strobe up instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInterfaces.size(), rawClockInfo.strobeUpInstances.size(), "Strobe up interfaces")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpClock.size(), rawClockInfo.strobeUpInstances.size(), "Strobe up clock")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInstances.size(), instanceCount, "Strobe down instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInterfaces.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down interfaces")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownClock.size(), rawClockInfo.strobeUpInstances.size(), "Strobe down clock")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-
-    if (!validateVectorHasUniqueValues(rawClockInfo.strobeUpInstances, "Strobe up instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
-    if (!validateVectorHasUniqueValues(rawClockInfo.strobeDownInstances, "Strobe down instances")) {return CONFIG_INSTANCE_NUMBER_INCONSISTENT;}
     for (size_t i = 0; i < instanceCount; ++i) {
-        if (!validateIdExist(stoul(rawClockInfo.strobeUpInstances[i]), instanceCount - 1, "Strobe up instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
-        if (!validateIdExist(stoul(rawClockInfo.strobeUpInterfaces[i]), interfacesCount - 1, "Strobe up interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
-        if (!validateIdExist(stoul(rawClockInfo.strobeDownInstances[i]), instanceCount - 1, "Strobe down instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
-        if (!validateIdExist(stoul(rawClockInfo.strobeDownInterfaces[i]), interfacesCount - 1, "Strobe down interfaces")) {return CONFIG_ID_DOES_NOT_EXIST;}
-        if (!validateVectorSize(rawClockInfo.strobeUpClock[i], data->depth, "Strobe up clock")) {return CONFIG_INVALID_NUMBER_OF_VALUES;}
-        if (!validateVectorSize(rawClockInfo.strobeDownClock[i], data->depth, "Strobe down clock")) {return CONFIG_INVALID_NUMBER_OF_VALUES;}
         data->strobeUpInstanceList[i] = stoul(rawClockInfo.strobeUpInstances[i]);
         data->strobeUpInterfacesList[i] = stoul(rawClockInfo.strobeUpInterfaces[i]);
         data->strobeUpClock[i] = new bool[data->depth];
@@ -294,7 +321,7 @@ enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instance
     struct RawInterfacesInfo rawInterfacesInfo = {};
     struct RawClockInfo rawClockInfo = {};
 
-    crash = loadDataFromFile(&rawModulesInfo, &rawInstanceInfo, &rawInterfacesInfo, &rawClockInfo);
+    crash = loadRowData(&rawModulesInfo, &rawInstanceInfo, &rawInterfacesInfo, &rawClockInfo);
     if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
 
     crash = validateRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
