@@ -86,60 +86,43 @@ enum CrashCode loadLineData(
             rawModulesInfo->push_back(row);
             break;
         case MODULE_INSTANCES:
-            if (!validateStringIsInteger(row, "Module instances")) {return CONFIG_VALUE_NAN;}
             rawInstanceInfo->push_back(row);
             break;
         case INTERFACES:
-            if (!validateStringIsInteger(row, "Interfaces")) {return CONFIG_VALUE_NAN;}
             rawInterfacesInfo->module.push_back(row);
             break;
         case DERIVED_INTERFACES:
             if (row == "new") {
                 rawInterfacesInfo->derived.push_back({});
             } else {
-                if (!validateDerivedInterfaceCreated(rawInterfacesInfo->derived)) {return CONFIG_DERIVED_INTERFACE_INVALID;}
                 splittedRow = splitByWhitespace(row);
-                if (!validateVectorSize(splittedRow, 2, "Derived interfaces")) {return CONFIG_INVALID_NUMBER_OF_VALUES;}
-                if (!validateStringIsInteger(splittedRow[0], "Derived interfaces") || !validateStringIsInteger(splittedRow[1], "Derived interfaces")) {return CONFIG_VALUE_NAN;}
                 rawInterfacesInfo->derived[rawInterfacesInfo->derived.size() - 1].push_back(splittedRow);
             }
             break;
         case CLOCK_PERIOD:
-            if (!validateStringIsInteger(row, "Clock period")) {return CONFIG_VALUE_NAN;}
             rawClockInfo->period = row;
             break;
         case CLOCK_DEPTH:
-            if (!validateStringIsInteger(row, "Clock depth")) {return CONFIG_VALUE_NAN;}
             rawClockInfo->depth = row;
             break;
         case STROBE_UP_INSTANCES:
-        if (!validateStringIsInteger(row, "Strobe up instances")) {return CONFIG_VALUE_NAN;}
             rawClockInfo->strobeUpInstances.push_back(row);
             break;
         case STROBE_UP_INTERFACES:
-            if (!validateStringIsInteger(row, "Strobe up interfaces")) {return CONFIG_VALUE_NAN;}
             rawClockInfo->strobeUpInterfaces.push_back(row);
             break;
         case STROBE_UP_CLOCK:
             splittedRow = splitByWhitespace(row);
-            for (int i=0; i<splittedRow.size(); i++) {
-                if (!validateStringIsBool(splittedRow[i], "Strobe up clock")) {return CONFIG_VALUE_NOT_BOOL;}
-            }
             rawClockInfo->strobeUpClock.push_back(splittedRow);
             break;
         case STROBE_DOWN_INSTANCES:
-            if (!validateStringIsInteger(row, "Strobe down clock")) {return CONFIG_VALUE_NAN;}
             rawClockInfo->strobeDownInstances.push_back(row);
             break;
         case STROBE_DOWN_INTERFACES:
-            if (!validateStringIsInteger(row, "Strobe down interfaces")) {return CONFIG_VALUE_NAN;}
             rawClockInfo->strobeDownInterfaces.push_back(row);
             break;
         case STROBE_DOWN_CLOCK:
             splittedRow = splitByWhitespace(row);
-            for (int i=0; i<splittedRow.size(); i++) {
-                if (!validateStringIsBool(splittedRow[i], "Strobe down clock")) {return CONFIG_VALUE_NOT_BOOL;}
-            }
             rawClockInfo->strobeDownClock.push_back(splittedRow);
             break;
 
@@ -182,9 +165,26 @@ enum CrashCode loadDataFromFile(
     return crash;
 }
 
+
+enum CrashCode validateRawData( 
+        vector<string> rawModulesInfo,
+        vector<string> rawInstanceInfo,
+        struct RawInterfacesInfo rawInterfacesInfo,
+        struct RawClockInfo rawClockInfo
+        ) {
+
+    if(!validateVectorHasUniqueValues(rawModulesInfo, "Module")) {return CONFIG_INVALID_MODULE_LIST;}
+
+    for (size_t i = 0; i < rawInstanceInfo.size(); ++i) {
+        if (!validateIdExist(stoul(rawInstanceInfo[i]), rawModulesInfo.size(), "Module instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
+    }
+
+    return RUNNING;
+}
+
+
 enum CrashCode setInstanceData(struct Modules* modules, struct InstanceInfo* instanceInfo, vector<string> rawModulesInfo, vector<string> rawInstanceInfo)
 {
-    if(!validateVectorHasUniqueValues(rawModulesInfo, "Module")) {return CONFIG_INVALID_MODULE_LIST;}
     modules->count = rawModulesInfo.size(); //number of libraries to load
     modules->names = rawModulesInfo;
 
@@ -192,7 +192,6 @@ enum CrashCode setInstanceData(struct Modules* modules, struct InstanceInfo* ins
     instanceInfo->list = new uint32_t[instanceInfo->count]; // id`s of libraries for instance creation
     instanceInfo->parameters = new void* [instanceInfo->count]; // pointers to instance parameters (same id as instancesList)
     for (size_t i = 0; i < instanceInfo->count; ++i) {
-        if (!validateIdExist(stoul(rawInstanceInfo[i]), modules->count - 1, "Module instances")) {return CONFIG_ID_DOES_NOT_EXIST;}
         instanceInfo->list[i] = stoul(rawInstanceInfo[i]);
         instanceInfo->parameters[i] = NULL;
     }
@@ -273,6 +272,21 @@ enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, uint
     return RUNNING;
 }
 
+enum CrashCode rawDataToInfo(struct Modules* modules, struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo, vector<string> rawModulesInfo, vector<string> rawInstanceInfo, struct RawInterfacesInfo rawInterfacesInfo, struct RawClockInfo rawClockInfo) {
+    enum CrashCode crash;
+
+    crash = setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo);
+    if (crash) {cout << "CRITICAL: Setting instance data from config file failed.\n"; return crash;}
+    
+    crash = setInterfacesData(interfacesInfo, instanceInfo->count, rawInterfacesInfo);
+    if (crash) {cout << "CRITICAL: Setting interfaces data from config file failed.\n"; return crash;}
+    
+    crash = setClockData(clockInfo, instanceInfo->count, interfacesInfo->count, rawClockInfo);
+    if (crash) {cout << "CRITICAL: Setting clock data from config file failed.\n"; return crash;}
+
+    return RUNNING;
+}
+
 enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
     enum CrashCode crash;
     vector<string> rawModulesInfo;
@@ -280,18 +294,14 @@ enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instance
     struct RawInterfacesInfo rawInterfacesInfo = {};
     struct RawClockInfo rawClockInfo = {};
 
-
     crash = loadDataFromFile(&rawModulesInfo, &rawInstanceInfo, &rawInterfacesInfo, &rawClockInfo);
     if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
 
-    crash = setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo);
+    crash = validateRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
     if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
-    
-    crash = setInterfacesData(interfacesInfo, instanceInfo->count, rawInterfacesInfo);
-    if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
-    
-    crash = setClockData(clockInfo, instanceInfo->count, interfacesInfo->count, rawClockInfo);
-    if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
+
+    crash = rawDataToInfo(modules, instanceInfo, interfacesInfo, clockInfo, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
+    if (crash) {return crash;}
 
     return RUNNING;
 }
