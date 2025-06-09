@@ -322,7 +322,7 @@ enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instance
     struct RawClockInfo rawClockInfo = {};
 
     crash = loadRowData(&rawModulesInfo, &rawInstanceInfo, &rawInterfacesInfo, &rawClockInfo);
-    if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
+    if (crash) {cout << "CRITICAL: Loading data from config file failed.\n"; return crash;}
 
     crash = validateRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
     if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
