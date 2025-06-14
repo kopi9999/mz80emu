@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "loadConfig.hpp"
+#include "config.hpp"
 #include "validation.hpp"
 #include "main.hpp"
 #include "misc.hpp"
@@ -294,6 +294,7 @@ enum CrashCode setInterfacesData(struct InterfacesInfo* data, uint32_t instanceC
     }
     return RUNNING;
 }
+
 enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, uint32_t interfacesCount, struct RawClockInfo rawClockInfo)
 {
     data->period = stoul(rawClockInfo.period); // time in nanoseconds
@@ -336,6 +337,7 @@ enum CrashCode rawDataToInfo(struct Modules* modules, struct InstanceInfo* insta
 
     return RUNNING;
 }
+
 
 enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
     enum CrashCode crash;
