@@ -51,7 +51,7 @@ There are several type definitions in the file, which are used to storing pointe
 
 | Category | Meaning |
 | - | - |
-| `CONFIG` | An error occurred while the configuration file was being loaded. |
+| `CONFIG` | An error occurred while loading or saving data to the configuration file. |
 | `INIT` | An error occurred during initialization of modules and interfaces. |
 | `MODULE` | An error occurred when an operation of module instance failed. |
 
