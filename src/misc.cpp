@@ -73,6 +73,13 @@ bool stringToBool(string str) {
     return false;
 }
 
+string boolToString(bool var) {
+    if (var) {
+        return "true";
+    }
+    return "false";
+}
+
 void trim(string* str) {
     if (*str == "") {
         return;
@@ -111,4 +118,10 @@ enum CrashCode convertErrorToCrash(enum Error error)
         case MALLOC_ERROR: return MODULE_MALLOC_ERROR;
     }
     return MODULE_INVALID_ERROR;
+}
+
+void setCrashIfRunning(enum CrashCode* crashVar, enum CrashCode crash) {
+    if (*crashVar == RUNNING) {
+        *crashVar = crash;
+    }
 }

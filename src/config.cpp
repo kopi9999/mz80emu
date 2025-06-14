@@ -167,12 +167,6 @@ enum CrashCode loadRowData(
 }
 
 
-void setCrashIfRunning(enum CrashCode* crashVar, enum CrashCode crash) {
-    if (*crashVar == RUNNING) {
-        *crashVar = crash;
-    }
-}
-
 enum CrashCode validateRawData( 
         vector<string> rawModulesInfo,
         vector<string> rawInstanceInfo,
@@ -269,7 +263,7 @@ enum CrashCode setInstanceData(struct Modules* modules, struct InstanceInfo* ins
     return RUNNING;
 }
 
-enum CrashCode setInterfacesData(struct InterfacesInfo* data, uint32_t instanceCount, struct RawInterfacesInfo rawInterfacesInfo)
+enum CrashCode setInterfacesData(struct InterfacesInfo* data, struct RawInterfacesInfo rawInterfacesInfo)
 {
     data->count = rawInterfacesInfo.module.size();
     data->derivedCount = rawInterfacesInfo.derived.size();
@@ -295,7 +289,7 @@ enum CrashCode setInterfacesData(struct InterfacesInfo* data, uint32_t instanceC
     return RUNNING;
 }
 
-enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, uint32_t interfacesCount, struct RawClockInfo rawClockInfo)
+enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, struct RawClockInfo rawClockInfo)
 {
     data->period = stoul(rawClockInfo.period); // time in nanoseconds
     data->depth = stoul(rawClockInfo.depth); // number of clock states
@@ -329,13 +323,64 @@ enum CrashCode rawDataToInfo(struct Modules* modules, struct InstanceInfo* insta
     crash = setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo);
     if (crash) {cout << "CRITICAL: Setting instance data from config file failed.\n"; return crash;}
     
-    crash = setInterfacesData(interfacesInfo, instanceInfo->count, rawInterfacesInfo);
+    crash = setInterfacesData(interfacesInfo, rawInterfacesInfo);
     if (crash) {cout << "CRITICAL: Setting interfaces data from config file failed.\n"; return crash;}
     
-    crash = setClockData(clockInfo, instanceInfo->count, interfacesInfo->count, rawClockInfo);
+    crash = setClockData(clockInfo, instanceInfo->count, rawClockInfo);
     if (crash) {cout << "CRITICAL: Setting clock data from config file failed.\n"; return crash;}
 
     return RUNNING;
+}
+
+
+void setRawInstanceData(vector<string>* rawModulesInfo, vector<string>* rawInstanceInfo, struct Modules modules, struct InstanceInfo instanceInfo)
+{
+    *rawModulesInfo = modules.names;
+
+    for (size_t i = 0; i < instanceInfo.count; ++i) {
+        rawInstanceInfo->push_back(to_string(instanceInfo.list[i]));
+    }
+}
+
+void setRawInterfacesData(struct RawInterfacesInfo* rawInterfacesInfo, struct InterfacesInfo data)
+{
+    for (size_t i = 0; i < data.count; ++i) {
+        rawInterfacesInfo->module.push_back(to_string(data.list[i]));
+    }
+    
+    for (size_t i = 0; i < data.derivedCount; ++i) {
+        rawInterfacesInfo->derived.push_back({});
+        for (size_t j = 0; j < data.derivedLengths[i]; ++j) {
+            rawInterfacesInfo->derived[i].push_back({});
+            rawInterfacesInfo->derived[i][j].push_back(to_string(data.derivedList[i][j].interfacesId));
+            rawInterfacesInfo->derived[i][j].push_back(to_string(data.derivedList[i][j].interfaceId));
+        }
+    }
+}
+
+void setRawClockData(struct RawClockInfo* rawClockInfo, struct ClockInfo data, uint32_t instanceCount)
+{
+    rawClockInfo->period = to_string(data.period);
+    rawClockInfo->depth = to_string(data.depth);
+
+    for (size_t i = 0; i < instanceCount; ++i) {
+        rawClockInfo->strobeUpInstances.push_back(to_string(data.strobeUpInstanceList[i]));
+        rawClockInfo->strobeUpInterfaces.push_back(to_string(data.strobeUpInterfacesList[i]));
+        rawClockInfo->strobeDownInstances.push_back(to_string(data.strobeDownInstanceList[i]));
+        rawClockInfo->strobeDownInterfaces.push_back(to_string(data.strobeDownInterfacesList[i]));
+        rawClockInfo->strobeUpClock.push_back({});
+        rawClockInfo->strobeDownClock.push_back({});
+        for (size_t j = 0; j < data.depth; ++j) {
+            rawClockInfo->strobeUpClock[i].push_back(boolToString(data.strobeUpClock[i][j]));
+            rawClockInfo->strobeDownClock[i].push_back(boolToString(data.strobeDownClock[i][j]));
+        }
+    }
+}
+
+void infoToRawData(vector<string>* rawModulesInfo, vector<string>* rawInstanceInfo, struct RawInterfacesInfo* rawInterfacesInfo, struct RawClockInfo* rawClockInfo, struct Modules modules, struct InstanceInfo instanceInfo, struct InterfacesInfo interfacesInfo, struct ClockInfo clockInfo) {
+    setRawInstanceData(rawModulesInfo, rawInstanceInfo, modules, instanceInfo);
+    setRawInterfacesData(rawInterfacesInfo, interfacesInfo);
+    setRawClockData(rawClockInfo, clockInfo, instanceInfo.count);
 }
 
 
