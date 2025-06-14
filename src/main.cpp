@@ -1,5 +1,5 @@
 #include "main.hpp"
-#include "loadConfig.hpp"
+#include "config.hpp"
 #include "init.hpp"
 #include "misc.hpp"
 #include <chrono>
