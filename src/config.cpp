@@ -29,6 +29,22 @@ enum LoadingSteps {
     NUMBER_OF_STEPS
 };
 
+const string loadingSteps[] = {
+    "None",
+    "Modules",
+    "Module instances",
+    "Interfaces",
+    "Derived interfaces",
+    "Clock period",
+    "Clock depth",
+    "Strobe up instances",
+    "Strobe up interfaces",
+    "Strobe up clock",
+    "Strobe down instances",
+    "Strobe down interfaces",
+    "Strobe down clock"
+};
+
 struct RawInterfacesInfo {
     vector<string> module;
     vector<vector<vector<string>>> derived;
@@ -45,24 +61,11 @@ struct RawClockInfo {
     vector<vector<string>> strobeDownClock;
 };
 
+const string configFilePath = "../../config/config.txt";
+
 
 enum LoadingSteps detectLoadingStep(string row)
 {
-    const string loadingSteps[] = {
-        "None",
-        "Modules",
-        "Module instances",
-        "Interfaces",
-        "Derived interfaces",
-        "Clock period",
-        "Clock depth",
-        "Strobe up instances",
-        "Strobe up interfaces",
-        "Strobe up clock",
-        "Strobe down instances",
-        "Strobe down interfaces",
-        "Strobe down clock"
-    };
     for (uint32_t i = 1; i < NUMBER_OF_STEPS; ++i) {
        if (row.rfind(loadingSteps[i], 0) == 0){
             return (enum LoadingSteps) i;
@@ -136,7 +139,7 @@ void loadLineData(
     }
 }
 
-enum CrashCode loadRowData( 
+enum CrashCode loadRawData( 
         vector<string>* rawModulesInfo,
         vector<string>* rawInstanceInfo,
         struct RawInterfacesInfo* rawInterfacesInfo,
@@ -147,7 +150,7 @@ enum CrashCode loadRowData(
     enum LoadingSteps currentLoadingStep = NONE;
     enum LoadingSteps loadingStep = NONE;
     string row;
-    ifstream ConfigFile("../../config/config.txt");
+    ifstream ConfigFile(configFilePath);
     if (!ConfigFile) {
         cout << "ERROR: cannot find config.txt file\n";
         return CONFIG_NOT_FOUND;
@@ -317,7 +320,17 @@ enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, stru
     return RUNNING;
 }
 
-enum CrashCode rawDataToInfo(struct Modules* modules, struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo, vector<string> rawModulesInfo, vector<string> rawInstanceInfo, struct RawInterfacesInfo rawInterfacesInfo, struct RawClockInfo rawClockInfo) {
+enum CrashCode rawDataToInfo(
+        struct Modules* modules,
+        struct InstanceInfo* instanceInfo,
+        struct InterfacesInfo* interfacesInfo,
+        struct ClockInfo* clockInfo,
+        vector<string> rawModulesInfo,
+        vector<string> rawInstanceInfo,
+        struct RawInterfacesInfo rawInterfacesInfo,
+        struct RawClockInfo rawClockInfo
+        )
+{
     enum CrashCode crash;
 
     crash = setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo);
@@ -377,10 +390,101 @@ void setRawClockData(struct RawClockInfo* rawClockInfo, struct ClockInfo data, u
     }
 }
 
-void infoToRawData(vector<string>* rawModulesInfo, vector<string>* rawInstanceInfo, struct RawInterfacesInfo* rawInterfacesInfo, struct RawClockInfo* rawClockInfo, struct Modules modules, struct InstanceInfo instanceInfo, struct InterfacesInfo interfacesInfo, struct ClockInfo clockInfo) {
+void infoToRawData(
+        vector<string>* rawModulesInfo,
+        vector<string>* rawInstanceInfo,
+        struct RawInterfacesInfo* rawInterfacesInfo,
+        struct RawClockInfo* rawClockInfo,
+        struct Modules modules,
+        struct InstanceInfo instanceInfo,
+        struct InterfacesInfo interfacesInfo,
+        struct ClockInfo clockInfo
+        )
+{
     setRawInstanceData(rawModulesInfo, rawInstanceInfo, modules, instanceInfo);
     setRawInterfacesData(rawInterfacesInfo, interfacesInfo);
     setRawClockData(rawClockInfo, clockInfo, instanceInfo.count);
+}
+
+
+enum CrashCode rawDataToFile(vector<string> rawModulesInfo, vector<string> rawInstanceInfo, struct RawInterfacesInfo rawInterfacesInfo, struct RawClockInfo rawClockInfo) {
+    ofstream ConfigFile(configFilePath);
+    if (!ConfigFile) {
+        cout << "ERROR: cannot open config.txt file\n";
+        return CONFIG_NOT_OPENED;
+    }
+
+    ConfigFile << loadingSteps[MODULES] << ":" << endl;
+    for (size_t i = 0; i < rawModulesInfo.size(); ++i) {
+        ConfigFile << rawModulesInfo[i] << endl;
+    }
+
+    ConfigFile << endl << loadingSteps[MODULE_INSTANCES] << ":" << endl;
+    for (size_t i = 0; i < rawInstanceInfo.size(); ++i) {
+        ConfigFile << rawInstanceInfo[i] << endl;
+    }
+
+    ConfigFile << endl << loadingSteps[INTERFACES] << ":" << endl;
+    for (size_t i = 0; i < rawInterfacesInfo.module.size(); ++i) {
+        ConfigFile << rawInterfacesInfo.module[i] << endl;
+    }
+
+    ConfigFile << endl << loadingSteps[DERIVED_INTERFACES] << ":" << endl;
+    for (size_t i = 0; i < rawInterfacesInfo.derived.size(); ++i) {
+        ConfigFile << "new" << endl;
+        for (size_t j = 0; j < rawInterfacesInfo.derived[i].size(); ++j) {
+            ConfigFile << rawInterfacesInfo.derived[i][j][0] << " " << rawInterfacesInfo.derived[i][j][1] << endl;
+        }
+    }
+
+    ConfigFile << endl << loadingSteps[CLOCK_PERIOD] << ":" << endl;
+    ConfigFile << rawClockInfo.period << endl;
+    ConfigFile << endl << loadingSteps[CLOCK_DEPTH] << ":" << endl;
+    ConfigFile << rawClockInfo.depth << endl;
+
+    ConfigFile << endl << loadingSteps[STROBE_UP_INSTANCES] << ":" << endl;
+    for (size_t i = 0; i < rawClockInfo.strobeUpInstances.size(); ++i) {
+        ConfigFile << rawClockInfo.strobeUpInstances[i] << endl;
+    }
+
+    ConfigFile << endl << loadingSteps[STROBE_UP_INTERFACES] << ":" << endl;
+    for (size_t i = 0; i < rawClockInfo.strobeUpInterfaces.size(); ++i) {
+        ConfigFile << rawClockInfo.strobeUpInterfaces[i] << endl;
+    }
+
+    ConfigFile << endl << loadingSteps[STROBE_UP_CLOCK] << ":" << endl;
+    for (size_t i = 0; i < rawClockInfo.strobeUpClock.size(); ++i) {
+        for (size_t j = 0; j < rawClockInfo.strobeUpClock[i].size(); ++j) {
+            ConfigFile << rawClockInfo.strobeUpClock[i][j];
+            if (j == rawClockInfo.strobeUpClock[i].size() - 1) {
+                ConfigFile << endl;
+            } else {
+                ConfigFile << " ";
+            }
+        }
+    }
+
+    ConfigFile << endl << loadingSteps[STROBE_DOWN_INSTANCES] << ":" << endl;
+    for (size_t i = 0; i < rawClockInfo.strobeDownInstances.size(); ++i) {
+        ConfigFile << rawClockInfo.strobeDownInstances[i] << endl;
+    }
+
+    ConfigFile << endl << loadingSteps[STROBE_DOWN_INTERFACES] << ":" << endl;
+    for (size_t i = 0; i < rawClockInfo.strobeDownInterfaces.size(); ++i) {
+        ConfigFile << rawClockInfo.strobeDownInterfaces[i] << endl;
+    }
+
+    ConfigFile << endl << loadingSteps[STROBE_DOWN_CLOCK] << ":" << endl;
+    for (size_t i = 0; i < rawClockInfo.strobeDownClock.size(); ++i) {
+        for (size_t j = 0; j < rawClockInfo.strobeDownClock[i].size(); ++j) {
+            ConfigFile << rawClockInfo.strobeDownClock[i][j];
+            if (j == rawClockInfo.strobeDownClock[i].size() - 1) {
+                ConfigFile << endl;
+            } else {
+                ConfigFile << " ";
+            }
+        }
+    }
 }
 
 
@@ -391,7 +495,7 @@ enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instance
     struct RawInterfacesInfo rawInterfacesInfo = {};
     struct RawClockInfo rawClockInfo = {};
 
-    crash = loadRowData(&rawModulesInfo, &rawInstanceInfo, &rawInterfacesInfo, &rawClockInfo);
+    crash = loadRawData(&rawModulesInfo, &rawInstanceInfo, &rawInterfacesInfo, &rawClockInfo);
     if (crash) {cout << "CRITICAL: Loading data from config file failed.\n"; return crash;}
 
     crash = validateRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);

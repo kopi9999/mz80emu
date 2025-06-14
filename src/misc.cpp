@@ -73,8 +73,8 @@ bool stringToBool(string str) {
     return false;
 }
 
-string boolToString(bool var) {
-    if (var) {
+string boolToString(bool boolean) {
+    if (boolean) {
         return "true";
     }
     return "false";
