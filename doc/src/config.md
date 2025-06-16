@@ -19,6 +19,12 @@ There are three steps of loading data from configuration file:
 When the configuration file cannot be open or its structure is invalid, the functions return an error code from `CrashCode` enumeration. When all operations have been processed correctly, they return `RUNNING` code.
 
 
+## Constants
+
+### `loadingSteps`
+Array of strings, which stores all section names which are specified in `config.txt` file documentation.
+
+
 ## Enumerations
 
 ### `LoadingSteps`
@@ -91,12 +97,12 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | - | - |
 | `string row` | Row of text loaded from configuration file. |
 
-`detectLoadingStep()` checks if row starts with one of the section names which are specified in `config.txt` file documentation. If it contais a name of section, corresponding `LoadingSteps` enumerator is returned. In other case, the function returns `NONE`.
+`detectLoadingStep()` checks if row starts with one of the section names stored in `loadingSteps` array. If it contains a name of section, corresponding `LoadingSteps` enumerator is returned. In other case, the function returns `NONE`.
 
 
 ### `loadLineData(row, currentLoadingStep, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
 
-**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+**Returns: void**
 
 | Parameter | Explanation |
 | - | - |
@@ -107,12 +113,12 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `struct RawInterfacesInfo* rawInterfacesInfo` | Pointer to the struct where raw data of interfaces and derived interfaces will be loaded. |
 | `struct RawClockInfo* rawClockInfo` | Pointer to the struct where raw data of clock and strobes will be loaded. |
 
-`loadLineData()` saves data from `row` argument in appropriate pointer with raw data. It uses `currentLoadingStep` to decide how to save the data. If `currentLoadingStep` is `NONE` or `NUMBER_OF_STEPS`, no data will be saved. When an error was detected, the function prints an error message.
+`loadLineData()` saves data from `row` argument in appropriate pointer with raw data. It uses `currentLoadingStep` to decide how to save the data. If `currentLoadingStep` is `NONE` or `NUMBER_OF_STEPS`, no data will be saved.
 
 
 ### `loadDataFromFile(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
 
-**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+**Returns: `CrashCode`** (`CONFIG_NOT_FOUND` when config file cannot be opened, otherwise `RUNNING`)
 
 | Parameter | Explanation |
 | - | - |
@@ -121,12 +127,12 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `struct RawInterfacesInfo* rawInterfacesInfo` | Pointer to the struct where raw data of interfaces and derived interfaces will be loaded. |
 | `struct RawClockInfo* rawClockInfo` | Pointer to the struct where raw data of clock and strobes will be loaded. |
 
-`loadDataFromFile()` loads all data from `config.txt` file into pointers with row data. When the configuration file was not found or an error was detected, the function prints an error message.
+`loadDataFromFile()` loads all data from `config.txt` file into pointers with raw data. When the configuration file was not found, the function prints an error message.
 
 
 ### `setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo)`
 
-**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+**Returns: void**
 
 | Parameter | Explanation |
 | - | - |
@@ -135,12 +141,12 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `vector<string> rawModulesInfo` | Vector where raw module data is stored. |
 | `vector<string> rawInstanceInfo` | Vector where raw data of module instances is stored. |
 
-`setInstanceData()` validates raw data of modules and their instances and saves it in pointers passed as function arguments. When an error was detected, the function prints an error message.
+`setInstanceData()` saves raw data of modules and their instances in pointers passed as function arguments.
 
 
 ### `setInterfacesData(data, instanceCount, rawInterfacesInfo)`
 
-**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+**Returns: void**
 
 | Parameter | Explanation |
 | - | - |
@@ -148,12 +154,12 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `uint32_t instanceCount` | Number of module instances. |
 | `struct RawInterfacesInfo rawInterfacesInfo` | Struct where raw data of interfaces and derived interfaces is stored. |
 
-`setInterfacesData()` validates raw data of interfaces and derived interfaces and saves it in pointer passed as function argument. When an error was detected, the function prints an error message.
+`setInterfacesData()` saves raw data of interfaces and derived interfaces in pointer passed as function argument.
 
 
 ### `setClockData(data, instanceCount, interfacesCount, rawClockInfo)`
 
-**Returns: `CrashCode`** (for an explanation of returned values, see the `loadConfig()` description)
+**Returns: void**
 
 | Parameter | Explanation |
 | - | - |
@@ -162,4 +168,4 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `uint32_t interfacesCount` | Number of "standard" interface arrays (does not include derived interfaces). |
 | `struct RawClockInfo rawClockInfo` | Struct where raw data of clock and strobes is stored. |
 
-`setClockData()` validates raw data of clock and strobes and saves it in pointer passed as function argument. When an error was detected, the function prints an error message.
+`setClockData()` saves raw data of clock and strobes in pointer passed as function argument.
