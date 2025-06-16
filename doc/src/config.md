@@ -1,17 +1,22 @@
 # config.cpp
 
-`config.cpp` file is responsible for loading and validating data from `config.txt` file. This data can then be used in program, for example to initialization.
+`config.cpp` file is responsible for loading, saving and validating data from `config.txt` file. This data can then be used in program, for example to initialization.
 
 
 ## Overview
 
-The file contains one main function named `loadConfig()`. It uses other functions in the file in appropriate way to load data from configuration file and returns it by pointers provided as function arguments.
+The file contains two main functions named `loadConfig()` and `rawDataToFile()`. The first of them uses other functions in the file in appropriate way to load data from configuration file and returns it by pointers provided as function arguments. The second one can save data in the configuration file.
 
-At the beginning the function checks if `config.txt` file exists. Then, it loads data from this file line by line. Simultaneously, there is performed a first part of validation. Each line is validated instantly after loading. When the line is invalid, loading is canceled. First part of validation detects such errors as passing a text when a number is expected or incorrect number of values.
+In the file are used concepts of "raw data" and "info":
+- **Raw data** is a data loaded from the configuration file and stored as strings. It may not be valid data, because it can be stored before validation. Raw data is not suitable for direct use in the program.
+- **Info** is data stored in various arrays and ready to use in the program (for example to initialize modules, interfaces, and so on). It is created from raw data after validation.
 
-Data immediately after loading and initial validation is still not suitable for use. So next begins a second part of validation and parallel loading data to appropriate pointers. This part of validation can detect errors impossible to find before the enitre data is loaded. They include, among others: an ID which does not exist or situation when number of values in corresponding sections is not equal. This part is also performed "line by line" - program validates one part of data and if it is valid, it is loaded to pointer with data ready to use.
+There are three steps of loading data from configuration file:
+- **Loading raw data** - data stored in `config.txt` file is saved as raw data in appropriate "raw" variables.
+- **Validating raw data** - raw data is validated in order to make sure that it does not contain any invalid values before converting it into info. If some errors are detected, program prints adequate error messages and stops.
+- **Converting raw data into info** - raw data is saved in "info" variables, which makes it possible for program to use it. In this step data may contain errors which are impossible to detect by validation (for example, interface IDs can be invalid). These errors are handled when program initialize necessary components, such as module instances or interfaces.
 
-When the configuration file cannot be found or its structure is invalid, the function returns an error code from `CrashCode` enumeration. When all operations have been processed correctly, it returns `RUNNING` code.
+When the configuration file cannot be open or its structure is invalid, the functions return an error code from `CrashCode` enumeration. When all operations have been processed correctly, they return `RUNNING` code.
 
 
 ## Enumerations
@@ -28,7 +33,7 @@ Enumeration used to marking which section of config file is currently being load
 ## Structs
 
 ### `RawInterfacesInfo`
-Stores data of interfaces and derived interfaces after loading and first part of validation.
+Stores raw data of interfaces and derived interfaces after loading.
 | Field | Corresponding section in configuration file | Explanation |
 | - | - | - |
 | `module` | `Interfaces` | Vector of strings storing data of all "standard" interfaces. |
@@ -74,6 +79,10 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | `struct ClockInfo* clockInfo` | Pointer to struct where data of clock and strobes will be loaded. |
 
 `loadConfig()` function loads and validates data from configuration file. If loading was successful, it saves data in pointers provided as function arguments. However, if data is invalid, these pointers may also contain some data loaded before an error was detected. In case an error was found, the function prints an error message.
+
+At the beginning the function checks if `config.txt` file exists. Then, it loads data from this file line by line. Simultaneously, there is performed a first part of validation. Each line is validated instantly after loading. When the line is invalid, loading is canceled. First part of validation detects such errors as passing a text when a number is expected or incorrect number of values.
+
+Data immediately after loading and initial validation is still not suitable for use. So next begins a second part of validation and parallel loading data to appropriate pointers. This part of validation can detect errors impossible to find before the enitre data is loaded. They include, among others: an ID which does not exist or situation when number of values in corresponding sections is not equal. This part is also performed "line by line" - program validates one part of data and if it is valid, it is loaded to pointer with data ready to use.
 
 
 ### `detectLoadingStep(row)`
