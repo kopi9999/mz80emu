@@ -33,14 +33,14 @@ Enumeration used to marking which section of config file is currently being load
 ## Structs
 
 ### `RawInterfacesInfo`
-Stores raw data of interfaces and derived interfaces after loading.
+Stores raw data of interfaces and derived interfaces.
 | Field | Corresponding section in configuration file | Explanation |
 | - | - | - |
 | `module` | `Interfaces` | Vector of strings storing data of all "standard" interfaces. |
 | `derived` | `Derived interfaces` | Three-dimensional vector of strings storing derived interfaces data. Outer vector length is equal to number of derived interface arrays, each middle vector length is a number of interfaces in the array and each inner vector stores two numbers, which refer to ID of "standard" interface array and ID of its interface. |
 
 ### `RawClockInfo`
-Stores clock period, clock depth and all data of strobe up and strobe down after loading and first part of validation.
+Stores clock period, clock depth and all raw data of strobe up and strobe down.
 | Field | Corresponding section in configuration file | Explanation |
 | - | - | - |
 | `period` | `Clock period` | Time between clock ticks in nanoseconds, stored as string. |
@@ -78,11 +78,9 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | `struct InterfacesInfo* interfacesInfo` | Pointer to struct where data of interfaces and derived interfaces will be loaded. |
 | `struct ClockInfo* clockInfo` | Pointer to struct where data of clock and strobes will be loaded. |
 
-`loadConfig()` function loads and validates data from configuration file. If loading was successful, it saves data in pointers provided as function arguments. However, if data is invalid, these pointers may also contain some data loaded before an error was detected. In case an error was found, the function prints an error message.
+`loadConfig()` function loads and validates data from configuration file. If loading was successful, it saves data in pointers provided as function arguments. These pointers represents info (see `overview` section of this documentation file). In case an error was found, the function prints an error message.
 
-At the beginning the function checks if `config.txt` file exists. Then, it loads data from this file line by line. Simultaneously, there is performed a first part of validation. Each line is validated instantly after loading. When the line is invalid, loading is canceled. First part of validation detects such errors as passing a text when a number is expected or incorrect number of values.
-
-Data immediately after loading and initial validation is still not suitable for use. So next begins a second part of validation and parallel loading data to appropriate pointers. This part of validation can detect errors impossible to find before the enitre data is loaded. They include, among others: an ID which does not exist or situation when number of values in corresponding sections is not equal. This part is also performed "line by line" - program validates one part of data and if it is valid, it is loaded to pointer with data ready to use.
+At the beginning the function checks if `config.txt` file exists. Then, it loads data from this file line by line. It is the first step - loading raw data. Then validation is performed. At the end, function saves data in provided pointers.
 
 
 ### `detectLoadingStep(row)`
