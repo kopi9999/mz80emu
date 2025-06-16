@@ -17,6 +17,7 @@ typedef enum Error (*destroyInterfacesPtr)(void*, void**, uint16_t);
 enum CrashCode{
     RUNNING,
     CONFIG_NOT_FOUND,
+    CONFIG_NOT_OPENED,
     CONFIG_VALUE_NAN,
     CONFIG_VALUE_NOT_BOOL,
     CONFIG_VALUE_INVALID,
