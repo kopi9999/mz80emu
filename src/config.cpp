@@ -251,7 +251,7 @@ enum CrashCode validateRawData(
 }
 
 
-enum CrashCode setInstanceData(struct Modules* modules, struct InstanceInfo* instanceInfo, vector<string> rawModulesInfo, vector<string> rawInstanceInfo)
+void setInstanceData(struct Modules* modules, struct InstanceInfo* instanceInfo, vector<string> rawModulesInfo, vector<string> rawInstanceInfo)
 {
     modules->count = rawModulesInfo.size(); //number of libraries to load
     modules->names = rawModulesInfo;
@@ -263,10 +263,9 @@ enum CrashCode setInstanceData(struct Modules* modules, struct InstanceInfo* ins
         instanceInfo->list[i] = stoul(rawInstanceInfo[i]);
         instanceInfo->parameters[i] = NULL;
     }
-    return RUNNING;
 }
 
-enum CrashCode setInterfacesData(struct InterfacesInfo* data, struct RawInterfacesInfo rawInterfacesInfo)
+void setInterfacesData(struct InterfacesInfo* data, struct RawInterfacesInfo rawInterfacesInfo)
 {
     data->count = rawInterfacesInfo.module.size();
     data->derivedCount = rawInterfacesInfo.derived.size();
@@ -289,10 +288,9 @@ enum CrashCode setInterfacesData(struct InterfacesInfo* data, struct RawInterfac
         }
         data->derivedList[i] = derivedInterface;
     }
-    return RUNNING;
 }
 
-enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, struct RawClockInfo rawClockInfo)
+void setClockData(struct ClockInfo* data, uint32_t instanceCount, struct RawClockInfo rawClockInfo)
 {
     data->period = stoul(rawClockInfo.period); // time in nanoseconds
     data->depth = stoul(rawClockInfo.depth); // number of clock states
@@ -317,10 +315,9 @@ enum CrashCode setClockData(struct ClockInfo* data, uint32_t instanceCount, stru
             data->strobeDownClock[i][j] = stringToBool(rawClockInfo.strobeDownClock[i][j]);
         }
     }
-    return RUNNING;
 }
 
-enum CrashCode rawDataToInfo(
+void rawDataToInfo(
         struct Modules* modules,
         struct InstanceInfo* instanceInfo,
         struct InterfacesInfo* interfacesInfo,
@@ -331,18 +328,9 @@ enum CrashCode rawDataToInfo(
         struct RawClockInfo rawClockInfo
         )
 {
-    enum CrashCode crash;
-
-    crash = setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo);
-    if (crash) {cout << "CRITICAL: Setting instance data from config file failed.\n"; return crash;}
-    
-    crash = setInterfacesData(interfacesInfo, rawInterfacesInfo);
-    if (crash) {cout << "CRITICAL: Setting interfaces data from config file failed.\n"; return crash;}
-    
-    crash = setClockData(clockInfo, instanceInfo->count, rawClockInfo);
-    if (crash) {cout << "CRITICAL: Setting clock data from config file failed.\n"; return crash;}
-
-    return RUNNING;
+    setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo);
+    setInterfacesData(interfacesInfo, rawInterfacesInfo);
+    setClockData(clockInfo, instanceInfo->count, rawClockInfo);
 }
 
 
@@ -501,8 +489,7 @@ enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instance
     crash = validateRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
     if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
 
-    crash = rawDataToInfo(modules, instanceInfo, interfacesInfo, clockInfo, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
-    if (crash) {return crash;}
+    rawDataToInfo(modules, instanceInfo, interfacesInfo, clockInfo, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
 
     return RUNNING;
 }
