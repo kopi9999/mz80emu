@@ -1,6 +1,6 @@
-# loadConfig.cpp
+# config.cpp
 
-`loadConfig.cpp` file is responsible for loading and validating data from `config.txt` file. This data can then be used in program, for example to initialization.
+`config.cpp` file is responsible for loading and validating data from `config.txt` file. This data can then be used in program, for example to initialization.
 
 
 ## Overview
@@ -32,7 +32,7 @@ Stores data of interfaces and derived interfaces after loading and first part of
 | Field | Corresponding section in configuration file | Explanation |
 | - | - | - |
 | `module` | `Interfaces` | Vector of strings storing data of all "standard" interfaces. |
-| `derived` | `Derived interfaces` | Three-dimensional vector of strings storing derived interfaces data. Outer vector length is equal to number of derived interfaces, each middle vector length is a number of values stored in derived interface and each inner vector stores two numbers, which refer to ID of "standard" interface and ID of its sub-element. |
+| `derived` | `Derived interfaces` | Three-dimensional vector of strings storing derived interfaces data. Outer vector length is equal to number of derived interface arrays, each middle vector length is a number of interfaces in the array and each inner vector stores two numbers, which refer to ID of "standard" interface array and ID of its interface. |
 
 ### `RawClockInfo`
 Stores clock period, clock depth and all data of strobe up and strobe down after loading and first part of validation.
@@ -41,7 +41,7 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | `period` | `Clock period` | Time between clock ticks in nanoseconds, stored as string. |
 | `depth` | `Clock depth` | Number of clock states, stored as string. |
 | `strobeUpInstances` | `Strobe up instances` | Vector of strings storing IDs of module instances, which represent an order of calling `strobeUp()` of these instances. |
-| `strobeUpInterfaces` | `Strobe up interfaces` | Vector of strings storing IDs of interfaces, which are used when `strobeUp()` is called. |
+| `strobeUpInterfaces` | `Strobe up interfaces` | Vector of strings storing IDs of interface arrays, which are used when `strobeUp()` is called. |
 | `strobeUpClock` | `Strobe up clock` | Two-dimensional vector of strings. Outer vector length is number of module instances and each inner vector length is equal to clock depth. Inner vectors store boolean values describing on which clock states `strobeUp()` is called. |
 | `strobeDownInstances` | `Strobe down instances` | See `strobeUpInstances`. |
 | `strobeDownInterfaces` | `Strobe down interfaces` | See `strobeUpInterfaces`. |
@@ -61,7 +61,7 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | `CONFIG_VALUE_NOT_BOOL` | A value was expected to be a boolean, but something else was provided. |
 | `CONFIG_VALUE_INVALID` | A value was invalid in another way (for example, it was zero when it was not allowed). |
 | `CONFIG_INVALID_MODULE_LIST` | The module list was invalid (for example, the same module name was specified more than once). |
-| `CONFIG_DERIVED_INTERFACE_INVALID` | A definition of derived interface was invalid (for example, it did not contain "new" word or no value was specified). |
+| `CONFIG_DERIVED_INTERFACE_INVALID` | A definition of derived interface array was invalid, because no interface was specified. |
 | `CONFIG_INVALID_NUMBER_OF_VALUES` | Number of values in a row was invalid. |
 | `CONFIG_ID_DOES_NOT_EXIST` | Specified ID did not exist. |
 | `CONFIG_INSTANCE_NUMBER_INCONSISTENT` | Number of values in a section was not equal to number of module instances. |
@@ -152,7 +152,7 @@ Stores clock period, clock depth and all data of strobe up and strobe down after
 | - | - |
 | `struct ClockInfo* data` | Pointer to struct where data of clock and strobes will be saved. |
 | `uint32_t instanceCount` | Number of module instances. |
-| `uint32_t interfacesCount` | Number of "standard" interfaces (does not include derived interfaces). |
+| `uint32_t interfacesCount` | Number of "standard" interface arrays (does not include derived interfaces). |
 | `struct RawClockInfo rawClockInfo` | Struct where raw data of clock and strobes is stored. |
 
 `setClockData()` validates raw data of clock and strobes and saves it in pointer passed as function argument. When an error was detected, the function prints an error message.

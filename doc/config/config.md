@@ -21,10 +21,10 @@ All information in the section should be in separate rows, unless otherwise stat
 This section defines module instances which will be created when the emulator starts. Each instance is marked with a number which refers to the name in `Modules` section.
 
 ### `Interfaces`
-Describes an interfaces which will be created basing on the module instances. Each number in this section indicates one element from `Module instances` section.
+Describes array of interfaces which will be created basing on the module instances. Each number in this section indicates one element from `Module instances` section.
 
 ### `Derived interfaces`
-Section with a bit more complex syntax of elements, which describe derived interfaces. Every derived interface should be marked with word `new`. Next, in another rows is located information about sub-elements of that derived interface. In each row should be two numbers divided with space. First of them refers to interface in `Interfaces` section, second indicates to its sub-element. Derived interface will comprise all indicated sub-elements.
+Section with a bit more complex syntax of elements, which describe derived interface arrays. Each array of derived interfaces should be marked with word `new`. Next, in another rows is located information about interfaces which that array will contain. In each row should be two numbers divided with space. First of them refers to array of interfaces in `Interfaces` section, second indicates to its specific interface. Derived interface array will comprise all indicated interfaces.
 
 ### `Clock period`
 `Clock period` section specifies only one value - time between successive clock ticks in nanoseconds. If more than one number is given in the section, the last of them will be loaded.
@@ -36,7 +36,7 @@ Section with a bit more complex syntax of elements, which describe derived inter
 Section defining order of calling `strobeUp()` function of module instances. First instance in this section will be handled first. All numbers representing instances indicate elements of `Module instances` section.
 
 ### `Strobe up interfaces`
-Describes which interfaces will be passed to the `strobeUp()` function of module instances. Elements refer to `Interfaces` section. These elements are related to the ones in `Strobe up instances` section - when the instance in `Strobe up instances` is being handled, to its `strobeUp()` function is passed the interface in `Strobe up interfaces`.
+Describes which interfaces will be passed to the `strobeUp()` function of module instances. Elements refer to `Interfaces` section. These elements are related to the ones in `Strobe up instances` section - when the instance in `Strobe up instances` is being handled, to its `strobeUp()` function is passed the array of interfaces in `Strobe up interfaces`.
 
 ### `Strobe up clock`
 Specifies on which clock states the `strobeUp()` function of module instances will be called. Elements in this section are related to elements in `Strobe up instances` section - each row represents one instance. Number of values in a row should be equal to the number of clock states. These values have to be divided with spaces. Acceptable values are `true` and `false` (letter case does not matter). `True` means that `strobeUp()` will be called on specific clock state, while `false` means the opposite.

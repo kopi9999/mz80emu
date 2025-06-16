@@ -52,28 +52,28 @@ Validation functions return true, when the input is correct; otherwise, they ret
 
 ### `validateDerivedInterfaceCreated(loadedDerivedInterfaces)`
 
-**Returns: bool** (true when a derived interface has been created, otherwise false)
+**Returns: bool** (true when a derived interface array has been created, otherwise false)
 
-**Error message:** ERROR: New derived interface has not been created, but its values were specified ("Derived interfaces" section of config.txt).
+**Error message:** ERROR: New derived interface array has not been created, but its interfaces were specified ("Derived interfaces" section of config.txt).
 
 | Parameter | Explanation |
 | - | - |
-| `vector<vector<vector<string>>> loadedDerivedInterfaces` | Vector of derived interfaces. |
+| `vector<vector<vector<string>>> loadedDerivedInterfaces` | Vector of derived interface arrays. |
 
-`validateDerivedInterfaceCreated()` checks if any derived interfaces have been created. For this purpose it checks whether the number of derived interfaces is greater than zero. In this way it is possible to detect the syntax error when values of derived interface are specified without the "new" word.
+`validateDerivedInterfaceCreated()` checks if any derived interface arrays have been created. For this purpose it checks whether the number of derived interface arrays is greater than zero. In this way it is possible to detect the syntax error when values of the array are specified without the "new" word.
 
 
 ### `validateDerivedInterfaceHasValues(derivedInterface)`
 
-**Returns: bool** (true when the derived interface has values, otherwise false)
+**Returns: bool** (true when the derived interface array has values, otherwise false)
 
-**Error message:** ERROR: New derived interface has been created, but its values were not specified ("Derived interfaces" section of config.txt).
+**Error message:** ERROR: New derived interface array has been created, but its interfaces were not specified ("Derived interfaces" section of config.txt).
 
 | Parameter | Explanation |
 | - | - |
-| `vector<vector<string>> derivedInterface` | Vector of derived interfaces. |
+| `vector<vector<string>> derivedInterface` | Vector of derived interface arrays. |
 
-`validateDerivedInterfaceHasValues()` checks if the derived interface has at least one value. It can detect the syntax error when the "new" word occurs without any specified value.
+`validateDerivedInterfaceHasValues()` checks if the derived interface array has at least one value. It can detect the syntax error when the "new" word occurs without any specified value.
 
 
 ### `validateIdExist(id, maxId, loadingStep)`
