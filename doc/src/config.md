@@ -92,6 +92,20 @@ Stores clock period, clock depth and all raw data of strobe up and strobe down.
 At the beginning the function checks if `config.txt` file exists. Then, it loads data from this file line by line. It is the first step - loading raw data. Then validation is performed. At the end, function saves data in provided pointers.
 
 
+### `rawDataToFile(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
+
+**Returns: `CrashCode`** (`CONFIG_NOT_OPENED` when config file cannot be opened, otherwise `RUNNING`)
+
+| Parameter | Explanation |
+| - | - |
+| `vector<string> rawModulesInfo` | Vector containing raw data of modules which will be saved in the configuration file. |
+| `vector<string> rawInstanceInfo` | Vector containing raw data of module instances which will be saved in the configuration file. |
+| `struct RawInterfacesInfo rawInterfacesInfo` | Vector containing raw data of interfaces and derived interfaces which will be saved in the configuration file. |
+| `struct RawClockInfo rawClockInfo` | Vector containing raw data of clock and strobes which will be saved in the configuration file. |
+
+`rawDataToFile()` saves provided raw data in the `config.txt` file. Already existing content of the file will be overwritten. If the file does not exist, it will be created. The syntax of data saved using this function is consistent with the syntax described in the `config.txt` file documentation.
+
+
 ### `detectLoadingStep(row)`
 
 **Returns: `LoadingSteps`**
@@ -158,7 +172,7 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `vector<string> rawModulesInfo` | Vector where raw module data is stored. |
 | `vector<string> rawInstanceInfo` | Vector where raw data of module instances is stored. |
 
-`setInstanceData()` saves raw data of modules and their instances in pointers passed as function arguments.
+`setInstanceData()` saves raw data of modules and their instances in "info" pointers passed as function arguments.
 
 
 ### `setInterfacesData(data, instanceCount, rawInterfacesInfo)`
@@ -171,7 +185,7 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `uint32_t instanceCount` | Number of module instances. |
 | `struct RawInterfacesInfo rawInterfacesInfo` | Struct where raw data of interfaces and derived interfaces is stored. |
 
-`setInterfacesData()` saves raw data of interfaces and derived interfaces in pointer passed as function argument.
+`setInterfacesData()` saves raw data of interfaces and derived interfaces in "info" pointer passed as function argument.
 
 
 ### `setClockData(data, instanceCount, interfacesCount, rawClockInfo)`
@@ -185,7 +199,7 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `uint32_t interfacesCount` | Number of "standard" interface arrays (does not include derived interfaces). |
 | `struct RawClockInfo rawClockInfo` | Struct where raw data of clock and strobes is stored. |
 
-`setClockData()` saves raw data of clock and strobes in pointer passed as function argument.
+`setClockData()` saves raw data of clock and strobes in "info" pointer passed as function argument.
 
 
 ### `rawDataToInfo(modules, instanceInfo, interfacesInfo, clockInfo, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
@@ -203,4 +217,61 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `struct RawInterfacesInfo rawInterfacesInfo` | Vector storing raw data of interfaces and derived interfaces, which will be converted. |
 | `struct RawClockInfo rawClockInfo` | Vector storing raw data of clock and strobes, which will be converted. |
 
-`rawDataToInfo()` converts raw data to info using three auxiliary functions: `setInstanceData()`, `setInterfacesData()` and `setClockData()`.
+`rawDataToInfo()` converts raw data into the info using three auxiliary functions: `setInstanceData()`, `setInterfacesData()` and `setClockData()`.
+
+
+### `setRawInstanceData(rawModulesInfo, rawInstanceInfo, modules, instanceInfo)`
+
+**Returns: void**
+
+| Parameter | Explanation |
+| - | - |
+| `vector<string>* rawModulesInfo` | Pointer to the vector where raw data of modules will be stored. |
+| `vector<string>* rawInstanceInfo` | Pointer to the vector where raw data of module instances will be stored. |
+| `struct Modules modules` | Struct containing "info" data of modules to be converted to raw data. |
+| `struct InstanceInfo instanceInfo` | Struct containing "info" data of module instances to be converted into the raw data. |
+
+`setRawInstanceData()` converts provided info of modules and their instances into the raw data and saves it in the pointers given as function arguments.
+
+
+### `setRawInterfacesData(rawInterfacesInfo, data)`
+
+**Returns: void**
+
+| Parameter | Explanation |
+| - | - |
+| `struct RawInterfacesInfo* rawInterfacesInfo` | Pointer to the struct where raw data of interfaces and derived interfaces will be stored. |
+| `struct InterfacesInfo data` | Struct containing "info" data of interfaces and derived interfaces to be converted into the raw data. |
+
+`setRawInterfacesData()` converts provided info of interfaces and derived interfaces into the raw data and saves it in the pointers given as function arguments.
+
+
+### `setRawClockData(rawClockInfo, data, instanceCount)`
+
+**Returns: void**
+
+| Parameter | Explanation |
+| - | - |
+| `struct RawClockInfo* rawClockInfo` | Pointer to the vector where raw data of clock and strobes will be stored. |
+| `struct ClockInfo data` | Struct containing "info" data of clock and strobes to be converted into the raw data. |
+| `uint32_t instanceCount` | Number of module instances (necessary for the correct conversion of raw data of strobes into info). |
+
+`setRawInstanceData()` converts provided info of clock and strobes into the raw data and saves it in the pointers given as function arguments.
+
+
+### `infoToRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo, modules, instanceInfo, interfacesInfo, clockInfo)`
+
+**Returns: void**
+
+| Parameter | Explanation |
+| - | - |
+| `vector<string>* rawModulesInfo` | Pointer to the vector where raw data of modules will be stored. |
+| `vector<string>* rawInstanceInfo` | Pointer to the vector where raw data of module instances will be stored. |
+| `struct RawInterfacesInfo* rawInterfacesInfo` | Pointer to the struct where raw data of interfaces and derived interfaces will be stored. |
+| `struct RawClockInfo* rawClockInfo` | Pointer to the vector where raw data of clock and strobes will be stored. |
+| `struct Modules modules` | Struct containing "info" data of modules to be converted to raw data. |
+| `struct InstanceInfo instanceInfo` | Struct containing "info" data of module instances to be converted into the raw data. |
+| `struct InterfacesInfo interfacesInfo` | Struct containing "info" data of interfaces and derived interfaces to be converted into the raw data. |
+| `struct ClockInfo clockInfo` | Struct containing "info" data of clock and strobes to be converted into the raw data. |
+
+`infoToRawData()` converts info into the raw data using three auxiliary functions: `setRawInstanceData()`, `setRawInterfacesData()` and `setRawClockData()`.
