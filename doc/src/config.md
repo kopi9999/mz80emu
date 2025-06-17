@@ -1,6 +1,6 @@
 # config.cpp
 
-`config.cpp` file is responsible for loading, saving and validating data from `config.txt` file. This data can then be used in program, for example to initialization.
+`config.cpp` file is responsible for loading, saving and validating data from `config.txt` file. This data can then be used in program, for example to initialization. Basing on this file, there is created dynamic library `config.dll` containing the most important functions from the file (see below).
 
 
 ## Overview
@@ -22,13 +22,16 @@ When the configuration file cannot be open or its structure is invalid, the func
 ## Constants
 
 ### `loadingSteps`
-Array of strings, which stores all section names which are specified in `config.txt` file documentation.
+Array of strings, which stores all section names which are specified in `config.txt` file documentation. All values in this array have to be consistent with values in `LoadingSteps` enumeration - for example, they should contain `"modules"` and `MODULES` values with identical ID. In contrast to `LoadingSteps` enumeration, `loadingSteps` array does not need to contain `NUMBER_OF_STEPS` value.
+
+### `configFilePath`
+String constant which stores relative path to the `config.txt` file. The path is relative to the `mz80emu/build/Debug` directory, which contains executable files. `configFilePath` is used during loading and saving data to the file.
 
 
 ## Enumerations
 
 ### `LoadingSteps`
-Enumeration used to marking which section of config file is currently being loaded. It also stores a number of possible sections thanks to `NUMBER_OF_STEPS` value.
+Enumeration used to marking which section of config file is currently being loaded. It also stores a number of possible sections thanks to `NUMBER_OF_STEPS` value. All values should be consistent with values in `loadingSteps` constant array.
 | Enumerator | Value | Explanation |
 | - | - | - |
 | `NONE` | 0 | Used as current section when loading starts. It means that no section has started yet. Data is not loaded when the current section is `NONE`. |
@@ -116,7 +119,7 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 `loadLineData()` saves data from `row` argument in appropriate pointer with raw data. It uses `currentLoadingStep` to decide how to save the data. If `currentLoadingStep` is `NONE` or `NUMBER_OF_STEPS`, no data will be saved.
 
 
-### `loadDataFromFile(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
+### `loadRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
 
 **Returns: `CrashCode`** (`CONFIG_NOT_FOUND` when config file cannot be opened, otherwise `RUNNING`)
 
@@ -127,7 +130,21 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `struct RawInterfacesInfo* rawInterfacesInfo` | Pointer to the struct where raw data of interfaces and derived interfaces will be loaded. |
 | `struct RawClockInfo* rawClockInfo` | Pointer to the struct where raw data of clock and strobes will be loaded. |
 
-`loadDataFromFile()` loads all data from `config.txt` file into pointers with raw data. When the configuration file was not found, the function prints an error message.
+`loadRawData()` loads all data from `config.txt` file into pointers with raw data. When the configuration file was not found, the function prints an error message.
+
+
+### `validateRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
+
+**Returns: `CrashCode`** (`RUNNING` when whole data is valid, otherwise `CrashCode` representing the first detected error - see `loadConfig()` documentation)
+
+| Parameter | Explanation |
+| - | - |
+| `vector<string> rawModulesInfo` | Vector storing raw data of modules, which will be validated. |
+| `vector<string> rawInstanceInfo` | Vector storing raw data of module instances, which will be validated. |
+| `struct RawInterfacesInfo rawInterfacesInfo` | Vector storing raw data of interfaces and derived interfaces, which will be validated. |
+| `struct RawClockInfo rawClockInfo` | Vector storing raw data of clock and strobes, which will be validated. |
+
+`validateRawData()` validates raw data loaded with the `loadRowData()` function. Validation can detect many errors in the data and print appropriate error messages, but the function returns only one `CrashCode` related to the first found error.
 
 
 ### `setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo)`
@@ -169,3 +186,21 @@ At the beginning the function checks if `config.txt` file exists. Then, it loads
 | `struct RawClockInfo rawClockInfo` | Struct where raw data of clock and strobes is stored. |
 
 `setClockData()` saves raw data of clock and strobes in pointer passed as function argument.
+
+
+### `rawDataToInfo(modules, instanceInfo, interfacesInfo, clockInfo, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo)`
+
+**Returns: void**
+
+| Parameter | Explanation |
+| - | - |
+| `struct Modules* modules` | Pointer to the struct which will store "info" data of modules basing on provided raw data. |
+| `struct InstanceInfo* instanceInfo` | Pointer to the struct which will store "info" data of module instances basing on provided raw data. |
+| `struct InterfacesInfo* interfacesInfo` | Pointer to the struct which will store "info" data of interfaces and derived interfaces basing on provided raw data. |
+| `struct ClockInfo* clockInfo` | Pointer to the struct which will store "info" data of clock and strobes basing on provided raw data. |
+| `vector<string> rawModulesInfo` | Vector storing raw data of modules, which will be converted. |
+| `vector<string> rawInstanceInfo` | Vector storing raw data of module instances, which will be converted. |
+| `struct RawInterfacesInfo rawInterfacesInfo` | Vector storing raw data of interfaces and derived interfaces, which will be converted. |
+| `struct RawClockInfo rawClockInfo` | Vector storing raw data of clock and strobes, which will be converted. |
+
+`rawDataToInfo()` converts raw data to info using three auxiliary functions: `setInstanceData()`, `setInterfacesData()` and `setClockData()`.
