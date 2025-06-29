@@ -43,7 +43,7 @@ bool validateVectorSize(vector<string> vec, size_t size, string loadingStep) {
 
 bool validateDerivedInterfaceCreated(vector<vector<vector<string>>> loadedDerivedInterfaces) {
     if (loadedDerivedInterfaces.size() == 0) {
-        cout << "ERROR: New derived interface has not been created, but its values were specified (\"Derived interfaces\" section of config.txt).\n";
+        cout << "ERROR: New derived interface array has not been created, but its interfaces were specified (\"Derived interfaces\" section of config.txt).\n";
         return false;
     }
     return true;
@@ -51,7 +51,7 @@ bool validateDerivedInterfaceCreated(vector<vector<vector<string>>> loadedDerive
 
 bool validateDerivedInterfaceHasValues(vector<vector<string>> derivedInterface) {
     if (derivedInterface.size() == 0) {
-        cout << "ERROR: New derived interface has been created, but its values were not specified (\"Derived interfaces\" section of config.txt).\n";
+        cout << "ERROR: New derived interface array has been created, but its interfaces were not specified (\"Derived interfaces\" section of config.txt).\n";
         return false;
     }
     return true;

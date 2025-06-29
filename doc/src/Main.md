@@ -70,11 +70,11 @@ There are several type definitions in the file, which are used to storing pointe
 In case of arrays and vectors, values at a given index in all of them correspond to the same specific module.
 
 ### `DerivedInterfaceIds`
-Struct which stores data of a sub-element of derived interface.
+Struct which stores data of an interface in a derived interface array.
 | Field | Explanation |
 | - | - |
-| `interfacesId` | ID of the interface. |
-| `interfaceId` | ID of sub-element of the interface. |
+| `interfacesId` | ID of the interface array. |
+| `interfaceId` | ID of the interface in that array. |
 
 ### `InstanceInfo`
 `InstanceInfo` stores data of all module instances.
@@ -88,13 +88,13 @@ Struct which stores data of a sub-element of derived interface.
 `InterfacesInfo` stores data of all interfaces and derived interfaces.
 | Field | Explanation |
 | - | - |
-| `count` | Number of standard interfaces. |
-| `derivedCount` | Number of derived interfaces. |
-| `totalCount` | Number of all interfaces. |
-| `list` | Array of module instances IDs. There will be created one interface basing on instance with given ID for all IDs in this array. |
-| `derivedList` | Two-dimensional array of `DerivedInterfaceIds` structs. The outer array stores data of all derived interfaces and the inner arrays symbolize specific derived interfaces. Inner arrays comprise structs which refer to specific sub-elements of derived interface. |
-| `lengths` | Array storing lengths of each standard interface (number of its sub-elements). |
-| `derivedLengths` | Array storing lengths of each derived interface (number of its sub-elements). |
+| `count` | Number of standard interface arrays. |
+| `derivedCount` | Number of derived interface arrays. |
+| `totalCount` | Number of all interface arrays. |
+| `list` | Array of module instances IDs. There will be created one interface array basing on instance with given ID for all IDs in this array. |
+| `derivedList` | Two-dimensional array of `DerivedInterfaceIds` structs. The outer array stores data of all derived interface arrays and the inner arrays symbolize specific derived interface array. Inner arrays comprise structs which refer to specific interfaces. |
+| `lengths` | Array storing lengths of each standard interface array. |
+| `derivedLengths` | Array storing lengths of each derived interface array. |
 
 ### `ClockInfo`
 `ClockInfo` stores clock period, clock depth and strobes data.
@@ -103,7 +103,7 @@ Struct which stores data of a sub-element of derived interface.
 | `period` | Time between clock ticks in nanoseconds. |
 | `depth` | Number of clock states. |
 | `strobeUpInstanceList` | Array of all module instances indicating an order of calling their `strobeUp()` functions. `strobeUp()` of first element of this array will be called first. |
-| `strobeUpInterfacesList` | Array of interfaces which will be used when `strobeUp()` function is called. When `strobeUp()` is called the first time, the first interface from this array will be used. |
+| `strobeUpInterfacesList` | Array of interface arrays which will be used when `strobeUp()` function is called. When `strobeUp()` is called the first time, the first interface array from this array will be used. |
 | `strobeUpClock` | Two-dimensional array of boolean values. It indicates the clock states at which the `strobeUp()` function will be called. The outer array stores data of all module instances and the inner arrays stores booleans meaning whether `strobeUp()` of the instance will be called at specific clock state. Number of boolean values in one inner array is equal to the clock depth. |
 | `strobeDownInstanceList` | Analogous to the `strobeUpInstanceList`. |
 | `strobeDownInterfacesList` | Analogous to the `strobeUpInterfacesList`. |

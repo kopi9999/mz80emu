@@ -70,6 +70,17 @@ When provided string is an empty string, the function returns an empty vector.
 `stringToBool()` checks if the given string is "true". If this is the case, the function returns true; otherwise, it returns false. The letter case does not matter - the function uses `toLower()` function to convert the string to lowercase.
 
 
+### `boolToString(boolean)`
+
+**Returns: string**
+
+| Parameter | Explanation |
+| - | - |
+| `bool boolean` | Boolean to convert to string. |
+
+`boolToString()` returns the string `"true"` when `boolean` is true, and `"false"` otherwise.
+
+
 ### `trim(str)`
 
 **Returns: void**
@@ -108,3 +119,15 @@ When provided string is an empty string, the function returns an empty vector.
 | other value | `MODULE_INVALID_ERROR` |
 
 `convertErrorToCrash()` returns a `CrashCode` enumerator basing on which `Error` enumerator was provided as a function argument.
+
+
+### `setCrashIfRunning(crashVar, crash)`
+
+**Returns: void**
+
+| Parameter | Explanation |
+| - | - |
+| `enum CrashCode* crashVar` | Pointer to variable which `CrashCode` value would be changed. |
+| `enum CrashCode crash` | `CrashCode` which would be set as value of `crashVar`. |
+
+`setCrashIfRunning()` checks whether the value of `crashVar` is `RUNNING`. If so, `crashVar` value is changed to provided `crash`. Otherwise, nothing happens.
