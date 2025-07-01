@@ -3,4 +3,6 @@
 
 std::string ReturnDirectory();
 
+void createTextFile(const std::string& filename, const std::string& content);
+
 #endif

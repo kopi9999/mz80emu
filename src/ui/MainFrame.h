@@ -4,7 +4,13 @@
 
 class MainFrame : public wxFrame
 {
-    public: MainFrame(const wxString&);
+    public: 
+        MainFrame(const wxString&);
+
+    private:
+        wxTextCtrl* numberInput;
+
+        void OnButtonClicked(wxCommandEvent& event);
 };
 
 #endif
