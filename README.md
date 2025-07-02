@@ -26,7 +26,9 @@ Mz80emu is a computer emulator. Every component is emulated by separate dynamic 
 ## How to compile (For Windows)
 
 Before you try to install the emulator make sure you have Microsoft C++ toolset installed
+
 You also need to download `boost.test` library
+
 To compile emulator firstly clone the repositories of the emulator and wxWidgets library
 
 ```
@@ -76,4 +78,3 @@ Congratulations you have successfully compiled emulator
 - [TheDragonEye1](https://github.com/TheDragonEye1) - Ui developer
 =======
 - [TheDragonEye1](https://github.com/TheDragonEye1) - Ui developer
->>>>>>> develop
