@@ -1,0 +1,45 @@
+Modules:
+testMod.dll
+
+Module instances:
+0
+0
+
+Interfaces:
+0
+1
+
+Derived interfaces:
+new
+0 0
+1 0
+
+Clock period:
+250000000
+
+Clock depth:
+2
+
+Strobe up instances:
+0
+1
+
+Strobe up interfaces:
+0
+0
+
+Strobe up clock:
+true false
+false true
+
+Strobe down instances:
+0
+1
+
+Strobe down interfaces:
+0
+0
+
+Strobe down clock:
+false true
+true false
