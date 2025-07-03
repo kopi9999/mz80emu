@@ -1,5 +1,5 @@
-#define BOOST_TEST_MODULE testMz80emu
-#include <boost/test/unit_test.hpp>
+#define BOOST_TEST_MODULE header-only multiunit testMz80emu
+#include <boost/test/included/unit_test.hpp>
 
 #include "../misc.hpp"
 extern "C" {

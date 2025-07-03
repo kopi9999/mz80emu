@@ -52,10 +52,8 @@ test.vcxproj.filters
 x64/
 build/*
 .vs/
-<<<<<<< HEAD
 wxWidgets/
 .vscode/
-=======
 boost/
 compile_flags.txt
->>>>>>> develop
+.cache/
