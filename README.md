@@ -37,17 +37,9 @@ cd mz80emu
 git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git
 ```
 Next, you have to create `boost` folder in the root folder of mz80emu, and copy the contents of boost.test library.
-It is required for the library headers to be in `mz80emu\boost\boost`, and static library files in `mz80emu\boost\stage\lib`.
+It is required for the library headers to be in `mz80emu\boost\boost`. Compilation is not needed.
 
-Here is an example how to compile `boost.test` library (can be done in standard Windows cmd)
-
-```
-cd D:\path\to\mz80emu\boost
-bootstrap.bat
-b2.exe link=static
-```
-
-Afterwards enter the root mz80emu folder using Native Tools Commands Prompt
+Enter the root mz80emu folder using Native Tools Commands Prompt
 
 ```
 cd D:\path\to\mz80emu
