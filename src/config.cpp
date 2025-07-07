@@ -61,7 +61,7 @@ struct RawClockInfo {
     vector<vector<string>> strobeDownClock;
 };
 
-const string configFilePath = "../../config/config.txt";
+const string configFilePath = "config.txt";
 
 
 enum LoadingSteps detectLoadingStep(string row)

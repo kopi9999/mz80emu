@@ -13,7 +13,7 @@ bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load li
     bool error = false;
     for (uint16_t i = 0; i < libCount; ++i)
     {
-        libs[i] = loadLib(libNames[i].c_str());
+        libs[i] = loadLib(("modules/" + libNames[i]).c_str());
         if(!libs[i]){
             cout << "ERROR: cannot find module: " << libNames[i] << "\n";
             error = true;
