@@ -1,5 +1,5 @@
 #include <stdbool.h>
-#include <dlcfn.h>
+#include <dlfcn.h>
 
 #include "loadMod.h"
 

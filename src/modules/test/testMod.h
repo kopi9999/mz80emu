@@ -3,6 +3,7 @@
 #define TESTDLL
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "../moduleWindows.h"
 
 struct Instance{

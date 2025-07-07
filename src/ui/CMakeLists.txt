@@ -1,2 +1,7 @@
 add_executable(configurator MainFrame.cpp App.cpp FileOperations.cpp)
-target_link_libraries(configurator wx::net wx::core wx::base)
+if(WIN32)
+    target_link_libraries(configurator wx::core wx::base)
+endif()
+if(UNIX)
+    target_link_libraries(configurator ${wxWidgets_LIBRARIES})
+endif()
