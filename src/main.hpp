@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 extern "C" {
-    #include "modules/moduleWindows.h"
+    #include "modules/module.h"
 }
 
 typedef enum Error (*createPtr)(void**, void*);

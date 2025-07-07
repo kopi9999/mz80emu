@@ -4,7 +4,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../moduleWindows.h"
+
+#ifdef _WIN32
+    #include "../moduleWindows.h"
+#else
+    #include "../module.h"
+#endif 
 
 struct Instance{
     uint8_t value;

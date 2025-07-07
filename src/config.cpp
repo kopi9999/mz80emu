@@ -3,7 +3,12 @@
 #include <fstream>
 #include <iostream>
 
-#include "config.hpp"
+#ifdef _WIN32
+    #include "configWindows.hpp"
+#else
+    #include "config.hpp"
+#endif
+
 #include "validation.hpp"
 #include "main.hpp"
 #include "misc.hpp"
@@ -473,6 +478,7 @@ enum CrashCode rawDataToFile(vector<string> rawModulesInfo, vector<string> rawIn
             }
         }
     }
+    return RUNNING;
 }
 
 
