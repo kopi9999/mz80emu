@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <windows.h>
 
-#include "loadlib.h"
+#include "loadMod.h"
 
 void* loadLib(const char *__restrict dllName)
 {

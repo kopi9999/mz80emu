@@ -1,4 +1,4 @@
-#include "testdll.h"
+#include "testMod.h"
 
 enum Error create(void** instance, void*__restrict parameters)
 {
