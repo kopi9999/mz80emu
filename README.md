@@ -27,7 +27,7 @@ Mz80emu is a computer emulator. Every component is emulated by separate dynamic 
 
 ### For GNU/Linux
 
-Before compiling the emulator make sure you have at least requred dependencies.
+Before compiling the emulator make sure you have at least requred dependencies installed.
 
 #### Downloading dependencies on Debian 12
 
@@ -41,14 +41,14 @@ Before compiling the emulator make sure you have at least requred dependencies.
 | - | - |
 | `sudo pacman -S git cmake make gcc wxwidgets-gtk3` | `sudo pacman -S boost` |
 
-To compile emulator firstly clone the emulator repository using git
+To compile emulator firstly clone the emulator repository using git.
 
 ```
 git clone https://github.com/kopi9999/mz80emu.git
 cd mz80emu
 ```
 
-After that create, enter the build folder, and compile using cmake and GNU make
+After that create the build folder, enter it and compile the project using cmake and GNU make.
 
 ```
 mkdir build
@@ -57,13 +57,13 @@ cmake ..
 make
 ```
 
-Congratulations you have successfully compiled emulator
+Congratulations you have successfully compiled mz80emu for GNU/Linux.
 
 ### For Windows
 
-Before you try to compile the emulator make sure you have Microsoft C++ toolset installed
+Before you try to compile the emulator make sure you have Microsoft C++ toolset installed.
 
-To compile emulator firstly clone the repositories of the emulator and wxWidgets library
+To compile emulator firstly clone the repositories of the emulator and wxWidgets library.
 
 ```
 git clone https://github.com/kopi9999/mz80emu.git
@@ -73,7 +73,7 @@ git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git
 
 For optional tests compilation, download `boost` library. Next, create `boost` folder in the root folder of mz80emu, and copy the contents of the library. It is required for the library headers to be in `mz80emu\boost\boost`. Compilation is not needed.
 
-Enter the root mz80emu folder using Native Tools Commands Prompt, create and enter the build folder
+Enter the root mz80emu folder using Native Tools Commands Prompt, create and enter the build folder.
 
 ```
 cd D:\path\to\mz80emu
@@ -81,14 +81,14 @@ mkdir build
 cd build
 ```
 
-After that you can compile the program using cmake
+After that you can compile the program using cmake.
 
 ```
 cmake ..\
 cmake --build .\
 ```
 
-Congratulations you have successfully compiled emulator
+Congratulations you have successfully compiled mz80emu for Windows.
 
 ## Collaborators
 
