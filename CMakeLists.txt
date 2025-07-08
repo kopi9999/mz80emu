@@ -24,6 +24,6 @@ endif()
 
 add_subdirectory(src build) # main emulator
 add_subdirectory(src/modules build/modules) # modules
-#add_subdirectory(src/ui build/ui) # ui
+add_subdirectory(src/ui build/ui) # ui
 add_subdirectory(src/unitTests build/unitTests) # unit tests
 
