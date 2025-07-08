@@ -10,16 +10,17 @@ endif()
 
 project(mz80emu)
 
-include_directories(boost) # unit testing library
 if(WIN32) # building static wxWidgets from source on windows
     set(wxBUILD_SHARED OFF)
     add_subdirectory(wxWidgets)
+    include_directories(boost) # unit testing library
 endif()
 if(UNIX) # using prebuilt dynamic wxWidgets for unix-like
     find_package(wxWidgets REQUIRED COMPONENTS core base)
     if(wxWidgets_USE_FILE)
         include(${wxWidgets_USE_FILE})
     endif()
+    find_package(Boost NO_MODULE)
 endif()
 
 add_subdirectory(src build) # main emulator
