@@ -18,7 +18,6 @@ Mz80emu is a computer emulator. Every component is emulated by separate dynamic 
 
 ### ⚠️ Limitations
 - **Work in progress** – The project is still under heavy development, and some features may be missing or unstable.
-- **Windows-only build (for now)** – No official support for Linux/MacOS yet, although it may be possible in the future.
 -  **No GUI (yet)** – The emulator currently lacks a full graphical user interface, making it harder for non-technical users to interact with it.
 -  **Performance optimizations needed** – The emulator might not be optimized for speed, especially for complex architectures.
 -  **Limited documentation** – While the README provides basic setup instructions, more in-depth documentation is needed.
