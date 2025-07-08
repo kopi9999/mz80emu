@@ -92,10 +92,7 @@ Congratulations you have successfully compiled mz80emu for Windows.
 
 ## Collaborators
 
-- [kopi9999](https://github.com/kopi9999) - Leader, architect, Module developer
-- [Daw151](https://github.com/Daw151) - Module developer
-- [Kamil Heinrich](https://github.com/HeinrichKamil) - Ui developer
-<<<<<<< HEAD
-- [TheDragonEye1](https://github.com/TheDragonEye1) - Ui developer
-=======
-- [TheDragonEye1](https://github.com/TheDragonEye1) - Ui developer
+- [kopi9999](https://github.com/kopi9999)
+- [Daw151](https://github.com/Daw151)
+- [Kamil Heinrich](https://github.com/HeinrichKamil)
+- [TheDragonEye1](https://github.com/TheDragonEye1)
