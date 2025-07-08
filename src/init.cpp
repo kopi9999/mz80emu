@@ -2,7 +2,7 @@
 #include "validation.hpp"
 #include <iostream>
 extern "C" {
-    #include "loadlib.h"
+    #include "loadMod.h"
     #include "misc.h"
 }
 

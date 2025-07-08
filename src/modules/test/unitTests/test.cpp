@@ -2,7 +2,7 @@
 #include <boost/test/included/unit_test.hpp>
 
 extern "C" {
-    #include "..\testDll.h"
+    #include "../testMod.h"
 }
 
 BOOST_AUTO_TEST_SUITE( testTestDll )

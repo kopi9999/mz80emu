@@ -1,23 +1,23 @@
 #include <stdbool.h>
-#include <windows.h>
+#include <dlfcn.h>
 
-#include "loadlib.h"
+#include "loadMod.h"
 
 void* loadLib(const char *__restrict dllName)
 {
-    return LoadLibrary(TEXT(dllName));
+    return dlopen(dllName, RTLD_NOW);
 }
 
 void* loadFunc(void *__restrict dll, const char *__restrict funcName)
 {
-    return GetProcAddress((HINSTANCE) dll, funcName);
+    return dlsym(dll, funcName);
 }
 
 bool loadFuncs(void **__restrict funcTab, void ** __restrict dlls, uint16_t dllCount, const char *__restrict funcName)
 {
     bool error = false;
     for (uint16_t i = 0; i < dllCount; i++){
-        funcTab[i] = GetProcAddress((HINSTANCE) dlls[i], funcName);
+        funcTab[i] = dlsym(dlls[i], funcName);
         if(!funcTab[i]){error = true;}
     }
 
@@ -26,7 +26,7 @@ bool loadFuncs(void **__restrict funcTab, void ** __restrict dlls, uint16_t dllC
 
 bool unloadLib(void *__restrict dll)
 {
-    return FreeLibrary((HINSTANCE) dll);
+    return (bool) dlclose(dll);
 }
 
 bool unloadLibs(void **__restrict dlls, uint16_t dllCount)
@@ -36,7 +36,7 @@ bool unloadLibs(void **__restrict dlls, uint16_t dllCount)
     for (uint16_t i = 0; i < dllCount; i++)
     {
         if (!dlls[i]){continue;}
-        errortmp = FreeLibrary((HINSTANCE) dlls);
+        errortmp = dlclose(dlls[i]);
         if (errortmp) {error = true;}
     }
     return error;

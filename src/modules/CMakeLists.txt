@@ -1,1 +1,1 @@
-add_library(testMod SHARED test/testdll.c)
+add_library(testMod SHARED test/testMod.c)

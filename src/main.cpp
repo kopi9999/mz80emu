@@ -6,7 +6,7 @@
 #include <iostream>
 
 extern "C" {
-    #include "loadlib.h"
+    #include "loadMod.h"
 }
 
 using namespace std;
