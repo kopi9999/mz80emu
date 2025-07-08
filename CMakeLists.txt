@@ -10,21 +10,29 @@ endif()
 
 project(mz80emu)
 
-if(WIN32) # building static wxWidgets from source on windows
+if(WIN32)
     set(wxBUILD_SHARED OFF)
-    add_subdirectory(wxWidgets)
-    include_directories(boost) # unit testing library
-endif()
-if(UNIX) # using prebuilt dynamic wxWidgets for unix-like
-    find_package(wxWidgets REQUIRED COMPONENTS core base)
+    add_subdirectory(wxWidgets) # building static wxWidgets from source on windows
+
+    if(EXISTS boost/)
+        include_directories(boost) # local boost.test headers
+        set(Boost_FOUND True)
+    else()
+        set(Boost_FOUND False)
+    endif()
+elseif(UNIX) 
+    find_package(wxWidgets REQUIRED COMPONENTS core base) # using prebuilt dynamic wxWidgets for unix-like
     if(wxWidgets_USE_FILE)
         include(${wxWidgets_USE_FILE})
     endif()
-    find_package(Boost NO_MODULE)
+    
+    find_package(Boost NO_MODULE) # global boost.test headers
 endif()
 
 add_subdirectory(src build) # main emulator
 add_subdirectory(src/modules build/modules) # modules
 add_subdirectory(src/ui build/ui) # ui
-add_subdirectory(src/unitTests build/unitTests) # unit tests
+if(Boost_FOUND)
+    add_subdirectory(src/unitTests build/unitTests) # unit tests
+endif()
 
