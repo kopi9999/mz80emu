@@ -12,6 +12,9 @@ enum Error {
 
 enum Error getName(char* out, uint32_t maxLength);
 enum Error getDescription(char* out, uint32_t maxLength);
+uint16_t getMajorVersion();
+uint16_t getMinorVersion();
+uint16_t getProtocolVersion();
 
 enum Error create(void**, void*);
 enum Error createInterfaces(void*, void***, uint16_t*);

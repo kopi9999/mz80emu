@@ -16,3 +16,7 @@ enum Error getDescription(char* out, uint32_t maxLength)
     strcpy(out, moduleDescription);
     return SUCCESS; 
 }
+
+uint16_t getMajorVersion() {return moduleMajorVersion;}
+uint16_t getMinorVersion() {return moduleMinorVersion;}
+uint16_t getProtocolVersion() {return protocolVersion;}

@@ -2,6 +2,9 @@
 
 const char* moduleName = "Testing module";
 const char* moduleDescription = "Module used for testing main loop, and also as a template.";
+const uint16_t moduleMajorVersion = 1;
+const uint16_t moduleMinorVersion = 1;
+const uint16_t protocolVersion = 1;
 
 enum Error create(void** instance, void*__restrict parameters)
 {

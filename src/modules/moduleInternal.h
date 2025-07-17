@@ -9,5 +9,8 @@
 
 extern const char* moduleName;
 extern const char* moduleDescription;
+extern const uint16_t moduleMajorVersion;
+extern const uint16_t moduleMinorVersion;
+extern const uint16_t protocolVersion;
 
 #endif
