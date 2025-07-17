@@ -7,7 +7,11 @@ enum Error {
     SUCCESS,
     BAD_ARGUMENT,
     MALLOC_ERROR,
+    SIZE_MISMATCH,
 };
+
+enum Error getName(char* out, uint32_t maxLength);
+enum Error getDescription(char* out, uint32_t maxLength);
 
 enum Error create(void**, void*);
 enum Error createInterfaces(void*, void***, uint16_t*);

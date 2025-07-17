@@ -1,5 +1,8 @@
 #include "testMod.h"
 
+const char* moduleName = "Testing module";
+const char* moduleDescription = "Module used for testing main loop, and also as a template.";
+
 enum Error create(void** instance, void*__restrict parameters)
 {
     struct Instance* instanceTmp = calloc(1, sizeof(struct Instance));
