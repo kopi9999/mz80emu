@@ -7,6 +7,11 @@ extern "C" {
 
 const char* moduleName = "";
 const char* moduleDescription = "";
+const uint16_t moduleMajorVersion = 0;
+const uint16_t moduleMinorVersion = 0;
+const uint16_t protocolVersion = 0;
+const uint16_t interfacesNumber = 3;
+const char* interfacesDescriptions[] = {"", "test", "testtest"};
 
 using namespace std;
 
@@ -80,7 +85,7 @@ BOOST_AUTO_TEST_SUITE( testModuleFunctions )
             BOOST_TEST ( error == BAD_ARGUMENT );
         } 
 
-        BOOST_AUTO_TEST_CASE( testGetDescription_moduleNameEmpty )
+        BOOST_AUTO_TEST_CASE( testGetDescription_moduleDescriptionEmpty )
         {
             moduleDescription = "";
             char output[10] = "";
@@ -122,6 +127,64 @@ BOOST_AUTO_TEST_SUITE( testModuleFunctions )
             BOOST_TEST ( error == SUCCESS );
             BOOST_TEST ( !strcmp(moduleDescription, output) );
         } 
+
+    BOOST_AUTO_TEST_SUITE_END()
+    BOOST_AUTO_TEST_SUITE ( testGetInterfaceDescription )
+
+        BOOST_AUTO_TEST_CASE( testGetInterfaceDescription_noOutput )
+        {
+            Error error = getInterfaceDescription(NULL, 10, 0);
+            
+            BOOST_TEST ( error == BAD_ARGUMENT );
+        } 
+
+        BOOST_AUTO_TEST_CASE( testGetInterfaceDescription_moduleNameEmpty )
+        {
+            char output[10] = "";
+            
+            Error error = getInterfaceDescription(output, 10, 0);
+            
+            BOOST_TEST ( error == SUCCESS );
+            BOOST_TEST ( !strcmp(interfacesDescriptions[0], output) );
+        } 
+
+        BOOST_AUTO_TEST_CASE( testGetDescription_outputLongerThanInput )
+        {
+            char output[10] = "";
+            
+            Error error = getInterfaceDescription(output, 10, 1);
+            
+            BOOST_TEST ( error == SUCCESS );
+            BOOST_TEST ( !strcmp(interfacesDescriptions[1], output) );
+        } 
+
+        BOOST_AUTO_TEST_CASE( testGetDescription_outputShorterThanInput )
+        {
+            char output[5] = "";
+            
+            Error error = getInterfaceDescription(output, 5, 2);
+            
+            BOOST_TEST ( error == SIZE_MISMATCH );
+        } 
+
+        BOOST_AUTO_TEST_CASE( testGetDescription_outputIdenticalToInput )
+        {
+            char output[5] = "";
+            
+            Error error = getInterfaceDescription(output, 5, 1);
+            
+            BOOST_TEST ( error == SUCCESS );
+            BOOST_TEST ( !strcmp(interfacesDescriptions[1], output) );
+        }
+
+        BOOST_AUTO_TEST_CASE( testGetInterfaceDescription_badInterfaceNumber )
+        {
+            char output[10] = "";
+
+            Error error = getInterfaceDescription(output, 10, 3);
+
+            BOOST_TEST ( error == BAD_ARGUMENT );
+        }
 
     BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()

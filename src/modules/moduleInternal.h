@@ -12,5 +12,7 @@ extern const char* moduleDescription;
 extern const uint16_t moduleMajorVersion;
 extern const uint16_t moduleMinorVersion;
 extern const uint16_t protocolVersion;
+extern const uint16_t interfacesNumber;
+extern const char* interfacesDescriptions[];
 
 #endif
