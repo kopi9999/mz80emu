@@ -1,1 +1,1 @@
-add_library(testMod SHARED test/testMod.c)
+add_library(testMod SHARED test/testMod.c moduleFunctions.c)

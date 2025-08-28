@@ -5,11 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef _WIN32
-    #include "../moduleWindows.h"
-#else
-    #include "../module.h"
-#endif 
+#include "../moduleInternal.h"
 
 struct Instance{
     uint8_t value;
