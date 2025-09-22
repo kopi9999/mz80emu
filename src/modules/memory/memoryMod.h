@@ -7,6 +7,9 @@
 
 #include "../moduleInternal.h"
 
-struct Instance{};
+struct Instance{
+    uint8_t* data;
+    uint32_t size;
+};
 
 #endif

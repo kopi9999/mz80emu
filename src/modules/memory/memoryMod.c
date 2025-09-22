@@ -10,6 +10,11 @@ const char* interfacesDescriptions[] = {};
 
 enum Error create(void** instance, void*__restrict parameters)
 {
+    struct Instance* instanceTmp = calloc(1, sizeof(struct Instance));
+    instanceTmp->data = malloc(65536 * sizeof(uint8_t));
+    instanceTmp->size = 65536;
+
+    *instance = (void*) instanceTmp;
     return SUCCESS;
 }
 
@@ -31,6 +36,8 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
 
 enum Error destroy(void* instance)
 {
+    free(((struct Instance*) instance)->data);
+    free(instance);
     return SUCCESS;
 }
 
