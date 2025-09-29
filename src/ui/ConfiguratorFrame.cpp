@@ -1,7 +1,7 @@
-#include "MainFrame.h"
+#include "ConfiguratorFrame.h"
 #include <wx/sizer.h>
 
-MainFrame::MainFrame(const wxString& title)
+ConfiguratorFrame::ConfiguratorFrame(const wxString& title)
     : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(800, 600))
 {
     wxPanel* panel = new wxPanel(this);
@@ -13,7 +13,7 @@ MainFrame::MainFrame(const wxString& title)
     availableModulesList = new wxListBox(panel, wxID_ANY);
     selectedModulesList = new wxListBox(panel, wxID_ANY);
     wxButton* addModuleButton = new wxButton(panel, wxID_ANY, "Add Module");
-    addModuleButton->Bind(wxEVT_BUTTON, &MainFrame::OnAddModule, this);
+    addModuleButton->Bind(wxEVT_BUTTON, &ConfiguratorFrame::OnAddModule, this);
 
     moduleSizer->Add(availableModulesList, 1, wxALL | wxEXPAND, 5);
     moduleSizer->Add(addModuleButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
@@ -22,14 +22,14 @@ MainFrame::MainFrame(const wxString& title)
     wxBoxSizer* instanceSizer = new wxBoxSizer(wxHORIZONTAL);
     instanceList = new wxListBox(panel, wxID_ANY);
     wxButton* addInstanceButton = new wxButton(panel, wxID_ANY, "Add Instance");
-    addInstanceButton->Bind(wxEVT_BUTTON, &MainFrame::OnAddInstance, this);
+    addInstanceButton->Bind(wxEVT_BUTTON, &ConfiguratorFrame::OnAddInstance, this);
     instanceSizer->Add(instanceList, 1, wxALL | wxEXPAND, 5);
     instanceSizer->Add(addInstanceButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
     wxBoxSizer* interfaceSizer = new wxBoxSizer(wxHORIZONTAL);
     interfacesList = new wxListBox(panel, wxID_ANY);
     wxButton* createInterfacesButton = new wxButton(panel, wxID_ANY, "Create Interface Array");
-    createInterfacesButton->Bind(wxEVT_BUTTON, &MainFrame::OnCreateInterfaceArray, this);
+    createInterfacesButton->Bind(wxEVT_BUTTON, &ConfiguratorFrame::OnCreateInterfaceArray, this);
     interfaceSizer->Add(interfacesList, 1, wxALL | wxEXPAND, 5);
     interfaceSizer->Add(createInterfacesButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
@@ -58,7 +58,7 @@ MainFrame::MainFrame(const wxString& title)
     RefreshModules();
 }
 
-void MainFrame::OnAddModule(wxCommandEvent& event) {
+void ConfiguratorFrame::OnAddModule(wxCommandEvent& event) {
     int sel = availableModulesList->GetSelection();
     if (sel != wxNOT_FOUND) {
         wxString module = availableModulesList->GetString(sel);
@@ -68,7 +68,7 @@ void MainFrame::OnAddModule(wxCommandEvent& event) {
     }
 }
 
-void MainFrame::OnAddInstance(wxCommandEvent& event) {
+void ConfiguratorFrame::OnAddInstance(wxCommandEvent& event) {
     int sel = selectedModulesList->GetSelection();
     if (sel != wxNOT_FOUND) {
         wxString module = selectedModulesList->GetString(sel);
@@ -79,7 +79,7 @@ void MainFrame::OnAddInstance(wxCommandEvent& event) {
     }
 }
 
-void MainFrame::OnCreateInterfaceArray(wxCommandEvent& event) {
+void ConfiguratorFrame::OnCreateInterfaceArray(wxCommandEvent& event) {
     int sel = instanceList->GetSelection();
     if (sel != wxNOT_FOUND) {
         std::vector<std::string> ifaces;
@@ -94,7 +94,7 @@ void MainFrame::OnCreateInterfaceArray(wxCommandEvent& event) {
     }
 }
 
-void MainFrame::RefreshModules() {
+void ConfiguratorFrame::RefreshModules() {
     availableModulesList->Clear();
     for (const auto& mod : availableModules) {
         availableModulesList->AppendString(mod);
@@ -106,14 +106,14 @@ void MainFrame::RefreshModules() {
     }
 }
 
-void MainFrame::RefreshInstances() {
+void ConfiguratorFrame::RefreshInstances() {
     instanceList->Clear();
     for (const auto& inst : instanceNames) {
         instanceList->AppendString(inst);
     }
 }
 
-void MainFrame::RefreshStrobeLists() {
+void ConfiguratorFrame::RefreshStrobeLists() {
     strobeUpInstanceList->Clear();
     strobeDownInstanceList->Clear();
     for (const auto& inst : instanceNames) {

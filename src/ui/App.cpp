@@ -1,12 +1,12 @@
 #include "App.h"
-#include "MainFrame.h"
+#include "ConfiguratorFrame.h"
 #include <wx/wx.h>
 #define WinMain main
 
 wxIMPLEMENT_APP(App);
 
 bool App::OnInit(){
-  MainFrame* mainFrame = new MainFrame("C++ GUI");
-  mainFrame->Show();
+  ConfiguratorFrame* configuratorFrame = new ConfiguratorFrame("C++ GUI");
+  configuratorFrame->Show();
   return true;
 }

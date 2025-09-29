@@ -5,10 +5,10 @@
 #include <wx/checkbox.h>
 #include <map>
 
-class MainFrame : public wxFrame
+class ConfiguratorFrame : public wxFrame
 {
 public:
-    MainFrame(const wxString& title);
+    ConfiguratorFrame(const wxString& title);
 
 private:
     wxListBox* availableModulesList;
