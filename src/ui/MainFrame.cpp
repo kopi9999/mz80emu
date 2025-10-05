@@ -68,6 +68,16 @@ void MainFrame::OnAddModule(wxCommandEvent& event) {
     }
 }
 
+void MainFrame::OnRemoveModule(wxCommandEvent& event) {
+    int sel = selectedModulesList->GetSelection();
+    if (sel != wxNOT_FOUND) {
+        wxString module = selectedModulesList->GetString(sel);
+        availableModules.push_back(module.ToStdString());
+        selectedModules.erase(selectedModules.begin() + sel);
+        RefreshModules();
+    }
+}
+
 void MainFrame::OnAddInstance(wxCommandEvent& event) {
     int sel = selectedModulesList->GetSelection();
     if (sel != wxNOT_FOUND) {
