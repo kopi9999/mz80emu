@@ -2,8 +2,6 @@
 #define MAIN_FRAME
 #include <wx/wx.h>
 
-//extern class MainFrameApp;
-
 class MainFrame : public wxFrame
 {
     public: MainFrame();
