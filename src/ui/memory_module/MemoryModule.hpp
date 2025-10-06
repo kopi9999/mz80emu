@@ -23,12 +23,6 @@ private:
     std::vector<std::string> instanceNames;
     std::map<int, std::vector<std::string>> instanceInterfaces;
 
-    void OnAddInstance(wxCommandEvent& event);
-    void OnCreateInterfaceArray(wxCommandEvent& event);
-
-    void RefreshModules();
-    void RefreshInstances();
-    void RefreshStrobeLists();
 };
 
 #endif
