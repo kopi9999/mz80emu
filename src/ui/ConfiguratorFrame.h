@@ -1,5 +1,5 @@
-#ifndef FRAME
-#define FRAME
+#ifndef CONFIGURATOR_FRAME
+#define CONFIGURATOR_FRAME
 #include <wx/wx.h>
 #include <wx/listbox.h>
 #include <wx/checkbox.h>
