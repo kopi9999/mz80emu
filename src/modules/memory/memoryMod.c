@@ -42,11 +42,28 @@ enum Error createInterfaces(void*__restrict instance, void*** interfaces, uint16
 
 enum Error strobeUp(void*__restrict instance, void**__restrict interfaces)
 {
+    if (!instance) {return BAD_ARGUMENT;}
+    if (!interfaces) {return BAD_ARGUMENT;}
+    
+    void* interfacesTmp = *interfaces;
+    uint8_t select = *((uint8_t*) interfacesTmp + 2);
+    uint8_t write = *((uint8_t*) interfacesTmp + 3);
+
+    struct Instance* instanceTmp = instance;
+    
+    if (select) {
+        if (write) { instanceTmp->writeState = 1;}
+        else {instanceTmp->readState = 1;}
+    }
+
     return SUCCESS;
 }
 
 enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
 {
+    if (!instance) {return BAD_ARGUMENT;}
+    if (!interfaces) {return BAD_ARGUMENT;}
+    
     return SUCCESS;
 }
 
