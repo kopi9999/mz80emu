@@ -64,6 +64,20 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
     if (!instance) {return BAD_ARGUMENT;}
     if (!interfaces) {return BAD_ARGUMENT;}
     
+    void* interfacesTmp = *interfaces;
+    uint8_t* data = ((uint8_t*) interfacesTmp);
+    uint16_t* address = ((uint16_t*) interfacesTmp + 1);
+
+    struct Instance* instanceTmp = instance;
+
+    if (instanceTmp->readState) { 
+        *data = instanceTmp->data[*address];
+        instanceTmp->readState = 0;
+    }
+    else if (instanceTmp->writeState) {
+        instanceTmp->data[*address] = *data;
+        instanceTmp->writeState = 0;
+    }
     return SUCCESS;
 }
 
