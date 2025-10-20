@@ -6,7 +6,7 @@ const uint16_t moduleMajorVersion = 1;
 const uint16_t moduleMinorVersion = 1;
 const uint16_t protocolVersion = 1;
 const uint16_t interfacesNumber = 4;
-const char* interfacesDescriptions[] = {"8 bit data bus", "16 bit address bus", "chip select signal (8 bit)", "write enable signal (8 bit)"};
+const char* interfacesDescriptions[] = {"8 bit data bus", "16 bit address bus", "chip select signal (8 bit as bool)", "write enable signal (8 bit as bool)"};
 
 enum Error create(void** instance, void*__restrict parameters)
 {
