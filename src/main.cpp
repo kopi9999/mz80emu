@@ -5,6 +5,11 @@
 #include <chrono>
 #include <iostream>
 
+#include "MainFrame.hpp"
+#include "MainFrameApp.hpp"
+#include <wx/wx.h>
+#include <wx/evtloop.h>
+
 extern "C" {
     #include "loadMod.h"
 }
@@ -20,14 +25,16 @@ struct InstanceInfo instanceInfo = {};
 struct InterfacesInfo interfacesInfo = {};
 struct ClockInfo clockInfo = {};
 
-int main()
+void mainLoop(wxWeakRef<MainFrame> mainFrame)
 {
     enum CrashCode crash;
     crash = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo);
-    if (crash) {return crash;}
+    if (crash) {return;}
+    //if (crash) {return crash;}
     
     crash = init(&modules, &instances, &interfaces, instanceInfo, interfacesInfo);
-    if (crash) {return crash;}
+    if (crash) {return;}
+    //if (crash) {return crash;}
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
     chrono::nanoseconds duration = chrono::nanoseconds(clockInfo.period);
@@ -35,7 +42,12 @@ int main()
     Error error;
     uint32_t clockState = 0;
 
-    while (true){
+    wxEventLoopBase* mainLoop = wxEventLoop::GetActive()
+                                ? wxEventLoop::GetActive() 
+                                : new wxEventLoop();
+    wxEventLoopBase::SetActive(mainLoop);
+
+    while (mainLoop && mainFrame && mainFrame->IsShownOnScreen()){
         start = chrono::high_resolution_clock::now();
         end = start + duration;
 
@@ -56,7 +68,9 @@ int main()
         }
         
         do {
-        start = chrono::high_resolution_clock::now();
+            if (mainLoop && mainLoop->Pending() && mainFrame && mainFrame->IsShownOnScreen()) { mainLoop->Dispatch(); }
+            if (mainLoop && mainFrame && mainFrame->IsShownOnScreen()) { mainLoop->ProcessIdle(); }
+            start = chrono::high_resolution_clock::now();
         } while (end > start);
 
         ++clockState;
@@ -64,8 +78,21 @@ int main()
 
     }
 
+    wxEventLoopBase::SetActive(nullptr);
+    delete mainLoop;
     unloadLibs(modules.pointers, modules.count);
-    return convertErrorToCrash(error);
+    //return convertErrorToCrash(error);
+}
+
+wxIMPLEMENT_APP(MainFrameApp);
+
+bool MainFrameApp::OnInit() {
+    MainFrame *mainFrame = new MainFrame();
+    mainFrame->Show();
+
+    mainLoop(mainFrame);
+
+    return false;
 }
 
 //test jocha

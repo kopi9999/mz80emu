@@ -5,7 +5,7 @@
 wxIMPLEMENT_APP(MainFrameApp);
 
 bool MainFrameApp::OnInit() {
-    MainFrame *mainFrame = new MainFrame();
+    wxWeakRef<MainFrame> mainFrame = new MainFrame();
     mainFrame->Show();
     return true;
 }
