@@ -26,7 +26,7 @@ elseif(UNIX)
         include(${wxWidgets_USE_FILE})
     endif()
     
-    find_package(Boost NO_MODULE) # global boost.test headers
+    find_package(Boost) # global boost.test headers
 endif()
 
 add_subdirectory(src build) # main emulator
