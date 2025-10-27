@@ -5,7 +5,7 @@
 class MainFrameApp : public wxApp
 {
   public:
-    bool OnInit();
+    virtual bool OnInit();
 };
 
 #endif

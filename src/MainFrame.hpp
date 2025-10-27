@@ -4,7 +4,12 @@
 
 class MainFrame : public wxFrame
 {
-    public: MainFrame();
+    public:
+        MainFrame();
+        void OnQuit(wxCommandEvent&);
+
+        wxMenuBar *menuBar;
+        wxMenu *file;
 };
 
 #endif
