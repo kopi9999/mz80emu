@@ -1,6 +1,14 @@
 #include "MainFrame.hpp"
 #include <wx/wx.h>
 
+enum
+{
+    ID_OPENCONFIGFILE = wxID_HIGHEST + 1,
+    ID_STOPCLOCK,
+    ID_RUNCLOCK,
+    ID_NEXTTICK
+};
+
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition, wxSize(800, 600)) {
     wxImage::AddHandler(new wxPNGHandler);
     wxBitmap stopClock(wxT("../../src/ui/img/stopClock.png"), wxBITMAP_TYPE_PNG);
@@ -10,20 +18,21 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     menuBar = new wxMenuBar;
 
     file = new wxMenu;
-    file->Append(wxID_ANY, wxT("&Open config file"));
+    file->Append(ID_OPENCONFIGFILE, wxT("&Open config file"));
     file->AppendSeparator();
     file->Append(wxID_EXIT, wxT("&Quit"));
 
     wxToolBar *toolBar = CreateToolBar();
-    toolBar->AddTool(wxID_ANY, wxT("Stop clock"), stopClock);
-    toolBar->AddTool(wxID_ANY, wxT("Run clock"), runClock);
-    toolBar->AddTool(wxID_ANY, wxT("Next tick"), nextTick);
+    toolBar->AddTool(ID_STOPCLOCK, wxT("Stop clock"), stopClock);
+    toolBar->AddTool(ID_RUNCLOCK, wxT("Run clock"), runClock);
+    toolBar->AddTool(ID_NEXTTICK, wxT("Next tick"), nextTick);
     toolBar->Realize();
 
     menuBar->Append(file, wxT("&File"));
     SetMenuBar(menuBar);
 
     Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnQuit));
+    Connect(ID_STOPCLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::StopClock));
     Centre();
 }
 

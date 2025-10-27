@@ -25,6 +25,8 @@ struct InstanceInfo instanceInfo = {};
 struct InterfacesInfo interfacesInfo = {};
 struct ClockInfo clockInfo = {};
 
+bool clockStopped = false;
+
 void mainLoop(wxWeakRef<MainFrame> mainFrame)
 {
     enum CrashCode crash;
@@ -71,7 +73,7 @@ void mainLoop(wxWeakRef<MainFrame> mainFrame)
             if (mainLoop && mainLoop->Pending() && mainFrame && mainFrame->IsShownOnScreen()) { mainLoop->Dispatch(); }
             if (mainLoop && mainFrame && mainFrame->IsShownOnScreen()) { mainLoop->ProcessIdle(); }
             start = chrono::high_resolution_clock::now();
-        } while (end > start);
+        } while (clockStopped || end > start);
 
         ++clockState;
         if (clockState == clockInfo.depth) {clockState = 0;}
@@ -93,6 +95,14 @@ bool MainFrameApp::OnInit() {
     mainLoop(mainFrame);
 
     return false;
+}
+
+void MainFrame::StopClock(wxCommandEvent& WXUNUSED(event)) {
+    clockStopped = true;
+}
+
+void MainFrame::RunClock(wxCommandEvent& WXUNUSED(event)) {
+    clockStopped = false;
 }
 
 //test jocha
