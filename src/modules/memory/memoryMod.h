@@ -10,6 +10,8 @@
 struct Instance{
     uint8_t* data;
     uint32_t size;
+    uint8_t readState;
+    uint8_t writeState;
 };
 
 #endif
