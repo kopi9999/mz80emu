@@ -24,16 +24,16 @@ enum Error createInterfaces(void*__restrict instance, void*** interfaces, uint16
     *interfaces = calloc(4, sizeof(void*));
     if (!*interfaces) {return MALLOC_ERROR;}
 
-    *interfaces[0] = calloc(1, sizeof(uint8_t)); //data bus
+    (*interfaces)[0] = calloc(1, sizeof(uint8_t)); //data bus
     if (!(*interfaces)[0]) {return MALLOC_ERROR;}
     
-    *interfaces[1] = calloc(1, sizeof(uint16_t)); //address bus
+    (*interfaces)[1] = calloc(1, sizeof(uint16_t)); //address bus
     if (!(*interfaces)[1]) {return MALLOC_ERROR;}
     
-    *interfaces[2] = calloc(1, sizeof(uint8_t)); //chip select
+    (*interfaces)[2] = calloc(1, sizeof(uint8_t)); //chip select
     if (!(*interfaces)[2]) {return MALLOC_ERROR;}
     
-    *interfaces[3] = calloc(1, sizeof(uint8_t)); //write enable
+    (*interfaces)[3] = calloc(1, sizeof(uint8_t)); //write enable
     if (!(*interfaces)[3]) {return MALLOC_ERROR;}
 
     *count = 4;

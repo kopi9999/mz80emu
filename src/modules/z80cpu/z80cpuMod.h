@@ -7,6 +7,10 @@
 #include "../moduleInternal.h"
 
 struct Instance{
+    uint8_t MState;
+    uint8_t TCycle;
+    uint8_t instruction;
+
     uint16_t PC;
     uint16_t SP;
     uint16_t IX;

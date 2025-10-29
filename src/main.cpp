@@ -42,7 +42,7 @@ int main()
         for (uint32_t i = 0; i < instanceInfo.count; i++){
             if (clockInfo.strobeUpClock[i][clockState]){
                 tmpModuleId = instanceInfo.list[clockInfo.strobeUpInstanceList[i]];
-                error = modules.strobeUpFuncs[tmpModuleId](instances[clockInfo.strobeUpInstanceList[i]], (void**) &interfaces[clockInfo.strobeUpInterfacesList[i]]);
+                error = modules.strobeUpFuncs[tmpModuleId](instances[clockInfo.strobeUpInstanceList[i]], interfaces[clockInfo.strobeUpInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe up error " << error << ".\n"; break;}
             }
         }
@@ -50,7 +50,7 @@ int main()
         for (uint32_t i = 0; i < instanceInfo.count; i++){
             if (clockInfo.strobeDownClock[i][clockState]){
                 tmpModuleId = instanceInfo.list[clockInfo.strobeDownInstanceList[i]];
-                error = modules.strobeDownFuncs[tmpModuleId](instances[clockInfo.strobeDownInstanceList[i]], (void**) &interfaces[clockInfo.strobeDownInterfacesList[i]]);
+                error = modules.strobeDownFuncs[tmpModuleId](instances[clockInfo.strobeDownInstanceList[i]], interfaces[clockInfo.strobeDownInterfacesList[i]]);
                 if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe down error " << error << ".\n"; break;}
             }
         }
