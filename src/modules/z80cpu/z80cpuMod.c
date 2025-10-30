@@ -1,4 +1,4 @@
-#include "z80cpuMod.h"
+#include "mOperations.h"
 
 const char* moduleName = "Z80 CPU module";
 const char* moduleDescription = "Module emulating Z80 CPU";
@@ -82,33 +82,7 @@ enum Error strobeUp(void*__restrict instance, void**__restrict interfaces)
         return SUCCESS;
     }
 
-    if (instanceTmp->MState == 1){
-       if (instanceTmp->TCycle == 1){
-            instanceTmp->TCycle = 2;
-            return SUCCESS;
-        }
-        if (instanceTmp->TCycle == 2) {
-            instanceTmp->instruction = *(uint8_t*) interfaces[1];
-            *(uint8_t*) interfaces[2] = 0; // m1
-            *(uint8_t*) interfaces[3] = 0; // mreq
-            *(uint8_t*) interfaces[5] = 0; // rd
-            *(uint8_t*) interfaces[7] = 1; // rfsh
-            instanceTmp->TCycle = 3;
-            return SUCCESS;
-        }
-        if (instanceTmp->TCycle == 3) {
-            instanceTmp->TCycle = 4;
-            return SUCCESS;
-        }
-        if (instanceTmp->TCycle == 4) {
-            printf("\nLoaded instruction %d on address %d", instanceTmp->instruction, instanceTmp->PC);
-            instanceTmp->PC++;
-            instanceTmp->MState = 0;
-            instanceTmp->TCycle = 0;
-            *(uint8_t*) interfaces[7] = 0; // rfsh
-            return SUCCESS;
-        }
-    }
+    if (instanceTmp->MState == 1){return m1_strobeUp(instanceTmp, interfaces);}
     return SUCCESS;
 }
 
@@ -116,22 +90,7 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
 {
     struct Instance* instanceTmp = instance;
 
-    if (instanceTmp->MState == 1){
-        if (instanceTmp->TCycle == 1){
-            *(uint8_t*) interfaces[3] = 1; // mreq
-            *(uint8_t*) interfaces[5] = 1; // rd
-            return SUCCESS;
-        }
-        if (instanceTmp->TCycle == 2) {return SUCCESS;}
-        if (instanceTmp->TCycle == 3) {
-            *(uint8_t*) interfaces[3] = 1; // mreq
-            return SUCCESS;
-        }
-        if (instanceTmp->TCycle == 4){
-            *(uint8_t*) interfaces[3] = 0; // mreq
-            return SUCCESS;
-        }
-    }
+    if (instanceTmp->MState == 1){return m1_strobeDown(instanceTmp, interfaces);}
     
     return SUCCESS;
 }
