@@ -4,6 +4,7 @@
 #include "misc.hpp"
 #include <chrono>
 #include <iostream>
+#include <thread>
 
 #include "MainFrame.hpp"
 #include "MainFrameApp.hpp"
@@ -26,6 +27,7 @@ struct InterfacesInfo interfacesInfo = {};
 struct ClockInfo clockInfo = {};
 
 bool clockStopped = false;
+bool nextTick = false;
 
 void mainLoop(wxWeakRef<MainFrame> mainFrame)
 {
@@ -52,32 +54,34 @@ void mainLoop(wxWeakRef<MainFrame> mainFrame)
     while (mainLoop && mainFrame && mainFrame->IsShownOnScreen()){
         start = chrono::high_resolution_clock::now();
         end = start + duration;
-
-        for (uint32_t i = 0; i < instanceInfo.count; i++){
-            if (clockInfo.strobeUpClock[i][clockState]){
-                tmpModuleId = instanceInfo.list[clockInfo.strobeUpInstanceList[i]];
-                error = modules.strobeUpFuncs[tmpModuleId](instances[clockInfo.strobeUpInstanceList[i]], (void**) &interfaces[clockInfo.strobeUpInterfacesList[i]]);
-                if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe up error " << error << ".\n"; break;}
-            }
-        }
         
-        for (uint32_t i = 0; i < instanceInfo.count; i++){
-            if (clockInfo.strobeDownClock[i][clockState]){
-                tmpModuleId = instanceInfo.list[clockInfo.strobeDownInstanceList[i]];
-                error = modules.strobeDownFuncs[tmpModuleId](instances[clockInfo.strobeDownInstanceList[i]], (void**) &interfaces[clockInfo.strobeDownInterfacesList[i]]);
-                if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe down error " << error << ".\n"; break;}
+        if (!clockStopped || nextTick) {
+            for (uint32_t i = 0; i < instanceInfo.count; i++){
+                if (clockInfo.strobeUpClock[i][clockState]){
+                    tmpModuleId = instanceInfo.list[clockInfo.strobeUpInstanceList[i]];
+                    error = modules.strobeUpFuncs[tmpModuleId](instances[clockInfo.strobeUpInstanceList[i]], (void**) &interfaces[clockInfo.strobeUpInterfacesList[i]]);
+                    if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe up error " << error << ".\n"; break;}
+                }
             }
+            
+            for (uint32_t i = 0; i < instanceInfo.count; i++){
+                if (clockInfo.strobeDownClock[i][clockState]){
+                    tmpModuleId = instanceInfo.list[clockInfo.strobeDownInstanceList[i]];
+                    error = modules.strobeDownFuncs[tmpModuleId](instances[clockInfo.strobeDownInstanceList[i]], (void**) &interfaces[clockInfo.strobeDownInterfacesList[i]]);
+                    if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe down error " << error << ".\n"; break;}
+                }
+            }
+            ++clockState;
+            if (clockState == clockInfo.depth) {clockState = 0;}
+            
+            nextTick = false;
         }
         
         do {
             if (mainLoop && mainLoop->Pending() && mainFrame && mainFrame->IsShownOnScreen()) { mainLoop->Dispatch(); }
             if (mainLoop && mainFrame && mainFrame->IsShownOnScreen()) { mainLoop->ProcessIdle(); }
             start = chrono::high_resolution_clock::now();
-        } while (clockStopped || end > start);
-
-        ++clockState;
-        if (clockState == clockInfo.depth) {clockState = 0;}
-
+        } while (end > start && !clockStopped);
     }
 
     wxEventLoopBase::SetActive(nullptr);
@@ -103,6 +107,10 @@ void MainFrame::StopClock(wxCommandEvent& WXUNUSED(event)) {
 
 void MainFrame::RunClock(wxCommandEvent& WXUNUSED(event)) {
     clockStopped = false;
+}
+
+void MainFrame::NextTick(wxCommandEvent& WXUNUSED(event)) {
+    nextTick = true;
 }
 
 //test jocha

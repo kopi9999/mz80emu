@@ -9,7 +9,7 @@ class MainFrame : public wxFrame
         void OnQuit(wxCommandEvent&);
         void RunClock(wxCommandEvent&);
         void StopClock(wxCommandEvent&);
-        void NextStep(wxCommandEvent&);
+        void NextTick(wxCommandEvent&);
 
         wxMenuBar *menuBar;
         wxMenu *file;
