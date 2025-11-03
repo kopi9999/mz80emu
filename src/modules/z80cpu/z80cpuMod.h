@@ -167,6 +167,17 @@ enum CpuState {
     OTDR,
 };
 
+enum Register{
+    B,
+    C,
+    D,
+    E,
+    H,
+    L,
+    UNDEFINED,
+    A
+};
+
 struct Instance{
     uint8_t MState;
     uint8_t TCycle;
