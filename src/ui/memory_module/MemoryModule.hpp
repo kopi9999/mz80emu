@@ -34,8 +34,9 @@ private:
     //std::map<int, std::vector<std::string>> instanceInterfaces;
     uint8_t memory_table [65536]; 
 
-    void GridCreate();
+    void GridCreate(wxPanel* panel);
     void TableTextValues();
+    void SizerEventTale();
 };
 
 #endif
