@@ -10,6 +10,7 @@ struct Instance{
     uint8_t MState;
     uint8_t TCycle;
     uint8_t instruction;
+    uint8_t tmp;
 
     uint16_t PC;
     uint16_t SP;

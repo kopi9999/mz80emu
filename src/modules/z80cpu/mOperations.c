@@ -48,3 +48,56 @@ enum Error m1_strobeDown (struct Instance* __restrict instance, void** __restric
     }
     return SUCCESS;
 }
+
+enum Error m2_strobeUp (struct Instance* __restrict instance, void** __restrict interfaces) {
+    if (instance->TCycle == 1) {instance->TCycle = 2; return SUCCESS;} 
+    if (instance->TCycle == 2) {instance->TCycle = 3; return SUCCESS;} 
+    if (instance->TCycle == 3) {instance->TCycle = 1; return SUCCESS;} 
+
+    return SUCCESS;
+}
+
+enum Error m2_strobeDown (struct Instance* __restrict instance, void** __restrict interfaces) {
+    
+    if (instance->TCycle == 1) {
+        *(uint8_t*) interfaces[3] = 1; // mreq
+        *(uint8_t*) interfaces[5] = 1; // rd
+        return SUCCESS;
+    } 
+    if (instance->TCycle == 2) {
+        return SUCCESS;
+    } 
+    if (instance->TCycle == 3) {
+        *(uint8_t*) interfaces[3] = 0; // mreq
+        *(uint8_t*) interfaces[5] = 0; // rd
+        instance->tmp = *(uint8_t*) interfaces[1];
+        return SUCCESS;
+    } 
+    return SUCCESS;
+}
+
+enum Error m3_strobeUp (struct Instance* __restrict instance, void** __restrict interfaces) {
+    if (instance->TCycle == 1) {instance->TCycle = 2; return SUCCESS;} 
+    if (instance->TCycle == 2) {instance->TCycle = 3; return SUCCESS;} 
+    if (instance->TCycle == 3) {instance->TCycle = 1; return SUCCESS;} 
+    return SUCCESS;
+}
+
+enum Error m3_strobeDown (struct Instance* __restrict instance, void** __restrict interfaces) {
+    if (instance->TCycle == 1) {
+        *(uint8_t*) interfaces[3] = 1; // mreq
+        *(uint8_t*) interfaces[1] = instance->tmp; //data
+        return SUCCESS;
+    } 
+    if (instance->TCycle == 2) {
+        *(uint8_t*) interfaces[6] = 1; // wr
+        return SUCCESS;
+    } 
+    if (instance->TCycle == 3) {
+        *(uint8_t*) interfaces[3] = 0; // mreq
+        *(uint8_t*) interfaces[6] = 0; // wr
+        return SUCCESS;
+    } 
+    return SUCCESS;
+}
+
