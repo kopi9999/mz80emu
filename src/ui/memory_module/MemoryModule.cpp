@@ -1,8 +1,15 @@
 #include "MemoryModule.hpp"
-#include <wx/sizer.h>
 #include <ctime> 
 #include <sstream>
 #include <iomanip>
+
+wxIMPLEMENT_APP(App);
+
+bool App::OnInit(){
+  MainFrame* mainFrame = new MainFrame("C++ GUI");
+  mainFrame->Show();
+  return true;
+}
 
 MainFrame::MainFrame(const wxString& title)
     : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(800, 600))
@@ -20,7 +27,7 @@ MainFrame::MainFrame(const wxString& title)
 
     panel->SetSizer(mainSizer);
     
-}
+};
 
 
 void MainFrame::GridCreate()
@@ -72,6 +79,6 @@ void MainFrame::TableTextValues()
     }
     int size = sizeof(memory_table)/sizeof(memory_table[0]);
     for (size_t i = 0; i < size; ++i) {
-        memory_table[i] = static_cast<u_int8_t>(std::rand() % 256); // Random byte (0-255)
+        memory_table[i] = static_cast<uint8_t>(std::rand() % 256); // Random byte (0-255)
     }
 }

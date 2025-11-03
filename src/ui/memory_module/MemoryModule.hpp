@@ -3,8 +3,16 @@
 #include <wx/wx.h>
 #include <wx/listbox.h>
 #include <wx/checkbox.h>
+#include <wx/sizer.h>
 #include <wx/grid.h>
-#include <map>
+#include <cstdint>
+//#include <map>
+
+class App : public wxApp
+{
+  public:
+    bool OnInit();
+};
 
 class MainFrame : public wxFrame
 {
@@ -23,8 +31,8 @@ private:
 
     std::vector<std::string> selectedModules;
     std::vector<std::string> instanceNames;
-    std::map<int, std::vector<std::string>> instanceInterfaces;
-    u_int8_t memory_table [65536]; 
+    //std::map<int, std::vector<std::string>> instanceInterfaces;
+    uint8_t memory_table [65536]; 
 
     void GridCreate();
     void TableTextValues();
