@@ -1,6 +1,7 @@
 #include "MainFrame.hpp"
 #include <wx/wx.h>
 #include <wx/listctrl.h>
+#include <wx/tglbtn.h>
 
 enum
 {
@@ -8,6 +9,8 @@ enum
     ID_STOPCLOCK,
     ID_RUNCLOCK,
     ID_NEXTTICK,
+    ID_CLOCKPERIODTEXTCTRL,
+    ID_OVERRIDECLOCKPERIODBUTTON,
     ID_INSTANCESLIST
 };
 
@@ -26,11 +29,15 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     file->Append(wxID_EXIT, wxT("&Quit"));
 
     wxToolBar *toolBar = CreateToolBar();
+    wxTextCtrl *clockPeriodTextCtrl = new wxTextCtrl(toolBar, ID_CLOCKPERIODTEXTCTRL, "", wxDefaultPosition, wxSize(200, -1));
+    wxToggleButton *overrideClockPeriodButton = new wxToggleButton(toolBar, ID_OVERRIDECLOCKPERIODBUTTON, "Override clock period");
     toolBar->AddTool(ID_STOPCLOCK, wxT("Stop clock"), stopClock);
     toolBar->AddTool(ID_RUNCLOCK, wxT("Run clock"), runClock);
     toolBar->AddTool(ID_NEXTTICK, wxT("Next tick"), nextTick);
+    toolBar->AddSeparator();
+    toolBar->AddControl(clockPeriodTextCtrl);
+    toolBar->AddControl(overrideClockPeriodButton);
     toolBar->Realize();
-
     menuBar->Append(file, wxT("&File"));
     SetMenuBar(menuBar);
 
@@ -61,6 +68,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     Connect(ID_STOPCLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::StopClock));
     Connect(ID_RUNCLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::RunClock));
     Connect(ID_NEXTTICK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::NextTick));
+    Connect(ID_OVERRIDECLOCKPERIODBUTTON, wxEVT_TOGGLEBUTTON, wxCommandEventHandler(MainFrame::OverrideClockPeriodButton));
     Centre();
 }
 
