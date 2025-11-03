@@ -68,7 +68,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     Connect(ID_STOPCLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::StopClock));
     Connect(ID_RUNCLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::RunClock));
     Connect(ID_NEXTTICK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::NextTick));
-    Connect(ID_OVERRIDECLOCKPERIODBUTTON, wxEVT_TOGGLEBUTTON, wxCommandEventHandler(MainFrame::OverrideClockPeriodButton));
+    //Connect(ID_OVERRIDECLOCKPERIODBUTTON, wxEVT_TOGGLEBUTTON, wxCommandEventHandler(MainFrame::OverrideClockPeriodButton));
     Centre();
 }
 

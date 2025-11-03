@@ -28,17 +28,23 @@ struct ClockInfo clockInfo = {};
 
 bool clockStopped = false;
 bool nextTick = false;
+bool exitLoop = false;
 
-void mainLoop(wxWeakRef<MainFrame> mainFrame)
+enum CrashCode exitCode = RUNNING;
+bool exitedLoop = false;
+bool startedLoop = false;
+mutex m;
+
+void mainLoop()
 {
+    exitedLoop = false;
+
     enum CrashCode crash;
     crash = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo);
-    if (crash) {return;}
-    //if (crash) {return crash;}
+    if (crash) {exitCode = crash; exitedLoop = true; return;}
     
     crash = init(&modules, &instances, &interfaces, instanceInfo, interfacesInfo);
-    if (crash) {return;}
-    //if (crash) {return crash;}
+    if (crash) {exitCode = crash; exitedLoop = true; return;}
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
     chrono::nanoseconds duration = chrono::nanoseconds(clockInfo.period);
@@ -46,12 +52,9 @@ void mainLoop(wxWeakRef<MainFrame> mainFrame)
     Error error;
     uint32_t clockState = 0;
 
-    wxEventLoopBase* mainLoop = wxEventLoop::GetActive()
-                                ? wxEventLoop::GetActive() 
-                                : new wxEventLoop();
-    wxEventLoopBase::SetActive(mainLoop);
+    startedLoop = true;
 
-    while (mainLoop && mainFrame && mainFrame->IsShownOnScreen()){
+    while (!exitLoop){
         start = chrono::high_resolution_clock::now();
         end = start + duration;
         
@@ -59,7 +62,7 @@ void mainLoop(wxWeakRef<MainFrame> mainFrame)
             for (uint32_t i = 0; i < instanceInfo.count; i++){
                 if (clockInfo.strobeUpClock[i][clockState]){
                     tmpModuleId = instanceInfo.list[clockInfo.strobeUpInstanceList[i]];
-                    error = modules.strobeUpFuncs[tmpModuleId](instances[clockInfo.strobeUpInstanceList[i]], (void**) &interfaces[clockInfo.strobeUpInterfacesList[i]]);
+                    error = modules.strobeUpFuncs[tmpModuleId](instances[clockInfo.strobeUpInstanceList[i]], interfaces[clockInfo.strobeUpInterfacesList[i]]);
                     if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe up error " << error << ".\n"; break;}
                 }
             }
@@ -67,7 +70,7 @@ void mainLoop(wxWeakRef<MainFrame> mainFrame)
             for (uint32_t i = 0; i < instanceInfo.count; i++){
                 if (clockInfo.strobeDownClock[i][clockState]){
                     tmpModuleId = instanceInfo.list[clockInfo.strobeDownInstanceList[i]];
-                    error = modules.strobeDownFuncs[tmpModuleId](instances[clockInfo.strobeDownInstanceList[i]], (void**) &interfaces[clockInfo.strobeDownInterfacesList[i]]);
+                    error = modules.strobeDownFuncs[tmpModuleId](instances[clockInfo.strobeDownInstanceList[i]], interfaces[clockInfo.strobeDownInterfacesList[i]]);
                     if (error) {cout << "ERROR [" << modules.names[tmpModuleId] << "]: strobe down error " << error << ".\n"; break;}
                 }
             }
@@ -77,28 +80,35 @@ void mainLoop(wxWeakRef<MainFrame> mainFrame)
             nextTick = false;
         }
         
-        do {
-            if (mainLoop && mainLoop->Pending() && mainFrame && mainFrame->IsShownOnScreen()) { mainLoop->Dispatch(); }
-            if (mainLoop && mainFrame && mainFrame->IsShownOnScreen()) { mainLoop->ProcessIdle(); }
-            start = chrono::high_resolution_clock::now();
-        } while (end > start && !clockStopped);
+        do { start = chrono::high_resolution_clock::now(); } while (end > start && !clockStopped);
     }
 
-    wxEventLoopBase::SetActive(nullptr);
-    delete mainLoop;
     unloadLibs(modules.pointers, modules.count);
-    //return convertErrorToCrash(error);
+    
+    exitCode = convertErrorToCrash(error);
+    exitedLoop = true;
 }
 
 wxIMPLEMENT_APP(MainFrameApp);
 
+thread emulator(mainLoop);
+
 bool MainFrameApp::OnInit() {
     MainFrame *mainFrame = new MainFrame();
     mainFrame->Show();
+    
+    emulator.detach();
 
-    mainLoop(mainFrame);
+    while (!startedLoop && !exitedLoop) {}
+    if (exitedLoop) {return false;}
 
-    return false;
+    return true;
+}
+
+int MainFrameApp::OnExit() {
+    exitLoop = true;
+    while (!exitedLoop) {}
+    return exitCode;
 }
 
 void MainFrame::StopClock(wxCommandEvent& WXUNUSED(event)) {
