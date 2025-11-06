@@ -81,7 +81,10 @@ enum CpuState {
     INC_$HL$,
     INC_$IX_plus_D$,
     INC_$IY_plus_D$,
-    DEC_M,
+    DEC_Rp,
+    DEC_$HL$,
+    DEC_$IX_plus_D$,
+    DEC_$IY_plus_D$,
     DAA,
     CPL,
     NEG,
@@ -184,6 +187,9 @@ struct Instance{
     uint8_t instruction;
     uint8_t tmp;
     enum CpuState cpuState;
+
+    enum Register registerIn;
+    enum Register registerOut;
 
     uint16_t PC;
     uint16_t SP;
