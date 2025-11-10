@@ -3,6 +3,36 @@
 enum CpuState decodeInstruction(struct Instance* __restrict  i) 
 {
     if (i->instruction & 0b10000000) {
+        if (i->instruction & 0b01000000) {
+        }
+        else{
+            switch (i->instruction & 0b00111000) {
+                case 0: 
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return ADD_A_$HL$;}
+                    else {return ADD_A_R;}
+                case 1: 
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return ADC_A_$HL$;}
+                    else {return ADC_A_R;}
+                case 2: 
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return SUB_A_$HL$;}
+                    else {return SUB_A_R;}
+                case 3: 
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return SBC_A_$HL$;}
+                    else {return SBC_A_R;}
+                case 4: 
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return AND_A_$HL$;}
+                    else {return AND_A_R;}
+                case 5: 
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return OR_A_$HL$;}
+                    else {return OR_A_R;}
+                case 6: 
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return XOR_A_$HL$;}
+                    else {return XOR_A_R;}
+                case 7: 
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return CP_A_$HL$;}
+                    else {return CP_A_R;}
+            }
+        }
     }
     else {
         if (i->instruction & 0b01000000){ // 01xxxxxx
