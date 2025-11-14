@@ -3,17 +3,6 @@
 #include <wx/listctrl.h>
 #include <wx/tglbtn.h>
 
-enum
-{
-    ID_LOADCONFIGFILE = wxID_HIGHEST + 1,
-    ID_STOPCLOCK,
-    ID_RUNCLOCK,
-    ID_NEXTTICK,
-    ID_CLOCKPERIODTEXTCTRL,
-    ID_OVERRIDECLOCKPERIODBUTTON,
-    ID_INSTANCESLIST
-};
-
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition, wxSize(800, 600)) {
     wxImage::AddHandler(new wxPNGHandler);
     wxBitmap stopClock(wxT("../../src/ui/img/stopClock.png"), wxBITMAP_TYPE_PNG);
@@ -29,8 +18,9 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     file->Append(wxID_EXIT, wxT("&Quit"));
 
     wxToolBar *toolBar = CreateToolBar();
-    wxTextCtrl *clockPeriodTextCtrl = new wxTextCtrl(toolBar, ID_CLOCKPERIODTEXTCTRL, "", wxDefaultPosition, wxSize(200, -1));
-    wxToggleButton *overrideClockPeriodButton = new wxToggleButton(toolBar, ID_OVERRIDECLOCKPERIODBUTTON, "Override clock period");
+    wxTextCtrl *clockPeriodTextCtrl = new wxTextCtrl(toolBar, ID_CLOCK_PERIOD_TEXT_CTRL, "", wxDefaultPosition, wxSize(200, -1));
+    wxToggleButton *overrideClockPeriodButton = new wxToggleButton(toolBar, ID_OVERRIDE_CLOCK_PERIOD_BUTTON, "Override clock period");
+    overrideClockPeriodButton->Disable();
     toolBar->AddTool(ID_STOPCLOCK, wxT("Stop clock"), stopClock);
     toolBar->AddTool(ID_RUNCLOCK, wxT("Run clock"), runClock);
     toolBar->AddTool(ID_NEXTTICK, wxT("Next tick"), nextTick);
@@ -68,7 +58,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     Connect(ID_STOPCLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::StopClock));
     Connect(ID_RUNCLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::RunClock));
     Connect(ID_NEXTTICK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::NextTick));
-    //Connect(ID_OVERRIDECLOCKPERIODBUTTON, wxEVT_TOGGLEBUTTON, wxCommandEventHandler(MainFrame::OverrideClockPeriodButton));
+    Connect(ID_CLOCK_PERIOD_TEXT_CTRL, wxEVT_TEXT, wxCommandEventHandler(MainFrame::ValidateClockPeriodValue));
+    Connect(ID_OVERRIDE_CLOCK_PERIOD_BUTTON, wxEVT_TOGGLEBUTTON, wxCommandEventHandler(MainFrame::OverrideClockPeriodButton));
     Centre();
 }
 
