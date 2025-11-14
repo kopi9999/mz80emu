@@ -46,6 +46,9 @@ enum CpuState {
     LD_SP_IX,
     LD_SP_IY,
 
+    PUSH_QQ,
+    PUSH_IX,
+    PUSH_IY,
     POP_QQ,
     POP_IX,
     POP_IY,
@@ -77,11 +80,11 @@ enum CpuState {
     ADC_A_$IX_plus_D$,
     ADC_A_$IY_plus_D$,
 
-    SUB_A_R,
-    SUB_A_N,
-    SUB_A_$HL$,
-    SUB_A_$IX_plus_D$,
-    SUB_A_$IY_plus_D$,
+    SUB_R,
+    SUB_N,
+    SUB_$HL$,
+    SUB_$IX_plus_D$,
+    SUB_$IY_plus_D$,
 
     SBC_A_R,
     SBC_A_N,
@@ -89,11 +92,11 @@ enum CpuState {
     SBC_A_$IX_plus_D$,
     SBC_A_$IY_plus_D$,
 
-    AND_A_R,
-    AND_A_N,
-    AND_A_$HL$,
-    AND_A_$IX_plus_D$,
-    AND_A_$IY_plus_D$,
+    AND_R,
+    AND_N,
+    AND_$HL$,
+    AND_$IX_plus_D$,
+    AND_$IY_plus_D$,
 
     OR_A_R,
     OR_A_N,
@@ -101,17 +104,17 @@ enum CpuState {
     OR_A_$IX_plus_D$,
     OR_A_$IY_plus_D$,
 
-    XOR_A_R,
-    XOR_A_N,
-    XOR_A_$HL$,
-    XOR_A_$IX_plus_D$,
-    XOR_A_$IY_plus_D$,
+    XOR_R,
+    XOR_N,
+    XOR_$HL$,
+    XOR_$IX_plus_D$,
+    XOR_$IY_plus_D$,
 
-    CP_A_R,
-    CP_A_N,
-    CP_A_$HL$,
-    CP_A_$IX_plus_D$,
-    CP_A_$IY_plus_D$,
+    CP_R,
+    CP_N,
+    CP_$HL$,
+    CP_$IX_plus_D$,
+    CP_$IY_plus_D$,
 
     AND_S,
     OR_S,
@@ -143,7 +146,7 @@ enum CpuState {
     ADC_HL_SS,
     SBC_HL_SS,
     ADD_IX_PP,
-    ADD_IY_PP,
+    ADD_IY_RR,
     INC_SS,
     INC_IX,
     INC_IY,
@@ -208,6 +211,14 @@ enum CpuState {
     OTIR,
     OUTD,
     OTDR,
+
+    EI,
+
+
+    CB_prefix,
+    ED_prefix,
+    IX_override,
+    IY_override,
 };
 
 enum Register{
