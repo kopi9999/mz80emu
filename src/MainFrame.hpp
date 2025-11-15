@@ -14,13 +14,13 @@ class MainFrame : public wxFrame
         void ValidateClockPeriodValue(wxCommandEvent&);
         
         enum {
-            ID_LOADCONFIGFILE = wxID_HIGHEST + 1,
-            ID_STOPCLOCK,
-            ID_RUNCLOCK,
-            ID_NEXTTICK,
+            ID_LOAD_CONFIG_FILE = wxID_HIGHEST + 1,
+            ID_STOP_CLOCK,
+            ID_RUN_CLOCK,
+            ID_NEXT_TICK,
             ID_CLOCK_PERIOD_TEXT_CTRL,
             ID_OVERRIDE_CLOCK_PERIOD_BUTTON,
-            ID_INSTANCESLIST
+            ID_INSTANCES_LIST
         };
 
         wxMenuBar *menuBar;

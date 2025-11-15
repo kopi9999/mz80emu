@@ -13,7 +13,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     menuBar = new wxMenuBar;
 
     file = new wxMenu;
-    file->Append(ID_LOADCONFIGFILE, wxT("&Load config file"));
+    file->Append(ID_LOAD_CONFIG_FILE, wxT("&Load config file"));
     file->AppendSeparator();
     file->Append(wxID_EXIT, wxT("&Quit"));
 
@@ -21,9 +21,9 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     wxTextCtrl *clockPeriodTextCtrl = new wxTextCtrl(toolBar, ID_CLOCK_PERIOD_TEXT_CTRL, "", wxDefaultPosition, wxSize(200, -1));
     wxToggleButton *overrideClockPeriodButton = new wxToggleButton(toolBar, ID_OVERRIDE_CLOCK_PERIOD_BUTTON, "Override clock period");
     overrideClockPeriodButton->Disable();
-    toolBar->AddTool(ID_STOPCLOCK, wxT("Stop clock"), stopClock);
-    toolBar->AddTool(ID_RUNCLOCK, wxT("Run clock"), runClock);
-    toolBar->AddTool(ID_NEXTTICK, wxT("Next tick"), nextTick);
+    toolBar->AddTool(ID_STOP_CLOCK, wxT("Stop clock"), stopClock);
+    toolBar->AddTool(ID_RUN_CLOCK, wxT("Run clock"), runClock);
+    toolBar->AddTool(ID_NEXT_TICK, wxT("Next tick"), nextTick);
     toolBar->AddSeparator();
     toolBar->AddControl(clockPeriodTextCtrl);
     toolBar->AddControl(overrideClockPeriodButton);
@@ -35,7 +35,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     wxPanel *mainPanel = new wxPanel(this);
     wxBoxSizer *mainSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    wxListCtrl *instancesList = new wxListCtrl(mainPanel, ID_INSTANCESLIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+    wxListCtrl *instancesList = new wxListCtrl(mainPanel, ID_INSTANCES_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
     wxListItem instancesColumn;
     instancesColumn.SetId(0);
     instancesColumn.SetText( _("Module instances") );
@@ -55,9 +55,9 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
 
 
     Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnQuit));
-    Connect(ID_STOPCLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::StopClock));
-    Connect(ID_RUNCLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::RunClock));
-    Connect(ID_NEXTTICK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::NextTick));
+    Connect(ID_STOP_CLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::StopClock));
+    Connect(ID_RUN_CLOCK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::RunClock));
+    Connect(ID_NEXT_TICK, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrame::NextTick));
     Connect(ID_CLOCK_PERIOD_TEXT_CTRL, wxEVT_TEXT, wxCommandEventHandler(MainFrame::ValidateClockPeriodValue));
     Connect(ID_OVERRIDE_CLOCK_PERIOD_BUTTON, wxEVT_TOGGLEBUTTON, wxCommandEventHandler(MainFrame::OverrideClockPeriodButton));
     Centre();

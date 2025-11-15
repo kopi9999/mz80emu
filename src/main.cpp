@@ -26,7 +26,7 @@ struct InstanceInfo instanceInfo = {};
 struct InterfacesInfo interfacesInfo = {};
 struct ClockInfo clockInfo = {};
 
-bool clockStopped = false;
+bool clockStopped = true;
 bool nextTick = false;
 bool exitLoop = false;
 
@@ -139,7 +139,6 @@ void MainFrame::OverrideClockPeriodButton(wxCommandEvent& event) {
             duration = originalDuration;
         }
     }
-    cout << "\n" << ((wxTextCtrl*) FindWindowById(ID_CLOCK_PERIOD_TEXT_CTRL))->GetLineText(0) << "\n";
 }
 
 void MainFrame::ValidateClockPeriodValue(wxCommandEvent& WXUNUSED(event)) {
