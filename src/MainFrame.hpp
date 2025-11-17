@@ -14,8 +14,8 @@ class MainFrame : public wxFrame
         void ValidateClockPeriodValue(wxCommandEvent&);
         
         enum {
-            ID_LOAD_CONFIG_FILE = wxID_HIGHEST + 1,
-            ID_STOP_CLOCK,
+            //ID_LOAD_CONFIG_FILE = wxID_HIGHEST + 1,
+            ID_STOP_CLOCK = wxID_HIGHEST + 1,
             ID_RUN_CLOCK,
             ID_NEXT_TICK,
             ID_CLOCK_PERIOD_TEXT_CTRL,
@@ -25,7 +25,10 @@ class MainFrame : public wxFrame
 
         wxMenuBar *menuBar;
         wxMenu *file;
-        //bool clockStopped = false;
+    
+    private:
+        void OnTimer(wxTimerEvent& event);
+        wxTimer crashHandlingTimer;
 };
 
 #endif

@@ -3,7 +3,7 @@
 #include <wx/listctrl.h>
 #include <wx/tglbtn.h>
 
-MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition, wxSize(800, 600)) {
+MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition, wxSize(800, 600)), crashHandlingTimer(this) {
     wxImage::AddHandler(new wxPNGHandler);
     wxBitmap stopClock(wxT("../../src/ui/img/stopClock.png"), wxBITMAP_TYPE_PNG);
     wxBitmap runClock(wxT("../../src/ui/img/runClock.png"), wxBITMAP_TYPE_PNG);
@@ -13,8 +13,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     menuBar = new wxMenuBar;
 
     file = new wxMenu;
-    file->Append(ID_LOAD_CONFIG_FILE, wxT("&Load config file"));
-    file->AppendSeparator();
+    //file->Append(ID_LOAD_CONFIG_FILE, wxT("&Load config file"));
+    //file->AppendSeparator();
     file->Append(wxID_EXIT, wxT("&Quit"));
 
     wxToolBar *toolBar = CreateToolBar();
@@ -61,6 +61,9 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     Connect(ID_CLOCK_PERIOD_TEXT_CTRL, wxEVT_TEXT, wxCommandEventHandler(MainFrame::ValidateClockPeriodValue));
     Connect(ID_OVERRIDE_CLOCK_PERIOD_BUTTON, wxEVT_TOGGLEBUTTON, wxCommandEventHandler(MainFrame::OverrideClockPeriodButton));
     Centre();
+
+    Bind(wxEVT_TIMER, &MainFrame::OnTimer, this);
+    crashHandlingTimer.Start(1000);
 }
 
 void MainFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {

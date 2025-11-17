@@ -10,6 +10,8 @@
 #include "MainFrameApp.hpp"
 #include <wx/wx.h>
 #include <wx/evtloop.h>
+#include <wx/msgdlg.h>
+#include <wx/defs.h>
 
 extern "C" {
     #include "loadMod.h"
@@ -36,6 +38,11 @@ bool startedLoop = false;
 chrono::nanoseconds duration;
 chrono::nanoseconds originalDuration;
 mutex m;
+
+void crash() {
+    wxMessageBox("Critical error occured and aplication will be closed.\nError code: " + to_string(exitCode), "Critical error.", wxOK | wxICON_ERROR);
+    ::wxExit();
+}
 
 void mainLoop()
 {
@@ -99,6 +106,7 @@ thread emulator(mainLoop);
 bool MainFrameApp::OnInit() {
     MainFrame *mainFrame = new MainFrame();
     mainFrame->Show();
+    wxHandleFatalExceptions(true);
     
     emulator.detach();
 
@@ -112,6 +120,14 @@ int MainFrameApp::OnExit() {
     exitLoop = true;
     while (!exitedLoop) {}
     return exitCode;
+}
+
+void MainFrameApp::OnFatalException() {
+    crash();
+}
+
+void MainFrame::OnTimer(wxTimerEvent& event) {
+    if (exitCode != RUNNING) { crash(); }
 }
 
 void MainFrame::StopClock(wxCommandEvent& WXUNUSED(event)) {
@@ -144,13 +160,17 @@ void MainFrame::OverrideClockPeriodButton(wxCommandEvent& event) {
 void MainFrame::ValidateClockPeriodValue(wxCommandEvent& WXUNUSED(event)) {
     string value = ((wxTextCtrl*) FindWindowById(ID_CLOCK_PERIOD_TEXT_CTRL))->GetLineText(0).ToStdString();
     
-    bool isInteger = true;
-    if (value.empty()){isInteger = false;}
+    bool isValid = true;
+    if (value.empty() || value.length() > 10){isValid = false;}
     for (size_t i = 0; i < value.length(); i++){
-        if (!isdigit(value[i])) {isInteger = false; break;}
+        if (!isdigit(value[i])) {isValid = false; break;}
+    }
+    if (isValid) {
+        int intValue = stoi(value);
+        if (intValue > 1000000000) {isValid = false;}
     }
     
-    if (isInteger) {((wxAnyButton*) FindWindowById(ID_OVERRIDE_CLOCK_PERIOD_BUTTON))->Enable();}
+    if (isValid) {((wxAnyButton*) FindWindowById(ID_OVERRIDE_CLOCK_PERIOD_BUTTON))->Enable();}
     else {((wxAnyButton*) FindWindowById(ID_OVERRIDE_CLOCK_PERIOD_BUTTON))->Disable();}
 }
 
