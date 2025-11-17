@@ -28,6 +28,10 @@ private:
     wxListBox* strobeUpInstanceList;
     wxListBox* strobeDownInstanceList;
     wxGrid* grid;
+    wxTimer refresherTimer;
+    wxLongLong startTime;
+
+    void OnTimer(wxTimerEvent& event);
 
     std::vector<std::string> selectedModules;
     std::vector<std::string> instanceNames;
@@ -38,6 +42,9 @@ private:
     void TableTextValues();
     void SizerEventTale();
     void Refresher();
+    void StartRefreshing();
+
+    wxDECLARE_EVENT_TABLE();
 };
 
 #endif

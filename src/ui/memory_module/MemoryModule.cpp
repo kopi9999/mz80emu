@@ -4,7 +4,12 @@
 #include <iomanip>
 #include <stdio.h>
 
+wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
+    EVT_TIMER(wxID_ANY, MainFrame::OnTimer)
+wxEND_EVENT_TABLE()
+
 wxIMPLEMENT_APP(App);
+
 
 bool App::OnInit(){
   MainFrame* mainFrame = new MainFrame("C++ GUI");
@@ -13,7 +18,7 @@ bool App::OnInit(){
 }
 
 MainFrame::MainFrame(const wxString& title)
-    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(800, 600))
+    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(800, 600)),refresherTimer(this)
 {
     wxPanel* panel = new wxPanel(this);
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -115,6 +120,8 @@ void MainFrame::Refresher()
     int numRow = 20;
     int numCol = 11;
 
+    TableTextValues();
+
     for (int row = 0; row < numRow; ++row) {
             wxString asciiStr;
             for (int col = 0; col < numCol-1; ++col) {
@@ -129,4 +136,25 @@ void MainFrame::Refresher()
             }
             grid->SetCellValue(row, numCol-1, asciiStr);
         }
+    
+    grid->ForceRefresh();
+}
+
+void MainFrame::StartRefreshing()
+{
+    startTime = wxGetLocalTimeMillis();   // zapamiętaj czas startu
+    refresherTimer.Start(200);           // wywołuj co 200ms
+}
+
+
+void MainFrame::OnTimer(wxTimerEvent& event)
+{
+    wxLongLong now = wxGetLocalTimeMillis();
+    if ((now - startTime).ToDouble() >= 5000)
+    {
+        refresherTimer.Stop();
+        return;
+    }
+
+    Refresher();
 }
