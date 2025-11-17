@@ -42,7 +42,8 @@ private:
     void TableTextValues();
     void SizerEventTale();
     void Refresher();
-
+    void OnChangeRow();
+    void GridFill(int Rows , int Cols);
 };
 
 
