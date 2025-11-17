@@ -4,10 +4,6 @@
 #include <iomanip>
 #include <stdio.h>
 
-wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
-    EVT_TIMER(wxID_ANY, MainFrame::OnTimer)
-wxEND_EVENT_TABLE()
-
 wxIMPLEMENT_APP(App);
 
 
@@ -20,6 +16,7 @@ bool App::OnInit(){
 MainFrame::MainFrame(const wxString& title)
     : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(800, 600)),refresherTimer(this)
 {
+    
     wxPanel* panel = new wxPanel(this);
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -50,6 +47,10 @@ MainFrame::MainFrame(const wxString& title)
 
     panel->SetSizer(mainSizer);
     mainSizer->SetSizeHints(this);
+
+    Bind(wxEVT_TIMER, &MainFrame::OnTimer, this);
+    refresherTimer.Start(200);
+    startTime = wxGetLocalTimeMillis();
 };
 
 
@@ -122,6 +123,24 @@ void MainFrame::Refresher()
 
     TableTextValues();
 
+    int selectedTableRecord = 0 ;
+    unsigned char byteVal = 0x20;
+
+    for(int i = 0 ; i < numRow; i++)
+    {
+        for(int j = 0; j < numCol-1; j++)
+        {
+            std::stringstream ss;
+                //ss << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << (int)byteVal;
+                ss << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << (int)memory_table[(int)byteVal];
+                grid->SetCellValue(i, j, ss.str());
+
+                
+                byteVal++;
+            selectedTableRecord++;
+        }
+    }
+
     for (int row = 0; row < numRow; ++row) {
             wxString asciiStr;
             for (int col = 0; col < numCol-1; ++col) {
@@ -143,18 +162,12 @@ void MainFrame::Refresher()
 void MainFrame::StartRefreshing()
 {
     startTime = wxGetLocalTimeMillis();   // zapamiętaj czas startu
-    refresherTimer.Start(200);           // wywołuj co 200ms
+    refresherTimer.Start(2000);           // wywołuj co 200ms
 }
 
 
 void MainFrame::OnTimer(wxTimerEvent& event)
 {
     wxLongLong now = wxGetLocalTimeMillis();
-    if ((now - startTime).ToDouble() >= 5000)
-    {
-        refresherTimer.Stop();
-        return;
-    }
-
     Refresher();
 }

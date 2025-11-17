@@ -44,7 +44,7 @@ private:
     void Refresher();
     void StartRefreshing();
 
-    wxDECLARE_EVENT_TABLE();
 };
+
 
 #endif
