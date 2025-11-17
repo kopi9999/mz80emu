@@ -151,3 +151,8 @@ void MainFrame::GridFill(int Rows , int Cols)
             grid->SetCellValue(row, Cols-1, asciiStr);
         }
 }
+
+//Make that if space bar is hit the refreshment stops and the value can be changed manualy 
+//Upon hiting enter the row ASCI form shoud refresh to acomodite change 
+//or alterativli on every change ASCI form shoud responce with value change 
+//
