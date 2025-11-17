@@ -77,22 +77,22 @@ void MainFrame::GridCreate(wxPanel* panel)
 
     for (int row = 0; row < numRows; ++row) {
             wxString asciiStr;
-            for (int col = 0; col < 10; ++col) {
+            for (int col = 0; col < numCols-1; ++col) {
                 wxString hexVal = grid->GetCellValue(row, col);
                 long byte;
-                if (hexVal.ToLong(&byte, 10)) {
+                if (hexVal.ToLong(&byte, numCols-1)) {
                     char ch = static_cast<char>(byte);
                     asciiStr += wxString::Format("%c", std::isprint(ch) ? ch : '.');
                 } else {
                     asciiStr += '.';
                 }
             }
-            grid->SetCellValue(row, 10, asciiStr);
+            grid->SetCellValue(row, numCols-1, asciiStr);
         }
 
-    for(int c = 0; c < numRows; c++){
-        grid->SetLabel(c , c*10);
-    }
+    //for(int c = 0; c < numRows; c++){
+    //    grid->SetLabel(c , c*10);
+    //}
 
 }
 
@@ -108,4 +108,25 @@ void MainFrame::TableTextValues()
     for (size_t i = 0; i < size; ++i) {
         memory_table[i] = static_cast<uint8_t>(std::rand() % 256); // Random byte (0-255)
     }
+}
+
+void MainFrame::Refresher()
+{
+    int numRow = 20;
+    int numCol = 11;
+
+    for (int row = 0; row < numRow; ++row) {
+            wxString asciiStr;
+            for (int col = 0; col < numCol-1; ++col) {
+                wxString hexVal = grid->GetCellValue(row, col);
+                long byte;
+                if (hexVal.ToLong(&byte, numCol-1)) {
+                    char ch = static_cast<char>(byte);
+                    asciiStr += wxString::Format("%c", std::isprint(ch) ? ch : '.');
+                } else {
+                    asciiStr += '.';
+                }
+            }
+            grid->SetCellValue(row, numCol-1, asciiStr);
+        }
 }

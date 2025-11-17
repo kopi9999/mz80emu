@@ -37,6 +37,7 @@ private:
     void GridCreate(wxPanel* panel);
     void TableTextValues();
     void SizerEventTale();
+    void Refresher();
 };
 
 #endif
