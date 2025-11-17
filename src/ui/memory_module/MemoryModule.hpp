@@ -42,7 +42,6 @@ private:
     void TableTextValues();
     void SizerEventTale();
     void Refresher();
-    void StartRefreshing();
 
 };
 
