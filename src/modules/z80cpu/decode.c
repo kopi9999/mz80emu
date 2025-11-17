@@ -1,6 +1,6 @@
 #include "decode.h"
 
-enum CpuState decodeInstruction(struct Instance* __restrict  i) 
+enum Instruction decodeInstruction(struct Instance* __restrict  i) 
 {
     if (i->instruction & 0b10000000) {
         if (i->instruction & 0b01000000) {
@@ -147,5 +147,49 @@ enum CpuState decodeInstruction(struct Instance* __restrict  i)
         }
     }
 
-    return RESET;
+    return 0;
+}
+
+enum Instruction decodeInstruction_CB (struct Instance* __restrict i) {
+    switch(i->instruction & 0b11000000) {
+        case 0: 
+            switch(i->instruction & 0b00111000){
+                case 0: 
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return RLC_$HL$;}
+                    else {return RLC_R;}
+                case 1:
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return RRC_$HL$;}
+                    else {return RRC_R;}
+                case 2:
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return RL_$HL$;}
+                    else {return RL_R;}
+                case 3:
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return RR_$HL$;}
+                    else {return RR_R;}
+                case 4:
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return SLA_$HL$;}
+                    else {return SLA_R;}
+                case 5:
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return SRA_$HL$;}
+                    else {return SRA_R;}
+                case 6: return BAD;
+                case 7:
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return SRL_$HL$;}
+                    else {return SRL_R;}
+            }
+        case 1:
+            if((i->instruction & 0b00000111) == UNDEFINED){return BIT_B_$HL$;}
+            else {return BIT_B_R;}
+        case 2: 
+            if((i->instruction & 0b00000111) == UNDEFINED){return RES_B_$HL$;}
+            else {return RES_B_RN;}
+        case 3:
+            if((i->instruction & 0b00000111) == UNDEFINED){return SET_B_$HL$;}
+            else {return SET_B_R;}
+    }
+    return 0;
+}
+enum Instruction decodeInstruction_ED (struct Instance* __restrict i) {
+
+    return 0;
 }

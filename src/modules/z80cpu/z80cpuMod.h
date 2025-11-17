@@ -6,21 +6,14 @@
 
 #include "../moduleInternal.h"
 
-enum CpuState {
-    RESET,
-    LOAD,
-    
+enum Instruction {
+    BAD,
+
     LD_R_Rp,
     LD_R_N,
     LD_R_$HL$,
-    LD_R_$IX_plus_D$,
-    LD_R_$IY_plus_D$,
     LD_$HL$_R,
-    LD_$IX_plus_D$_R,
-    LD_$IY_plus_D$_R,
     LD_$HL$_N,
-    LD_$IX_plus_D$_N,
-    LD_$IY_plus_D$_N,
     LD_A_$BC$,
     LD_A_$DE$,
     LD_A_$NN$,
@@ -71,50 +64,34 @@ enum CpuState {
     ADD_A_R,
     ADD_A_N,
     ADD_A_$HL$,
-    ADD_A_$IX_plus_D$,
-    ADD_A_$IY_plus_D$,
 
     ADC_A_R,
     ADC_A_N,
     ADC_A_$HL$,
-    ADC_A_$IX_plus_D$,
-    ADC_A_$IY_plus_D$,
 
     SUB_R,
     SUB_N,
     SUB_$HL$,
-    SUB_$IX_plus_D$,
-    SUB_$IY_plus_D$,
 
     SBC_A_R,
     SBC_A_N,
     SBC_A_$HL$,
-    SBC_A_$IX_plus_D$,
-    SBC_A_$IY_plus_D$,
 
     AND_R,
     AND_N,
     AND_$HL$,
-    AND_$IX_plus_D$,
-    AND_$IY_plus_D$,
 
     OR_A_R,
     OR_A_N,
     OR_A_$HL$,
-    OR_A_$IX_plus_D$,
-    OR_A_$IY_plus_D$,
 
     XOR_R,
     XOR_N,
     XOR_$HL$,
-    XOR_$IX_plus_D$,
-    XOR_$IY_plus_D$,
 
     CP_R,
     CP_N,
     CP_$HL$,
-    CP_$IX_plus_D$,
-    CP_$IY_plus_D$,
 
     AND_S,
     OR_S,
@@ -122,12 +99,8 @@ enum CpuState {
     CP_S,
     INC_R,
     INC_$HL$,
-    INC_$IX_plus_D$,
-    INC_$IY_plus_D$,
     DEC_Rp,
     DEC_$HL$,
-    DEC_$IX_plus_D$,
-    DEC_$IY_plus_D$,
     DAA,
     CPL,
     NEG,
@@ -160,25 +133,27 @@ enum CpuState {
     RRA,
     RLC_R,
     RLC_$HL$,
-    RLC_$IX_plus_D$,
-    RLC_$IY_plus_D$,
-    RL_M,
-    RRC_M,
-    RR_M,
-    SLA_M,
-    SRA_M,
-    SRL_M,
+    RL_R,
+    RL_$HL$,
+    RRC_R,
+    RRC_$HL$,
+    RR_R,
+    RR_$HL$,
+    SLA_R,
+    SLA_$HL$,
+    SRA_R,
+    SRA_$HL$,
+    SRL_R,
+    SRL_$HL$,
+    
     RLD,
     RRD,
     BIT_B_R,
     BIT_B_$HL$,
-    BIT_B_$IX_plus_D$,
-    BIT_B_$IY_plus_D$,
     SET_B_R,
     SET_B_$HL$,
-    SET_B_$IX_plus_D$,
-    SET_B_$IY_plus_D$,
-    RES_B_M,
+    RES_B_RN,
+    RES_B_$HL$,
 
     JP_NN,
     JP_CC_NN,
@@ -237,7 +212,6 @@ struct Instance{
     uint8_t TCycle;
     uint8_t instruction;
     uint8_t tmp;
-    enum CpuState cpuState;
 
     enum Register registerIn;
     enum Register registerOut;
