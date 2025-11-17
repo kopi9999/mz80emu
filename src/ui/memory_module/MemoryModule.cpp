@@ -49,7 +49,7 @@ MainFrame::MainFrame(const wxString& title)
     mainSizer->SetSizeHints(this);
 
     Bind(wxEVT_TIMER, &MainFrame::OnTimer, this);
-    refresherTimer.Start(200);
+    refresherTimer.Start(400);
     startTime = wxGetLocalTimeMillis();
 };
 
@@ -158,13 +158,6 @@ void MainFrame::Refresher()
     
     grid->ForceRefresh();
 }
-
-void MainFrame::StartRefreshing()
-{
-    startTime = wxGetLocalTimeMillis();   // zapamiętaj czas startu
-    refresherTimer.Start(2000);           // wywołuj co 200ms
-}
-
 
 void MainFrame::OnTimer(wxTimerEvent& event)
 {
