@@ -190,6 +190,70 @@ enum Instruction decodeInstruction_CB (struct Instance* __restrict i) {
     return 0;
 }
 enum Instruction decodeInstruction_ED (struct Instance* __restrict i) {
-
-    return 0;
+    if ((i->instruction & 0b11000000) == 1) {
+        switch (i->instruction & 0b00000111){
+            case 0: return IN_R_$C$;
+            case 1: 
+                if ((i->instruction & 0b00111000) == UNDEFINED) {return BAD;}
+                else {return OUT_$C$_R;}
+            case 2:
+                if (i->instruction & 0b00001000) {return ADC_HL_SS;} 
+                else {return SBC_HL_SS;}
+            case 3:
+                if (i->instruction & 0b00001000) {return LD_DD_$NN$;} 
+                else {return LD_$NN$_DD;}
+            case 4:
+                if (i->instruction == 0b01000100) {return NEG;} break;
+            case 5:
+                if (i->instruction == 0b01000101) {return RETN;}
+                else if(i->instruction == 0b01001101) {return RETI;}
+                break;
+            case 6:
+                if (i->instruction & 0b00100000) {return BAD;}
+                else if (i->instruction & 0b00001000) {return BAD;}
+                else {return IM_N;}
+            case 7: switch(i->instruction & 0b00111000) {
+                case 0: return LD_I_A;
+                case 1: return LD_R_A;
+                case 2: return LD_A_I;
+                case 3: return LD_A_R;
+                case 4: return RRD;
+                case 5: return RLD;
+                case 6: return BAD;
+                case 7: return BAD;
+            }
+        }
+    } else if ((i->instruction & 0b11100000) == 5) {
+        switch (i->instruction & 0b00000111) {
+            case 0:
+                switch (i->instruction & 0b00011000) {
+                    case 0: return LDI;
+                    case 1: return LDD;
+                    case 2: return LDIR;
+                    case 3: return LDDR;
+                }
+            case 1:
+                switch (i->instruction & 0b00011000) {
+                    case 0: return CPI;
+                    case 1: return CPD;
+                    case 2: return CPIR;
+                    case 3: return CPDR;
+                }
+            case 2:
+                switch (i->instruction & 0b00011000) {
+                    case 0: return INI;
+                    case 1: return IND;
+                    case 2: return INIR;
+                    case 3: return INDR;
+                }
+            case 3:
+                switch (i->instruction & 0b00011000) {
+                    case 0: return OUTI;
+                    case 1: return OUTD;
+                    case 2: return OTIR;
+                    case 3: return OTDR;
+                }
+        }
+    }
+    return BAD;
 }
