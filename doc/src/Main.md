@@ -3,13 +3,14 @@
 `main.cpp` file is responsible for running emulator by initialization of all necessary modules and supervising clock. It contains:
 - variables storing data of modules, their instances and interfaces,
 - defintions of types used to storing pointers to functions in arrays,
-- definition of struct containing modules data.
+- definition of struct containing modules data,
+- definitions of functions of `MainFrame` and `MainFrameApp` - they are described in `MainFrame` and `MainFrameApp` sections of documentation.
 
 
 ## Functions
 
-### `main()`
-`main()` function takes care of loading essential data, correct processing it and running main loop.
+### `mainLoop()`
+`mainLoop()` function takes care of loading essential data, correct processing it and running main loop.
 
 At first, function loads data from configuration files and saves it in proper variables and arrays thanks to `loadConfig()` function.
 
@@ -21,7 +22,9 @@ Then, variables used to simulate clock are created. They consists of `clockState
 
 Finally, a main loop starts. In each iteration it calls `strobeUp()` and `strobeDown()` functions of all module instances. Next, program waits for the appropriate amount of time and increments `clockState` variable or changes its value to zero in case when it is equal to `clockDepth`, meaning number of clock states.
 
-If an error occurs when program tries to load module, get pointer to module function, create module instance or interface, or any of `strobeUp()` and `strobeDown()` functions returns error, all libraries are unloaded with `unloadLibs()` function and `main()` stops.
+If an error occurs when program tries to load module, get pointer to module function, create module instance or interface, or any of `strobeUp()` and `strobeDown()` functions returns error, all libraries are unloaded with `unloadLibs()` function and `mainLoop()` stops.
+
+When main loop is stopped, an exit code (error code or `0` when no error occured) is saved in `exitCode` variable and then crash is handled by `MainFrameApp`.
 
 
 
