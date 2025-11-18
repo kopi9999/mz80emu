@@ -110,9 +110,6 @@ bool MainFrameApp::OnInit() {
     
     emulator.detach();
 
-    while (!startedLoop && !exitedLoop) {}
-    if (exitedLoop) {return false;}
-
     return true;
 }
 
@@ -166,7 +163,7 @@ void MainFrame::ValidateClockPeriodValue(wxCommandEvent& WXUNUSED(event)) {
         if (!isdigit(value[i])) {isValid = false; break;}
     }
     if (isValid) {
-        int intValue = stoi(value);
+        int intValue = stol(value);
         if (intValue > 1000000000) {isValid = false;}
     }
     
