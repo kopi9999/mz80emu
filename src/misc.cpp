@@ -90,6 +90,10 @@ void trim(string* str) {
         i++;
     }
     *str = str->substr(i);
+    
+    if (*str == "") {
+        return;
+    }
 
     i = str->length();
     while (str[0][i-1] == ' ' || str[0][i-1] == '\n' || str[0][i-1] == '\r' || str[0][i-1] == '\t') {

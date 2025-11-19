@@ -1,14 +1,14 @@
-#ifndef FRAME
-#define FRAME
+#ifndef CONFIGURATOR_FRAME
+#define CONFIGURATOR_FRAME
 #include <wx/wx.h>
 #include <wx/listbox.h>
 #include <wx/checkbox.h>
 #include <map>
 
-class MainFrame : public wxFrame
+class ConfiguratorFrame : public wxFrame
 {
 public:
-    MainFrame(const wxString& title);
+    ConfiguratorFrame(const wxString& title);
 
 private:
     wxListBox* availableModulesList;

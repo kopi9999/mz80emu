@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
+set(CMAKE_BUILD_TYPE Debug)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -26,7 +27,7 @@ elseif(UNIX)
         include(${wxWidgets_USE_FILE})
     endif()
     
-    find_package(Boost NO_MODULE) # global boost.test headers
+    find_package(Boost) # global boost.test headers
 endif()
 
 add_subdirectory(src build) # main emulator
