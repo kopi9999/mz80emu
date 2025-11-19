@@ -1,5 +1,6 @@
 #ifndef MAIN_FRAME_APP
 #define MAIN_FRAME_APP
+#define WinMain main
 #include <wx/wx.h>
 
 class MainFrameApp : public wxApp

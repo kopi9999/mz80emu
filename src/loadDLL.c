@@ -5,7 +5,7 @@
 
 void* loadLib(const char *__restrict dllName)
 {
-    return LoadLibrary(TEXT(dllName));
+    return LoadLibraryA(dllName);
 }
 
 void* loadFunc(void *__restrict dll, const char *__restrict funcName)

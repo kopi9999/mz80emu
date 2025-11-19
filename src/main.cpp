@@ -37,7 +37,6 @@ bool exitedLoop = false;
 bool startedLoop = false;
 chrono::nanoseconds duration;
 chrono::nanoseconds originalDuration;
-mutex m;
 
 void crash() {
     wxMessageBox("Critical error occured and aplication will be closed.\nError code: " + to_string(exitCode), "Critical error.", wxOK | wxICON_ERROR);
@@ -124,7 +123,10 @@ void MainFrameApp::OnFatalException() {
 }
 
 void MainFrame::OnTimer(wxTimerEvent& event) {
-    if (exitCode != RUNNING) { crash(); }
+    if (exitCode != RUNNING) { 
+        event.GetTimer().Stop();
+        crash(); 
+    }
 }
 
 void MainFrame::StopClock(wxCommandEvent& WXUNUSED(event)) {
