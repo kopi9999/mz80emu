@@ -1,8 +1,9 @@
 # main.cpp
 
 `main.cpp` file is responsible for running emulator by initialization of all necessary modules and supervising clock. It contains:
+
 - variables storing data of modules, their instances and interfaces,
-- defintions of types used to storing pointers to functions in arrays,
+- definitions of types used to storing pointers to functions in arrays,
 - definition of struct containing modules data,
 - definitions of functions of `MainFrame` and `MainFrameApp` - they are described in `MainFrame` and `MainFrameApp` sections of documentation.
 
@@ -63,6 +64,7 @@ There are several type definitions in the file, which are used to storing pointe
 
 ### `Modules`
 `Modules` is struct used to create `modules` variable storing all data concerning modules (not to be confused with module instances). Its fields includes:
+
 | Field | Explanation |
 | - | - |
 | `names` | Vector of all modules names (with added .dll extension), so that it can be used to recognise specific module DLL libraries. |
@@ -81,6 +83,7 @@ Struct which stores data of an interface in a derived interface array.
 
 ### `InstanceInfo`
 `InstanceInfo` stores data of all module instances.
+
 | Field | Explanation |
 | - | - |
 | `count` | Number of module instances. |
