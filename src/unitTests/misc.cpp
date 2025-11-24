@@ -309,6 +309,13 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string expectedResult = "";
             BOOST_TEST ( (str == expectedResult) );
         }
+        
+        BOOST_AUTO_TEST_CASE ( testTrim_onlyWhitespace ){
+            string str = "\n\r\t ";
+            trim(&str);
+            string expectedResult = "";
+            BOOST_TEST ( (str == expectedResult) );
+        }
 
     BOOST_AUTO_TEST_SUITE_END()
 

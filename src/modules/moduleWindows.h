@@ -8,6 +8,7 @@ enum Error {
     SUCCESS,
     BAD_ARGUMENT,
     MALLOC_ERROR,
+    SIZE_MISMATCH,
 };
 
 __declspec(dllexport) enum Error getName(char* out, uint32_t maxLength);
