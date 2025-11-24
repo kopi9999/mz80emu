@@ -12,6 +12,7 @@ struct Instance{
     uint32_t size;
     uint8_t readState;
     uint8_t writeState;
+    uint8_t readTrigger;
 };
 
 #endif
