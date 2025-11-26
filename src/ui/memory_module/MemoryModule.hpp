@@ -42,8 +42,9 @@ private:
     void TableTextValues();
     void SizerEventTale();
     void Refresher();
-    void OnChangeRow();
+    void OnChangeRow(wxGridEvent& event);
     void GridFill(int Rows , int Cols);
+    void OnRightClick(wxGridEvent& event);
 };
 
 
