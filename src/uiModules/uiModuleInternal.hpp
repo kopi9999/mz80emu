@@ -15,6 +15,6 @@ extern const uint16_t protocolVersion;
 extern const uint16_t interfacesNumber;
 extern const char* interfacesDescriptions[];
 
-class uiModuleFrame;
+class wxFrame* getFrame(void* instance, void** interfaces);
 
 #endif

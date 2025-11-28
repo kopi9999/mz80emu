@@ -24,5 +24,5 @@ __declspec(dllexport) enum Error strobeDown(void*, void**);
 __declspec(dllexport) enum Error destroy(void*);
 __declspec(dllexport) enum Error destroyInterfaces(void*, void**, uint16_t);
 
-_declspec(dllexport) class uiModuleFrame;
+_declspec(dllexport) class wxFrame* getFrame(void* instance, void** interfaces);
 #endif

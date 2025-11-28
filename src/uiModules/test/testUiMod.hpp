@@ -9,6 +9,13 @@ struct Instance {
     char* character;
 };
 
-class uiModuleFrame : wxFrame {};
+class UiModuleFrame : public wxFrame {
+    public:
+        UiModuleFrame(void* instance, void** interfaces);
+
+    private:
+        struct Instance* instance = NULL;
+        void** interfaces = NULL;
+};
 
 #endif
