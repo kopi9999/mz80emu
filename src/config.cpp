@@ -274,12 +274,18 @@ enum CrashCode validateRawData(
 
     for (size_t i = 0; i < rawUIInstanceInfo.size(); ++i) {
         if (!validateVectorSize(rawUIInstanceInfo[i], 3, "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
-        if (!validateStringIsInteger(rawUIInstanceInfo[i][0], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawUIInstanceInfo[i][0]), rawUIModulesInfo.size() - 1, "UI Module instances (column 1)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
-        if (!validateStringIsInteger(rawUIInstanceInfo[i][1], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawUIInstanceInfo[i][1]), rawModulesInfo.size() - 1, "UI Module instances (column 2)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
-        if (!validateStringIsInteger(rawUIInstanceInfo[i][2], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawUIInstanceInfo[i][2]), numberOfAllInterfaces - 1, "UI Module instances (column 3)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        if (rawUIInstanceInfo[i].size() >= 1) {
+            if (!validateStringIsInteger(rawUIInstanceInfo[i][0], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][0]), rawUIModulesInfo.size() - 1, "UI Module instances (column 1)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        }
+        if (rawUIInstanceInfo[i].size() >= 2) {
+            if (!validateStringIsInteger(rawUIInstanceInfo[i][1], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][1]), rawInstanceInfo.size() - 1, "UI Module instances (column 2)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        }
+        if (rawUIInstanceInfo[i].size() >= 3) {
+            if (!validateStringIsInteger(rawUIInstanceInfo[i][2], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][2]), numberOfAllInterfaces - 1, "UI Module instances (column 3)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        }
     }
 
     return crash;
