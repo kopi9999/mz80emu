@@ -2,7 +2,8 @@
 #define INIT
 
 #include "main.hpp"
+#include "mainWx.hpp"
 
-extern enum CrashCode init(struct Modules*, void***, void****, struct InstanceInfo, struct InterfacesInfo);
+extern enum CrashCode init(struct Modules*, struct UiModules*, void***, wxFrame***, void****, struct InstanceInfo, struct UiInstanceInfo, struct InterfacesInfo);
 
 #endif

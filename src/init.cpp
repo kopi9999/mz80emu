@@ -94,12 +94,54 @@ bool loadDerivedInterfaces(void*** interfaces, struct InterfacesInfo interfacesI
     return true;
 }
 
-enum CrashCode init(struct Modules* modules, void*** instances, void**** interfaces, struct InstanceInfo instanceInfo, struct InterfacesInfo interfacesInfo)
+bool loadUiLibs(void** libs, vector<string> libNames, uint16_t libCount) //load libraries from std::vector<string>
+{
+    bool error = false;
+    for (uint16_t i = 0; i < libCount; ++i)
+    {
+        libs[i] = loadLib(("uiModules/" + libNames[i]).c_str());
+        if(!libs[i]){
+            cout << "ERROR: cannot find UI module: " << libNames[i] << "\n";
+            error = true;
+        }
+        else 
+        {
+            cout << "INFO: Loading UI module: " << libNames[i] << "\n";
+        }
+    }
+    return error;
+}
+
+bool loadUiInstances(struct UiModules uiModules, wxFrame** uiInstances, void** instances, void*** interfaces, struct UiInstanceInfo uiInstanceInfo)
+{
+    for (uint32_t i = 0; i < uiInstanceInfo.count; i++){
+        uiInstances[i] = uiModules.getFrameFuncs[uiInstanceInfo.uiInstanceList[i]](instances[uiInstanceInfo.instanceList[i]], interfaces[uiInstanceInfo.interfaceArrayList[i]]);
+    }
+    return true;
+}
+
+enum CrashCode init(
+    struct Modules* modules,
+    struct UiModules* uiModules,
+    void*** instances,
+    wxFrame*** uiInstances,
+    void**** interfaces,
+    struct InstanceInfo instanceInfo,
+    struct UiInstanceInfo uiInstanceInfo,
+    struct InterfacesInfo interfacesInfo
+)
 {
     modules->pointers = new void*[modules->count];
+    uiModules->pointers = new void*[uiModules->count];
     if(loadLibs(modules->pointers, modules->names, modules->count)){
         cout << "CRITICAL: Could not find all modules\n";
         unloadLibs(modules->pointers, modules->count);
+        return INIT_MODULE_NOT_FOUND;
+    }
+    if(loadUiLibs(uiModules->pointers, uiModules->names, uiModules->count)){
+        cout << "CRITICAL: Could not find all UI modules\n";
+        unloadLibs(modules->pointers, modules->count);
+        unloadLibs(uiModules->pointers, uiModules->count);
         return INIT_MODULE_NOT_FOUND;
     }
 
@@ -112,6 +154,7 @@ enum CrashCode init(struct Modules* modules, void*** instances, void**** interfa
     if (!loadModuleFunctions(*modules)){
         cout << "CRITICAL: Could not load all modules properly\n";
         unloadLibs(modules->pointers, modules->count);
+        unloadLibs(uiModules->pointers, uiModules->count);
         return INIT_MODULE_INVALID;
     }
     cout << "INFO: All modules succesfully loaded\n";
@@ -135,6 +178,13 @@ enum CrashCode init(struct Modules* modules, void*** instances, void**** interfa
         return INIT_DERIVED_INTERFACES_CREATION_ERROR;
     }
     cout << "INFO: All derived interfaces created successfully.\n";
+
+    *uiInstances = new wxFrame*[uiInstanceInfo.count];
+    if (!loadUiInstances(*uiModules, *uiInstances, *instances, *interfaces, uiInstanceInfo)){
+        cout << "CRITICAL: Could not create needed UI instances\n";
+        return INIT_INSTANCE_CREATION_ERROR;
+    }
+    cout << "INFO: All UI instances created successfully\n";
 
     return RUNNING;
 }

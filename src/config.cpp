@@ -11,6 +11,7 @@
 
 #include "validation.hpp"
 #include "main.hpp"
+#include "mainWx.hpp"
 #include "misc.hpp"
 
 using namespace std;
@@ -30,6 +31,8 @@ enum LoadingSteps {
     STROBE_DOWN_INSTANCES,
     STROBE_DOWN_INTERFACES,
     STROBE_DOWN_CLOCK,
+    UI_MODULES,
+    UI_MODULE_INSTANCES,
 
     NUMBER_OF_STEPS
 };
@@ -47,7 +50,9 @@ const string loadingSteps[] = {
     "Strobe up clock",
     "Strobe down instances",
     "Strobe down interfaces",
-    "Strobe down clock"
+    "Strobe down clock",
+    "UI modules",
+    "UI module instances"
 };
 
 struct RawInterfacesInfo {
@@ -85,7 +90,9 @@ void loadLineData(
         vector<string>* rawModulesInfo,
         vector<string>* rawInstanceInfo,
         struct RawInterfacesInfo* rawInterfacesInfo,
-        struct RawClockInfo* rawClockInfo
+        struct RawClockInfo* rawClockInfo,
+        vector<string>* rawUIModulesInfo,
+        vector<vector<string>>* rawUIInstanceInfo
         )
 {
     vector<string> splittedRow;
@@ -136,6 +143,13 @@ void loadLineData(
             splittedRow = splitByWhitespace(row);
             rawClockInfo->strobeDownClock.push_back(splittedRow);
             break;
+        case UI_MODULES:
+            rawUIModulesInfo->push_back(row);
+            break;
+        case UI_MODULE_INSTANCES:
+            splittedRow = splitByWhitespace(row);
+            rawUIInstanceInfo->push_back(splittedRow);
+            break;
 
         case NONE:
             break;
@@ -148,7 +162,9 @@ enum CrashCode loadRawData(
         vector<string>* rawModulesInfo,
         vector<string>* rawInstanceInfo,
         struct RawInterfacesInfo* rawInterfacesInfo,
-        struct RawClockInfo* rawClockInfo
+        struct RawClockInfo* rawClockInfo,
+        vector<string>* rawUIModulesInfo,
+        vector<vector<string>>* rawUIInstanceInfo
         )
 {
     enum CrashCode crash = RUNNING;
@@ -165,8 +181,8 @@ enum CrashCode loadRawData(
         trim(&row);
         loadingStep = detectLoadingStep(row);
         if (loadingStep) {currentLoadingStep = loadingStep;}
-        else if (!row.empty()) {
-            loadLineData(row, currentLoadingStep, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
+        else if (!row.empty() && row[0] != '#') {
+            loadLineData(row, currentLoadingStep, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo, rawUIModulesInfo, rawUIInstanceInfo);
         }
     }
 
@@ -179,12 +195,15 @@ enum CrashCode validateRawData(
         vector<string> rawModulesInfo,
         vector<string> rawInstanceInfo,
         struct RawInterfacesInfo rawInterfacesInfo,
-        struct RawClockInfo rawClockInfo
+        struct RawClockInfo rawClockInfo,
+        vector<string> rawUIModulesInfo,
+        vector<vector<string>> rawUIInstanceInfo
         ) {
 
     enum CrashCode crash = RUNNING;
+    int numberOfAllInterfaces = rawInterfacesInfo.module.size() + rawInterfacesInfo.derived.size();
 
-    if(!validateVectorHasUniqueValues(rawModulesInfo, "Module")) {setCrashIfRunning(&crash, CONFIG_INVALID_MODULE_LIST);}
+    if(!validateVectorHasUniqueValues(rawModulesInfo, "Modules")) {setCrashIfRunning(&crash, CONFIG_INVALID_MODULE_LIST);}
 
     for (size_t i = 0; i < rawInstanceInfo.size(); ++i) {
         if (!validateStringIsInteger(rawInstanceInfo[i], "Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
@@ -229,7 +248,7 @@ enum CrashCode validateRawData(
     }
     for (size_t i = 0; i < rawClockInfo.strobeUpInterfaces.size(); ++i) {
         if (!validateStringIsInteger(rawClockInfo.strobeUpInterfaces[i], "Strobe up interfaces")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawClockInfo.strobeUpInterfaces[i]), rawInstanceInfo.size() - 1, "Strobe up interfaces")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        else if (!validateIdExist(stoul(rawClockInfo.strobeUpInterfaces[i]), numberOfAllInterfaces - 1, "Strobe up interfaces")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
     }
     for (size_t i = 0; i < rawClockInfo.strobeDownInstances.size(); ++i) {
         if (!validateStringIsInteger(rawClockInfo.strobeDownInstances[i], "Strobe down clock")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
@@ -237,7 +256,7 @@ enum CrashCode validateRawData(
     }
     for (size_t i = 0; i < rawClockInfo.strobeDownInterfaces.size(); ++i) {
         if (!validateStringIsInteger(rawClockInfo.strobeDownInterfaces[i], "Strobe down interfaces")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawClockInfo.strobeDownInterfaces[i]), rawInstanceInfo.size() - 1, "Strobe down interfaces")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        else if (!validateIdExist(stoul(rawClockInfo.strobeDownInterfaces[i]), numberOfAllInterfaces - 1, "Strobe down interfaces")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
     }
     for (size_t i = 0; i < rawClockInfo.strobeUpClock.size(); ++i) {
         if (!validateVectorSize(rawClockInfo.strobeUpClock[i], stoul(rawClockInfo.depth), "Strobe up clock")) {setCrashIfRunning(&crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
@@ -249,6 +268,24 @@ enum CrashCode validateRawData(
         if (!validateVectorSize(rawClockInfo.strobeDownClock[i], stoul(rawClockInfo.depth), "Strobe down clock")) {setCrashIfRunning(&crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
         for (size_t j = 0; j < rawClockInfo.strobeDownClock[i].size(); ++j) {
             if (!validateStringIsBool(rawClockInfo.strobeDownClock[i][j], "Strobe down clock")) {setCrashIfRunning(&crash, CONFIG_VALUE_NOT_BOOL);}
+        }
+    }
+    
+    if(!validateVectorHasUniqueValues(rawUIModulesInfo, "UI Modules")) {setCrashIfRunning(&crash, CONFIG_INVALID_MODULE_LIST);}
+
+    for (size_t i = 0; i < rawUIInstanceInfo.size(); ++i) {
+        if (!validateVectorSize(rawUIInstanceInfo[i], 3, "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
+        if (rawUIInstanceInfo[i].size() >= 1) {
+            if (!validateStringIsInteger(rawUIInstanceInfo[i][0], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][0]), rawUIModulesInfo.size() - 1, "UI Module instances (column 1)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        }
+        if (rawUIInstanceInfo[i].size() >= 2) {
+            if (!validateStringIsInteger(rawUIInstanceInfo[i][1], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][1]), rawInstanceInfo.size() - 1, "UI Module instances (column 2)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        }
+        if (rawUIInstanceInfo[i].size() >= 3) {
+            if (!validateStringIsInteger(rawUIInstanceInfo[i][2], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][2]), numberOfAllInterfaces - 1, "UI Module instances (column 3)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
         }
     }
 
@@ -322,20 +359,40 @@ void setClockData(struct ClockInfo* data, uint32_t instanceCount, struct RawCloc
     }
 }
 
+void setUiModulesData(struct UiModules* uiModules, struct UiInstanceInfo* uiInstanceInfo, vector<string> rawUIModulesInfo, vector<vector<string>> rawUIInstanceInfo) {
+    uiModules->count = rawUIModulesInfo.size(); //number of libraries to load
+    uiModules->names = rawUIModulesInfo;
+
+    uiInstanceInfo->count = rawUIInstanceInfo.size();
+    uiInstanceInfo->uiInstanceList = new uint32_t[uiInstanceInfo->count]; // id`s of libraries for instance creation
+    uiInstanceInfo->instanceList = new uint32_t[uiInstanceInfo->count]; // id`s of libraries (modules) related to the ui modules
+    uiInstanceInfo->interfaceArrayList = new uint32_t[uiInstanceInfo->count]; // id`s of instances for interfaces creation
+    for (size_t i = 0; i < uiInstanceInfo->count; ++i) {
+        uiInstanceInfo->uiInstanceList[i] = stoul(rawUIInstanceInfo[i][0]);
+        uiInstanceInfo->instanceList[i] = stoul(rawUIInstanceInfo[i][1]);
+        uiInstanceInfo->interfaceArrayList[i] = stoul(rawUIInstanceInfo[i][2]);
+    }
+}
+
 void rawDataToInfo(
         struct Modules* modules,
         struct InstanceInfo* instanceInfo,
         struct InterfacesInfo* interfacesInfo,
         struct ClockInfo* clockInfo,
+        struct UiModules* uiModules,
+        struct UiInstanceInfo* uiInstanceInfo,
         vector<string> rawModulesInfo,
         vector<string> rawInstanceInfo,
         struct RawInterfacesInfo rawInterfacesInfo,
-        struct RawClockInfo rawClockInfo
+        struct RawClockInfo rawClockInfo,
+        vector<string> rawUIModulesInfo,
+        vector<vector<string>> rawUIInstanceInfo
         )
 {
     setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo);
     setInterfacesData(interfacesInfo, rawInterfacesInfo);
     setClockData(clockInfo, instanceInfo->count, rawClockInfo);
+    setUiModulesData(uiModules, uiInstanceInfo, rawUIModulesInfo, rawUIInstanceInfo);
 }
 
 
@@ -482,20 +539,29 @@ enum CrashCode rawDataToFile(vector<string> rawModulesInfo, vector<string> rawIn
 }
 
 
-enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
+enum CrashCode loadConfig(
+    struct Modules* modules,
+    struct InstanceInfo* instanceInfo,
+    struct InterfacesInfo* interfacesInfo,
+    struct ClockInfo* clockInfo,
+    struct UiModules* uiModules,
+    struct UiInstanceInfo* uiInstanceInfo
+){
     enum CrashCode crash;
     vector<string> rawModulesInfo;
     vector<string> rawInstanceInfo;
     struct RawInterfacesInfo rawInterfacesInfo = {};
     struct RawClockInfo rawClockInfo = {};
+    vector<string> rawUIModulesInfo;
+    vector<vector<string>> rawUIInstanceInfo;
 
-    crash = loadRawData(&rawModulesInfo, &rawInstanceInfo, &rawInterfacesInfo, &rawClockInfo);
+    crash = loadRawData(&rawModulesInfo, &rawInstanceInfo, &rawInterfacesInfo, &rawClockInfo, &rawUIModulesInfo, &rawUIInstanceInfo);
     if (crash) {cout << "CRITICAL: Loading data from config file failed.\n"; return crash;}
 
-    crash = validateRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
+    crash = validateRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo, rawUIModulesInfo, rawUIInstanceInfo);
     if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
 
-    rawDataToInfo(modules, instanceInfo, interfacesInfo, clockInfo, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo);
+    rawDataToInfo(modules, instanceInfo, interfacesInfo, clockInfo, uiModules, uiInstanceInfo, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo, rawUIModulesInfo, rawUIInstanceInfo);
 
     return RUNNING;
 }

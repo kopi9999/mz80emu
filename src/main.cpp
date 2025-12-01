@@ -6,12 +6,9 @@
 #include <iostream>
 #include <thread>
 
+#include "mainWx.hpp"
 #include "MainFrame.hpp"
 #include "MainFrameApp.hpp"
-#include <wx/wx.h>
-#include <wx/evtloop.h>
-#include <wx/msgdlg.h>
-#include <wx/defs.h>
 
 extern "C" {
     #include "loadMod.h"
@@ -20,11 +17,14 @@ extern "C" {
 using namespace std;
 
 struct Modules modules = {};
+struct UiModules uiModules = {};
 
 void** instances;
+wxFrame** uiInstances;
 void*** interfaces;
 
 struct InstanceInfo instanceInfo = {};
+struct UiInstanceInfo uiInstanceInfo = {};
 struct InterfacesInfo interfacesInfo = {};
 struct ClockInfo clockInfo = {};
 
@@ -48,17 +48,17 @@ void mainLoop()
     exitedLoop = false;
 
     enum CrashCode crash;
-    crash = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo);
+    crash = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo, &uiModules, &uiInstanceInfo);
     if (crash) {exitCode = crash; exitedLoop = true; return;}
     
-    crash = init(&modules, &instances, &interfaces, instanceInfo, interfacesInfo);
+    crash = init(&modules, &uiModules, &instances, &uiInstances, &interfaces, instanceInfo, uiInstanceInfo, interfacesInfo);
     if (crash) {exitCode = crash; exitedLoop = true; return;}
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
     duration = chrono::nanoseconds(clockInfo.period);
     originalDuration = duration;
     uint16_t tmpModuleId;
-    Error error;
+    Error error = (Error)0;
     uint32_t clockState = 0;
 
     startedLoop = true;
@@ -93,6 +93,7 @@ void mainLoop()
     }
 
     unloadLibs(modules.pointers, modules.count);
+    unloadLibs(uiModules.pointers, uiModules.count);
     
     exitCode = convertErrorToCrash(error);
     exitedLoop = true;
