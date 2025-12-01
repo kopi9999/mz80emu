@@ -29,27 +29,27 @@ bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load li
 bool loadModuleFunctions(struct Modules modules)
 {
     if (loadFuncs((void**) modules.createFuncs, modules.pointers, modules.count, "create")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createFuncs, modules.count)] << "]: Cannot load create function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.createInterfacesFuncs, modules.pointers, modules.count, "createInterfaces")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createInterfacesFuncs, modules.count)] << "]: Cannot load createInterfaces function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createInterfacesFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.strobeUpFuncs, modules.pointers, modules.count, "strobeUp")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeUpFuncs, modules.count)] << "]: Cannot load strobeUp function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeUpFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.strobeDownFuncs, modules.pointers, modules.count, "strobeDown")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeDownFuncs, modules.count)] << "]: Cannot load strobeDown function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeDownFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.destroyFuncs, modules.pointers, modules.count, "destroy")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyFuncs, modules.count)] << "]: Cannot load destroy function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.destroyInterfacesFuncs, modules.pointers, modules.count, "destroyInterfaces")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyInterfacesFuncs, modules.count)] << "]: Cannot load destroyInterfaces function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyInterfacesFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     return true;
@@ -114,8 +114,8 @@ bool loadUiLibs(void** libs, vector<string> libNames, uint16_t libCount) //load 
 
 bool loadUiModuleFunctions(struct UiModules uiModules)
 {
-    if (loadFuncs((void**) uiModules.getFrameFuncs, uiModules.pointers, uiModules.count, "getFrame")){
-        cout << "ERROR [" << uiModules.names[firstNullPointer((void**) uiModules.getFrameFuncs, uiModules.count)] << "]: Cannot load getFrame function.\n";
+    if (loadFuncs((void**) uiModules.getFrameFuncs, uiModules.pointers, uiModules.count, "_Z8getFramePvPS_")){
+        cout << "ERROR [" << uiModules.names[firstNullPointer((void**) uiModules.getFrameFuncs, uiModules.count)] << "]: " << getError() << "\n";
         return false;
     }
     return true;

@@ -12,7 +12,7 @@ UiModuleFrame::UiModuleFrame(void* instance, void** interfaces) :
     interfaces(interfaces) {}
 
 
-class wxFrame* getFrame(void* instance, void** interfaces)
+wxFrame* getFrame(void* instance, void** interfaces)
 {
     return new UiModuleFrame(instance, interfaces);
 }

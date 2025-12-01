@@ -13,6 +13,4 @@ extern const uint16_t moduleMajorVersion;
 extern const uint16_t moduleMinorVersion;
 extern const uint16_t protocolVersion;
 
-class wxFrame* getFrame(void* instance, void** interfaces);
-
 #endif

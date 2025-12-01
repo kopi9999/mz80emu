@@ -17,6 +17,6 @@ uint16_t getMajorVersion();
 uint16_t getMinorVersion();
 uint16_t getProtocolVersion();
 
-class wxFrame* getFrame(void* instance, void** interfaces);
+wxFrame* getFrame(void* instance, void** interfaces);
 
 #endif
