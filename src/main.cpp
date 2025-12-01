@@ -20,6 +20,7 @@ struct Modules modules = {};
 struct UiModules uiModules = {};
 
 void** instances;
+wxFrame** uiInstances;
 void*** interfaces;
 
 struct InstanceInfo instanceInfo = {};
@@ -50,7 +51,7 @@ void mainLoop()
     crash = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo, &uiModules, &uiInstanceInfo);
     if (crash) {exitCode = crash; exitedLoop = true; return;}
     
-    crash = init(&modules, &instances, &interfaces, instanceInfo, interfacesInfo);
+    crash = init(&modules, &uiModules, &instances, &uiInstances, &interfaces, instanceInfo, uiInstanceInfo, interfacesInfo);
     if (crash) {exitCode = crash; exitedLoop = true; return;}
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
@@ -92,6 +93,7 @@ void mainLoop()
     }
 
     unloadLibs(modules.pointers, modules.count);
+    unloadLibs(uiModules.pointers, uiModules.count);
     
     exitCode = convertErrorToCrash(error);
     exitedLoop = true;
