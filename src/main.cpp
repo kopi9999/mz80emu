@@ -6,12 +6,9 @@
 #include <iostream>
 #include <thread>
 
+#include "mainWx.hpp"
 #include "MainFrame.hpp"
 #include "MainFrameApp.hpp"
-#include <wx/wx.h>
-#include <wx/evtloop.h>
-#include <wx/msgdlg.h>
-#include <wx/defs.h>
 
 extern "C" {
     #include "loadMod.h"
@@ -20,11 +17,13 @@ extern "C" {
 using namespace std;
 
 struct Modules modules = {};
+struct UiModules uiModules = {};
 
 void** instances;
 void*** interfaces;
 
 struct InstanceInfo instanceInfo = {};
+struct UiInstanceInfo uiInstanceInfo = {};
 struct InterfacesInfo interfacesInfo = {};
 struct ClockInfo clockInfo = {};
 
@@ -48,7 +47,7 @@ void mainLoop()
     exitedLoop = false;
 
     enum CrashCode crash;
-    crash = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo);
+    crash = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo, &uiModules, &uiInstanceInfo);
     if (crash) {exitCode = crash; exitedLoop = true; return;}
     
     crash = init(&modules, &instances, &interfaces, instanceInfo, interfacesInfo);
@@ -58,7 +57,7 @@ void mainLoop()
     duration = chrono::nanoseconds(clockInfo.period);
     originalDuration = duration;
     uint16_t tmpModuleId;
-    Error error;
+    Error error = (Error)0;
     uint32_t clockState = 0;
 
     startedLoop = true;

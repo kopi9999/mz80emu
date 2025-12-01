@@ -11,6 +11,7 @@
 
 #include "validation.hpp"
 #include "main.hpp"
+#include "mainWx.hpp"
 #include "misc.hpp"
 
 using namespace std;
@@ -358,11 +359,28 @@ void setClockData(struct ClockInfo* data, uint32_t instanceCount, struct RawCloc
     }
 }
 
+void setUiModulesData(struct UiModules* uiModules, struct UiInstanceInfo* uiInstanceInfo, vector<string> rawUIModulesInfo, vector<vector<string>> rawUIInstanceInfo) {
+    uiModules->count = rawUIModulesInfo.size(); //number of libraries to load
+    uiModules->names = rawUIModulesInfo;
+
+    uiInstanceInfo->count = rawUIInstanceInfo.size();
+    uiInstanceInfo->uiInstanceList = new uint32_t[uiInstanceInfo->count]; // id`s of libraries for instance creation
+    uiInstanceInfo->instanceList = new uint32_t[uiInstanceInfo->count]; // id`s of libraries (modules) related to the ui modules
+    uiInstanceInfo->interfaceArrayList = new uint32_t[uiInstanceInfo->count]; // id`s of instances for interfaces creation
+    for (size_t i = 0; i < uiInstanceInfo->count; ++i) {
+        uiInstanceInfo->uiInstanceList[i] = stoul(rawUIInstanceInfo[i][0]);
+        uiInstanceInfo->instanceList[i] = stoul(rawUIInstanceInfo[i][1]);
+        uiInstanceInfo->interfaceArrayList[i] = stoul(rawUIInstanceInfo[i][2]);
+    }
+}
+
 void rawDataToInfo(
         struct Modules* modules,
         struct InstanceInfo* instanceInfo,
         struct InterfacesInfo* interfacesInfo,
         struct ClockInfo* clockInfo,
+        struct UiModules* uiModules,
+        struct UiInstanceInfo* uiInstanceInfo,
         vector<string> rawModulesInfo,
         vector<string> rawInstanceInfo,
         struct RawInterfacesInfo rawInterfacesInfo,
@@ -374,6 +392,7 @@ void rawDataToInfo(
     setInstanceData(modules, instanceInfo, rawModulesInfo, rawInstanceInfo);
     setInterfacesData(interfacesInfo, rawInterfacesInfo);
     setClockData(clockInfo, instanceInfo->count, rawClockInfo);
+    setUiModulesData(uiModules, uiInstanceInfo, rawUIModulesInfo, rawUIInstanceInfo);
 }
 
 
@@ -520,7 +539,14 @@ enum CrashCode rawDataToFile(vector<string> rawModulesInfo, vector<string> rawIn
 }
 
 
-enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instanceInfo, struct InterfacesInfo* interfacesInfo, struct ClockInfo* clockInfo){
+enum CrashCode loadConfig(
+    struct Modules* modules,
+    struct InstanceInfo* instanceInfo,
+    struct InterfacesInfo* interfacesInfo,
+    struct ClockInfo* clockInfo,
+    struct UiModules* uiModules,
+    struct UiInstanceInfo* uiInstanceInfo
+){
     enum CrashCode crash;
     vector<string> rawModulesInfo;
     vector<string> rawInstanceInfo;
@@ -535,7 +561,7 @@ enum CrashCode loadConfig(struct Modules* modules, struct InstanceInfo* instance
     crash = validateRawData(rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo, rawUIModulesInfo, rawUIInstanceInfo);
     if (crash) {cout << "CRITICAL: Bad config file.\n"; return crash;}
 
-    rawDataToInfo(modules, instanceInfo, interfacesInfo, clockInfo, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo, rawUIModulesInfo, rawUIInstanceInfo);
+    rawDataToInfo(modules, instanceInfo, interfacesInfo, clockInfo, uiModules, uiInstanceInfo, rawModulesInfo, rawInstanceInfo, rawInterfacesInfo, rawClockInfo, rawUIModulesInfo, rawUIInstanceInfo);
 
     return RUNNING;
 }
