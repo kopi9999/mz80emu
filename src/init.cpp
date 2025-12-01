@@ -15,7 +15,7 @@ bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load li
     {
         libs[i] = loadLib(("modules/" + libNames[i]).c_str());
         if(!libs[i]){
-            cout << "ERROR: cannot find module: " << libNames[i] << "\n";
+            cout << "ERROR: module loading failed: " << getError() << "\n";
             error = true;
         }
         else 
@@ -101,7 +101,7 @@ bool loadUiLibs(void** libs, vector<string> libNames, uint16_t libCount) //load 
     {
         libs[i] = loadLib(("uiModules/" + libNames[i]).c_str());
         if(!libs[i]){
-            cout << "ERROR: cannot find UI module: " << libNames[i] << "\n";
+            cout << "ERROR: loading UI module failed: " << getError() << "\n";
             error = true;
         }
         else 
@@ -110,6 +110,15 @@ bool loadUiLibs(void** libs, vector<string> libNames, uint16_t libCount) //load 
         }
     }
     return error;
+}
+
+bool loadUiModuleFunctions(struct UiModules uiModules)
+{
+    if (loadFuncs((void**) uiModules.getFrameFuncs, uiModules.pointers, uiModules.count, "getFrame")){
+        cout << "ERROR [" << uiModules.names[firstNullPointer((void**) uiModules.getFrameFuncs, uiModules.count)] << "]: Cannot load getFrame function.\n";
+        return false;
+    }
+    return true;
 }
 
 bool loadUiInstances(struct UiModules uiModules, wxFrame** uiInstances, void** instances, void*** interfaces, struct UiInstanceInfo uiInstanceInfo)
@@ -134,12 +143,12 @@ enum CrashCode init(
     modules->pointers = new void*[modules->count];
     uiModules->pointers = new void*[uiModules->count];
     if(loadLibs(modules->pointers, modules->names, modules->count)){
-        cout << "CRITICAL: Could not find all modules\n";
+        cout << "CRITICAL: Could not load all modules\n";
         unloadLibs(modules->pointers, modules->count);
         return INIT_MODULE_NOT_FOUND;
     }
     if(loadUiLibs(uiModules->pointers, uiModules->names, uiModules->count)){
-        cout << "CRITICAL: Could not find all UI modules\n";
+        cout << "CRITICAL: Could not load all UI modules\n";
         unloadLibs(modules->pointers, modules->count);
         unloadLibs(uiModules->pointers, uiModules->count);
         return INIT_MODULE_NOT_FOUND;
@@ -158,6 +167,15 @@ enum CrashCode init(
         return INIT_MODULE_INVALID;
     }
     cout << "INFO: All modules succesfully loaded\n";
+    
+    uiModules->getFrameFuncs = new getFrame[uiModules->count];
+    if (!loadUiModuleFunctions(*uiModules)){
+        cout << "CRITICAL: Could not load all UI modules properly\n";
+        unloadLibs(modules->pointers, modules->count);
+        unloadLibs(uiModules->pointers, uiModules->count);
+        return INIT_MODULE_INVALID;
+    }
+    cout << "INFO: All UI modules successfully loaded\n";
 
     *instances = new void*[instanceInfo.count];
     if (!loadInstances(*modules, *instances, instanceInfo)){

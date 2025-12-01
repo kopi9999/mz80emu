@@ -20,14 +20,3 @@ enum Error getDescription(char* out, uint32_t maxLength)
 uint16_t getMajorVersion() {return moduleMajorVersion;}
 uint16_t getMinorVersion() {return moduleMinorVersion;}
 uint16_t getProtocolVersion() {return protocolVersion;}
-
-uint16_t getInterfaceNumber() {return interfacesNumber;}
-
-enum Error getInterfaceDescription(char* out, uint32_t maxLength, uint16_t number)
-{
-    if(out == NULL) {return BAD_ARGUMENT;}
-    if(number >= getInterfaceNumber()) {return BAD_ARGUMENT;}
-    if(strlen(interfacesDescriptions[number]) > maxLength) {return SIZE_MISMATCH;}
-    strcpy(out, interfacesDescriptions[number]);
-    return SUCCESS;
-}

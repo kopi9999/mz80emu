@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <wx/wx.h>
+#include "../uiModuleInternal.hpp"
 
 struct Instance {
     uint8_t value;

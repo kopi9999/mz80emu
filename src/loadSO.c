@@ -41,3 +41,5 @@ bool unloadLibs(void **__restrict dlls, uint16_t dllCount)
     }
     return error;
 }
+
+char* getError() {return dlerror();}

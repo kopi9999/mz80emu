@@ -16,8 +16,6 @@ enum Error getDescription(char* out, uint32_t maxLength);
 uint16_t getMajorVersion();
 uint16_t getMinorVersion();
 uint16_t getProtocolVersion();
-uint16_t getInterfaceNumber();
-enum Error getInterfaceDescription(char* out, uint32_t maxLength, uint16_t number);
 
 class wxFrame* getFrame(void* instance, void** interfaces);
 
