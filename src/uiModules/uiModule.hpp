@@ -17,6 +17,6 @@ uint16_t getMajorVersion();
 uint16_t getMinorVersion();
 uint16_t getProtocolVersion();
 
-wxFrame* getFrame(void* instance, void** interfaces);
+wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces);
 
 #endif

@@ -6,13 +6,15 @@
 #include <wx/msgdlg.h>
 #include <wx/defs.h>
 
-typedef class wxFrame* (*getFrame)(void*, void**);
+typedef class wxPanel* (*getPanel)(wxControl*, void*, void**);
+typedef Error (*getUiName) (char*, uint32_t);
 
 struct UiModules {
     std::vector<std::string> names;
     uint16_t count;
     void** pointers;
-    getFrame* getFrameFuncs;
+    getPanel* getPanelFuncs;
+    getUiName* getNameFuncs;
 };
 
 struct UiInstanceInfo {

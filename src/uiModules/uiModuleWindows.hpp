@@ -17,5 +17,5 @@ __declspec(dllexport) uint16_t getMajorVersion();
 __declspec(dllexport) uint16_t getMinorVersion();
 __declspec(dllexport) uint16_t getProtocolVersion();
 
-_declspec(dllexport) wxFrame* getFrame(void* instance, void** interfaces);
+_declspec(dllexport) wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces);
 #endif

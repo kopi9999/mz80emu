@@ -10,9 +10,9 @@ struct Instance {
     char* character;
 };
 
-class UiModuleFrame : public wxFrame {
+class UiModulePanel : public wxPanel {
     public:
-        UiModuleFrame(void* instance, void** interfaces);
+        UiModulePanel(wxControl* parent, void* instance, void** interfaces);
 
     private:
         struct Instance* instance = NULL;

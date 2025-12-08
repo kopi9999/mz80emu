@@ -1,4 +1,5 @@
 #include "testUiMod.hpp"
+#include <wx/tglbtn.h>
 
 const char* moduleName = "test";
 const char* moduleDescription = "UI module for testing emulator module";
@@ -6,13 +7,15 @@ const uint16_t moduleMajorVersion = 1;
 const uint16_t moduleMinorVersion = 1;
 const uint16_t protocolVersion = 1;
 
-UiModuleFrame::UiModuleFrame(void* instance, void** interfaces) :
-    wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition, wxSize(800, 600)), 
+UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interfaces) :
+    wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize), 
     instance((struct Instance*) instance),
-    interfaces(interfaces) {}
+    interfaces(interfaces) {
+        wxToggleButton *overrideClockPeriodButton = new wxToggleButton(this, wxID_ANY, "button");
+    }
 
 
-wxFrame* getFrame(void* instance, void** interfaces)
+wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
 {
-    return new UiModuleFrame(instance, interfaces);
+    return new UiModulePanel(parent, instance, interfaces);
 }

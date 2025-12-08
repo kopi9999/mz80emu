@@ -32,26 +32,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition
     SetMenuBar(menuBar);
 
 
-    wxPanel *mainPanel = new wxPanel(this);
-    wxBoxSizer *mainSizer = new wxBoxSizer(wxHORIZONTAL);
-
-    wxListCtrl *instancesList = new wxListCtrl(mainPanel, ID_INSTANCES_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
-    wxListItem instancesColumn;
-    instancesColumn.SetId(0);
-    instancesColumn.SetText( _("Module instances") );
-    instancesColumn.SetWidth(200);
-    instancesList->InsertColumn(0, instancesColumn);
-
-    mainSizer->Add(instancesList, 0, wxEXPAND);
-    /* Adding new element to the sizer:
-    mainSizer->Add(
-        elementName,
-        1, // 1 - make element stretchable horizontally, 0 - unstretchable
-        wxEXPAND | wxALL, // wxEXPAND - elements stretches vertically, wxALL - border around all element
-        10 // border size
-    );
-    */
-    mainPanel->SetSizer(mainSizer);
+    uiModuleControl = new wxNotebook(this, ID_UI_MODULE_CONTROL, wxDefaultPosition, wxDefaultSize);
 
 
     Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::OnQuit));

@@ -114,18 +114,16 @@ bool loadUiLibs(void** libs, vector<string> libNames, uint16_t libCount) //load 
 
 bool loadUiModuleFunctions(struct UiModules uiModules)
 {
-    if (loadFuncs((void**) uiModules.getFrameFuncs, uiModules.pointers, uiModules.count, "_Z8getFramePvPS_")){
-        cout << "ERROR [" << uiModules.names[firstNullPointer((void**) uiModules.getFrameFuncs, uiModules.count)] << "]: " << getError() << "\n";
+    if (loadFuncs((void**) uiModules.getPanelFuncs, uiModules.pointers, uiModules.count, "_Z8getPanelP9wxControlPvPS1_")){
+        cout << "ERROR [" << uiModules.names[firstNullPointer((void**) uiModules.getPanelFuncs, uiModules.count)] << "]: " << getError() << "\n";
         return false;
     }
-    return true;
-}
 
-bool loadUiInstances(struct UiModules uiModules, wxFrame** uiInstances, void** instances, void*** interfaces, struct UiInstanceInfo uiInstanceInfo)
-{
-    for (uint32_t i = 0; i < uiInstanceInfo.count; i++){
-        uiInstances[i] = uiModules.getFrameFuncs[uiInstanceInfo.uiInstanceList[i]](instances[uiInstanceInfo.instanceList[i]], interfaces[uiInstanceInfo.interfaceArrayList[i]]);
+    if (loadFuncs((void**) uiModules.getNameFuncs, uiModules.pointers, uiModules.count, "_Z7getNamePcj")){
+        cout << "ERROR [" << uiModules.names[firstNullPointer((void**) uiModules.getNameFuncs, uiModules.count)] << "]: " << getError() << "\n";
+        return false;
     }
+
     return true;
 }
 
@@ -133,10 +131,9 @@ enum CrashCode init(
     struct Modules* modules,
     struct UiModules* uiModules,
     void*** instances,
-    wxFrame*** uiInstances,
+    wxPanel*** uiInstances,
     void**** interfaces,
     struct InstanceInfo instanceInfo,
-    struct UiInstanceInfo uiInstanceInfo,
     struct InterfacesInfo interfacesInfo
 )
 {
@@ -168,7 +165,8 @@ enum CrashCode init(
     }
     cout << "INFO: All modules succesfully loaded\n";
     
-    uiModules->getFrameFuncs = new getFrame[uiModules->count];
+    uiModules->getPanelFuncs = new getPanel[uiModules->count];
+    uiModules->getNameFuncs = new getUiName[uiModules->count];
     if (!loadUiModuleFunctions(*uiModules)){
         cout << "CRITICAL: Could not load all UI modules properly\n";
         unloadLibs(modules->pointers, modules->count);
@@ -196,13 +194,6 @@ enum CrashCode init(
         return INIT_DERIVED_INTERFACES_CREATION_ERROR;
     }
     cout << "INFO: All derived interfaces created successfully.\n";
-
-    *uiInstances = new wxFrame*[uiInstanceInfo.count];
-    if (!loadUiInstances(*uiModules, *uiInstances, *instances, *interfaces, uiInstanceInfo)){
-        cout << "CRITICAL: Could not create needed UI instances\n";
-        return INIT_INSTANCE_CREATION_ERROR;
-    }
-    cout << "INFO: All UI instances created successfully\n";
 
     return RUNNING;
 }

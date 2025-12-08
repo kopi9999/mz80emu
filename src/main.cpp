@@ -20,7 +20,7 @@ struct Modules modules = {};
 struct UiModules uiModules = {};
 
 void** instances;
-wxFrame** uiInstances;
+wxPanel** uiInstances;
 void*** interfaces;
 
 struct InstanceInfo instanceInfo = {};
@@ -46,13 +46,6 @@ void crash() {
 void mainLoop()
 {
     exitedLoop = false;
-
-    enum CrashCode crash;
-    crash = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo, &uiModules, &uiInstanceInfo);
-    if (crash) {exitCode = crash; exitedLoop = true; return;}
-    
-    crash = init(&modules, &uiModules, &instances, &uiInstances, &interfaces, instanceInfo, uiInstanceInfo, interfacesInfo);
-    if (crash) {exitCode = crash; exitedLoop = true; return;}
 
     chrono::time_point<chrono::high_resolution_clock> start, end;
     duration = chrono::nanoseconds(clockInfo.period);
@@ -101,13 +94,37 @@ void mainLoop()
 
 wxIMPLEMENT_APP(MainFrameApp);
 
-thread emulator(mainLoop);
-
 bool MainFrameApp::OnInit() {
     MainFrame *mainFrame = new MainFrame();
     mainFrame->Show();
     wxHandleFatalExceptions(true);
+
+    exitCode = loadConfig(&modules, &instanceInfo, &interfacesInfo, &clockInfo, &uiModules, &uiInstanceInfo);
+    if (exitCode) {exitedLoop = true; crash(); return false;}
+
+    exitCode = init(&modules, &uiModules, &instances, &uiInstances, &interfaces, instanceInfo, interfacesInfo);
+    if (exitCode) {exitedLoop = true; crash(); return false;}
+
+    uiInstances = new wxPanel*[uiInstanceInfo.count];
+    char uiModuleName[16] = {};
+    string uiModuleString;
+    Error error = (Error) 0;
+    for (uint32_t i = 0; i < uiInstanceInfo.count; i++){
+        uiInstances[i] = uiModules.getPanelFuncs[uiInstanceInfo.uiInstanceList[i]](mainFrame->uiModuleControl, instances[uiInstanceInfo.instanceList[i]], interfaces[uiInstanceInfo.interfaceArrayList[i]]);
+        error = uiModules.getNameFuncs[uiInstanceInfo.uiInstanceList[i]](uiModuleName, 16);
+        uiModuleString = uiModuleName;
+        mainFrame->uiModuleControl->AddPage(uiInstances[i], uiModuleString + " [" + to_string(i) + "]");
+        if (error) {break;}
+    }
+    if (error){
+        cout << "CRITICAL: Could not create needed UI instances\n";
+        exitLoop = true;
+        crash();
+        return false;
+    }
+    cout << "INFO: All UI instances created successfully\n";
     
+    thread emulator(mainLoop);
     emulator.detach();
 
     return true;
