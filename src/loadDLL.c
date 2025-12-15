@@ -41,3 +41,22 @@ bool unloadLibs(void **__restrict dlls, uint16_t dllCount)
     }
     return error;
 }
+
+char* getError() {
+    DWORD err = GetLastError();
+
+    char *msg;
+    FormatMessageA(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        err,
+        0,
+        (LPSTR)&msg,
+        0,
+        NULL
+    );
+
+    return msg;
+}
