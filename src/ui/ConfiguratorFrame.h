@@ -26,6 +26,7 @@ private:
     std::map<int, std::vector<std::string>> instanceInterfaces;
 
     void OnAddModule(wxCommandEvent& event);
+    void OnRemoveModule(wxCommandEvent& event);
     void OnAddInstance(wxCommandEvent& event);
     void OnCreateInterfaceArray(wxCommandEvent& event);
 

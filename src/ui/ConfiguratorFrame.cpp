@@ -68,6 +68,16 @@ void ConfiguratorFrame::OnAddModule(wxCommandEvent& event) {
     }
 }
 
+void ConfiguratorFrame::OnRemoveModule(wxCommandEvent& event) {
+    int sel = selectedModulesList->GetSelection();
+    if (sel != wxNOT_FOUND) {
+        wxString module = selectedModulesList->GetString(sel);
+        availableModules.push_back(module.ToStdString());
+        selectedModules.erase(selectedModules.begin() + sel);
+        RefreshModules();
+    }
+}
+
 void ConfiguratorFrame::OnAddInstance(wxCommandEvent& event) {
     int sel = selectedModulesList->GetSelection();
     if (sel != wxNOT_FOUND) {
