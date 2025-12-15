@@ -1,5 +1,5 @@
 Modules:
-testMod.dll
+libtestMod.so
 
 Module instances:
 0
@@ -43,3 +43,10 @@ Strobe down interfaces:
 Strobe down clock:
 false true
 true false
+
+UI modules:
+libtestUiMod.so
+
+UI module instances:
+0 0 0
+0 1 2
