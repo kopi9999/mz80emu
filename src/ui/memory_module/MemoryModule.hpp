@@ -7,6 +7,7 @@
 #include <wx/grid.h>
 #include <cstdint>
 //#include <map>
+enum { ID_MENU_REFRESH = wxID_HIGHEST + 1 };
 
 class App : public wxApp
 {
@@ -17,7 +18,7 @@ class App : public wxApp
 class MainFrame : public wxFrame
 {
 public:
-    MainFrame(const wxString& title);
+    MainFrame(const wxString& title); 
 
 private:
     wxListBox* selectedModulesList;
@@ -38,6 +39,9 @@ private:
     //std::map<int, std::vector<std::string>> instanceInterfaces;
     uint8_t memory_table [65536]; 
 
+    
+    void OnGridContextMenu(wxContextMenuEvent& event);
+    void OnRefreshMenu(wxCommandEvent&);
     void GridCreate(wxPanel* panel);
     void TableTextValues();
     void SizerEventTale();

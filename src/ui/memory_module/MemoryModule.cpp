@@ -42,6 +42,8 @@ MainFrame::MainFrame(const wxString& title)
     //the refresh on change in one row
     grid->Bind(wxEVT_GRID_CELL_CHANGED, &MainFrame::OnChangeRow, this);
     
+    grid->Bind(wxEVT_CONTEXT_MENU, &MainFrame::OnGridContextMenu, this);
+    Bind(wxEVT_MENU, &MainFrame::OnRefreshMenu, this, ID_MENU_REFRESH);
 
     panel->SetSizer(mainSizer);
     mainSizer->SetSizeHints(this);
@@ -69,6 +71,25 @@ void MainFrame::GridCreate(wxPanel* panel)
     //    grid->SetLabel(c , c*10);
     //}
 
+}
+
+void MainFrame::OnGridContextMenu(wxContextMenuEvent& event)
+{
+    wxMenu menu;
+    menu.Append(ID_MENU_REFRESH, "Refresh");
+
+    // Position correctly at mouse
+    wxPoint pos = event.GetPosition();
+    if (pos == wxDefaultPosition)
+        pos = wxGetMousePosition();
+
+    pos = grid->ScreenToClient(pos);
+    grid->PopupMenu(&menu, pos);
+}
+
+void MainFrame::OnRefreshMenu(wxCommandEvent&)
+{
+    Refresher(); // your already-existing function
 }
 
 //generates values for the grid
