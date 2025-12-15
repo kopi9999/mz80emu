@@ -56,7 +56,7 @@ enum Error strobeUp(void*__restrict instance, void**__restrict interfaces)
     if (!interfaces) {return BAD_ARGUMENT;}
     
     uint8_t data = *(uint8_t*) interfaces[0];
-    uint16_t address = *(uint8_t*) interfaces[1];
+    uint16_t address = *(uint16_t*) interfaces[1];
     uint8_t select = *(uint8_t*) interfaces[2];
     uint8_t read = *(uint8_t*) interfaces[3];
     uint8_t write = *(uint8_t*) interfaces[4];
@@ -78,15 +78,15 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
     if (!instance) {return BAD_ARGUMENT;}
     if (!interfaces) {return BAD_ARGUMENT;}
     
-    void* interfacesTmp = *interfaces;
-    uint8_t* data = ((uint8_t*) interfacesTmp);
-    uint16_t* address = ((uint16_t*) interfacesTmp + 1);
+    uint8_t* data = (uint8_t*) interfaces[0];
+    uint16_t* address = (uint16_t*) interfaces[1];
 
     struct Instance* instanceTmp = instance;
 
     if (instanceTmp->readTrigger) { 
         *data = instanceTmp->data[*address];
         instanceTmp->readState = 0;
+        printf("\nData: %d, Address: %d\n", *data, *address);
         instanceTmp->readTrigger = 0;
     }
     return SUCCESS;
