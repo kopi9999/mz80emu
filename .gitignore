@@ -51,6 +51,7 @@ test.vcxproj
 test.vcxproj.filters
 x64/
 build/*
+buildWin/*
 .vs/
 wxWidgets/
 .vscode/

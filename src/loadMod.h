@@ -7,5 +7,6 @@ extern bool loadFuncs(void**, void**, uint16_t, const char*);
 extern void* loadFunc(void*, const char*);
 extern bool unloadLib(void*);
 extern bool unloadLibs(void**, uint16_t);
+extern char* getError();
 
 #endif

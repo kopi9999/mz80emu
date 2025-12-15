@@ -5,7 +5,7 @@
 
 void* loadLib(const char *__restrict dllName)
 {
-    return LoadLibrary(TEXT(dllName));
+    return LoadLibraryA(dllName);
 }
 
 void* loadFunc(void *__restrict dll, const char *__restrict funcName)
@@ -40,4 +40,23 @@ bool unloadLibs(void **__restrict dlls, uint16_t dllCount)
         if (errortmp) {error = true;}
     }
     return error;
+}
+
+char* getError() {
+    DWORD err = GetLastError();
+
+    char *msg;
+    FormatMessageA(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        err,
+        0,
+        (LPSTR)&msg,
+        0,
+        NULL
+    );
+
+    return msg;
 }
