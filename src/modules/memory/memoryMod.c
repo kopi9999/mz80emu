@@ -86,7 +86,6 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
     if (instanceTmp->readTrigger) { 
         *data = instanceTmp->data[*address];
         instanceTmp->readState = 0;
-        printf("\nData: %d, Address: %d\n", *data, *address);
         instanceTmp->readTrigger = 0;
     }
     return SUCCESS;

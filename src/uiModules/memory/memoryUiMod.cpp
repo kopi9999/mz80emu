@@ -129,9 +129,10 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
     //if the cell i normal and not asci
     if (selectedCol != 10){
     wxString asciiStr;
+    wxString hexVal;
     for (int col = 0; col < numCol-1; ++col) {
         
-        wxString hexVal = grid->GetCellValue(selectedRow, col);
+        hexVal = grid->GetCellValue(selectedRow, col);
         
         long value = 0;
         if (hexVal.ToLong(&value, 16) && value >= 0 && value <= 255)
@@ -145,7 +146,11 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
         }
     }
     grid->SetCellValue(selectedRow, numCol-1, asciiStr);
-    //instance->data[selectedRow * 10 + selectedCol] = 
+
+    uint32_t value = 0;
+    hexVal = grid->GetCellValue(selectedRow, selectedCol);
+    hexVal.ToUInt(&value, 16);
+    instance->data[selectedRow * 10 + selectedCol] = value;
     }
     //whan changes cell is the ASCI one 
     else 
@@ -225,7 +230,6 @@ void UiModulePanel::OnRightClick(wxGridEvent& event)
     // pokaż menu w miejscu kliknięcia
     PopupMenu(&menu, event.GetPosition());
 }
-
 
 wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
 {
