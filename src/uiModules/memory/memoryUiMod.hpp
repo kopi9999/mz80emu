@@ -10,9 +10,12 @@
 #include <cstdint>
 #include "../uiModuleInternal.hpp"
 
-struct Instance {
-    uint8_t value;
-    char* character;
+struct Instance{
+    uint8_t* data;
+    uint32_t size;
+    uint8_t readState;
+    uint8_t writeState;
+    uint8_t readTrigger;
 };
 
 enum { ID_MENU_REFRESH = wxID_HIGHEST + 1 };
@@ -41,7 +44,6 @@ class UiModulePanel : public wxPanel {
         std::vector<std::string> selectedModules;
         std::vector<std::string> instanceNames;
         //std::map<int, std::vector<std::string>> instanceInterfaces;
-        uint8_t memory_table [65536]; 
 
     
         void OnGridContextMenu(wxContextMenuEvent& event);

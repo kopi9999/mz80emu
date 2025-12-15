@@ -63,7 +63,6 @@ void UiModulePanel::GridCreate(wxPanel* panel)
         wxPoint( 0, 0 ),
         wxSize( 800, 600 ) );
     grid->CreateGrid(numRows, numCols);
-    TableTextValues();
     GridFill(numRows , numCols);
     //for(int c = 0; c < numRows; c++){
     //    grid->SetLabel(c , c*10);
@@ -91,18 +90,18 @@ void UiModulePanel::OnRefreshMenu(wxCommandEvent&)
 }
 
 //generates values for the grid
-void UiModulePanel::TableTextValues()
-{
-    static bool seeded = false;
-    if (!seeded) {
-        std::srand(static_cast<unsigned int>(std::time(nullptr)));
-        seeded = true;
-    }
-    int size = sizeof(memory_table)/sizeof(memory_table[0]);
-    for (size_t i = 0; i < size; ++i) {
-        memory_table[i] = static_cast<uint8_t>(std::rand() % 256); // Random byte (0-255)
-    }
-}
+//void UiModulePanel::TableTextValues()
+//{
+    //static bool seeded = false;
+    //if (!seeded) {
+    //    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    //    seeded = true;
+   // }
+    //int size = sizeof(instance->data)/sizeof(instance->data[0]);
+    //for (size_t i = 0; i < size; ++i) {
+    //    instance->data[i] = static_cast<uint8_t>(std::rand() % 256); // Random byte (0-255)
+    //}
+//}
 
 //le refresher of grid on change
 void UiModulePanel::Refresher()
@@ -133,7 +132,6 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
     for (int col = 0; col < numCol-1; ++col) {
         
         wxString hexVal = grid->GetCellValue(selectedRow, col);
-        long byte;
         
         long value = 0;
         if (hexVal.ToLong(&value, 16) && value >= 0 && value <= 255)
@@ -147,6 +145,7 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
         }
     }
     grid->SetCellValue(selectedRow, numCol-1, asciiStr);
+    //instance->data[selectedRow * 10 + selectedCol] = 
     }
     //whan changes cell is the ASCI one 
     else 
@@ -160,7 +159,7 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
             if (hexVal.length() > col && hexVal[col] != '.')
             {
                 uint8_t val = static_cast<uint8_t>(hexVal[col]);
-                memory_table[base + col] = val;
+                instance->data[base + col] = val;
             }
 
         }
@@ -169,7 +168,7 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
         for(int j = 0; j < numCol-1; j++)
         {
                 std::stringstream ss;
-                    unsigned int val = static_cast<unsigned char>(memory_table[byteVal]);
+                    unsigned int val = static_cast<unsigned char>(instance->data[byteVal]);
                 //ss << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << (int)byteVal;
                 ss << std::hex << std::uppercase << std::setfill('0') << std::setw(2)<< val;
                 grid->SetCellValue(selectedRow, j, ss.str());
@@ -191,7 +190,7 @@ void UiModulePanel::GridFill(int Rows , int Cols)
     {
         for(int j = 0; j < Cols-1; j++)
         {
-            uint8_t byte = memory_table[selectedTableRecord];
+            uint8_t byte = instance->data[selectedTableRecord];
             wxString hex = wxString::Format("%02X", byte);
             grid->SetCellValue(i, j, hex);
             byteVal++;
@@ -203,7 +202,7 @@ void UiModulePanel::GridFill(int Rows , int Cols)
             wxString asciiStr;
             for (int col = 0; col < Cols-1; ++col) {
                 selectedTableRecord = row*10+col;
-                uint8_t byte = memory_table[selectedTableRecord ];  // read raw byte
+                uint8_t byte = instance->data[selectedTableRecord ];  // read raw byte
 
                 char ch = static_cast<char>(byte);
 
@@ -240,3 +239,5 @@ wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
 
 // when 11 col is in edit mode clean it and start a new window / other form to eddit memory
 //when edited the value is set by delfy tu zero and the entered value is apped in the forn to zthe value
+
+//add saving to memory when changing single cell

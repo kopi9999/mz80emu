@@ -1,4 +1,5 @@
 #include "memoryMod.h"
+#include <stdio.h>
 
 const char* moduleName = "memory";
 const char* moduleDescription = "Emulates 64kB of memory";
@@ -17,7 +18,7 @@ const char* interfacesDescriptions[] = {
 enum Error create(void** instance, void*__restrict parameters)
 {
     struct Instance* instanceTmp = calloc(1, sizeof(struct Instance));
-    instanceTmp->data = malloc(65536 * sizeof(uint8_t));
+    instanceTmp->data = calloc(65536, sizeof(uint8_t));
     instanceTmp->size = 65536;
 
     *instance = (void*) instanceTmp;
@@ -86,6 +87,7 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
     if (instanceTmp->readTrigger) { 
         *data = instanceTmp->data[*address];
         instanceTmp->readState = 0;
+        instanceTmp->readTrigger = 0;
     }
     return SUCCESS;
 }
