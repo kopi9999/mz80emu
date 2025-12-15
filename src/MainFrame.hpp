@@ -1,6 +1,7 @@
 #ifndef MAIN_FRAME
 #define MAIN_FRAME
 #include <wx/wx.h>
+#include <wx/notebook.h>
 
 class MainFrame : public wxFrame
 {
@@ -20,11 +21,13 @@ class MainFrame : public wxFrame
             ID_NEXT_TICK,
             ID_CLOCK_PERIOD_TEXT_CTRL,
             ID_OVERRIDE_CLOCK_PERIOD_BUTTON,
-            ID_INSTANCES_LIST
+            ID_INSTANCES_LIST,
+            ID_UI_MODULE_CONTROL
         };
 
         wxMenuBar *menuBar;
         wxMenu *file;
+        wxNotebook *uiModuleControl;
     
     private:
         void OnTimer(wxTimerEvent& event);

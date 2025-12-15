@@ -15,7 +15,7 @@ bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load li
     {
         libs[i] = loadLib(("modules/" + libNames[i]).c_str());
         if(!libs[i]){
-            cout << "ERROR: cannot find module: " << libNames[i] << "\n";
+            cout << "ERROR: module loading failed: " << getError() << "\n";
             error = true;
         }
         else 
@@ -29,27 +29,27 @@ bool loadLibs(void** libs, vector<string> libNames, uint16_t libCount) //load li
 bool loadModuleFunctions(struct Modules modules)
 {
     if (loadFuncs((void**) modules.createFuncs, modules.pointers, modules.count, "create")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createFuncs, modules.count)] << "]: Cannot load create function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.createInterfacesFuncs, modules.pointers, modules.count, "createInterfaces")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createInterfacesFuncs, modules.count)] << "]: Cannot load createInterfaces function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.createInterfacesFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.strobeUpFuncs, modules.pointers, modules.count, "strobeUp")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeUpFuncs, modules.count)] << "]: Cannot load strobeUp function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeUpFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.strobeDownFuncs, modules.pointers, modules.count, "strobeDown")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeDownFuncs, modules.count)] << "]: Cannot load strobeDown function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.strobeDownFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.destroyFuncs, modules.pointers, modules.count, "destroy")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyFuncs, modules.count)] << "]: Cannot load destroy function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     if (loadFuncs((void**) modules.destroyInterfacesFuncs, modules.pointers, modules.count, "destroyInterfaces")){
-        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyInterfacesFuncs, modules.count)] << "]: Cannot load destroyInterfaces function.\n";
+        cout << "ERROR [" << modules.names[firstNullPointer((void**) modules.destroyInterfacesFuncs, modules.count)] << "]: " << getError() << "\n";
         return false;
     }
     return true;
@@ -94,12 +94,60 @@ bool loadDerivedInterfaces(void*** interfaces, struct InterfacesInfo interfacesI
     return true;
 }
 
-enum CrashCode init(struct Modules* modules, void*** instances, void**** interfaces, struct InstanceInfo instanceInfo, struct InterfacesInfo interfacesInfo)
+bool loadUiLibs(void** libs, vector<string> libNames, uint16_t libCount) //load libraries from std::vector<string>
+{
+    bool error = false;
+    for (uint16_t i = 0; i < libCount; ++i)
+    {
+        libs[i] = loadLib(("uiModules/" + libNames[i]).c_str());
+        if(!libs[i]){
+            cout << "ERROR: loading UI module failed: " << getError() << "\n";
+            error = true;
+        }
+        else 
+        {
+            cout << "INFO: Loading UI module: " << libNames[i] << "\n";
+        }
+    }
+    return error;
+}
+
+bool loadUiModuleFunctions(struct UiModules uiModules)
+{
+    if (loadFuncs((void**) uiModules.getPanelFuncs, uiModules.pointers, uiModules.count, "_Z8getPanelP9wxControlPvPS1_")){
+        cout << "ERROR [" << uiModules.names[firstNullPointer((void**) uiModules.getPanelFuncs, uiModules.count)] << "]: " << getError() << "\n";
+        return false;
+    }
+
+    if (loadFuncs((void**) uiModules.getNameFuncs, uiModules.pointers, uiModules.count, "_Z7getNamePcj")){
+        cout << "ERROR [" << uiModules.names[firstNullPointer((void**) uiModules.getNameFuncs, uiModules.count)] << "]: " << getError() << "\n";
+        return false;
+    }
+
+    return true;
+}
+
+enum CrashCode init(
+    struct Modules* modules,
+    struct UiModules* uiModules,
+    void*** instances,
+    wxPanel*** uiInstances,
+    void**** interfaces,
+    struct InstanceInfo instanceInfo,
+    struct InterfacesInfo interfacesInfo
+)
 {
     modules->pointers = new void*[modules->count];
+    uiModules->pointers = new void*[uiModules->count];
     if(loadLibs(modules->pointers, modules->names, modules->count)){
-        cout << "CRITICAL: Could not find all modules\n";
+        cout << "CRITICAL: Could not load all modules\n";
         unloadLibs(modules->pointers, modules->count);
+        return INIT_MODULE_NOT_FOUND;
+    }
+    if(loadUiLibs(uiModules->pointers, uiModules->names, uiModules->count)){
+        cout << "CRITICAL: Could not load all UI modules\n";
+        unloadLibs(modules->pointers, modules->count);
+        unloadLibs(uiModules->pointers, uiModules->count);
         return INIT_MODULE_NOT_FOUND;
     }
 
@@ -112,9 +160,20 @@ enum CrashCode init(struct Modules* modules, void*** instances, void**** interfa
     if (!loadModuleFunctions(*modules)){
         cout << "CRITICAL: Could not load all modules properly\n";
         unloadLibs(modules->pointers, modules->count);
+        unloadLibs(uiModules->pointers, uiModules->count);
         return INIT_MODULE_INVALID;
     }
     cout << "INFO: All modules succesfully loaded\n";
+    
+    uiModules->getPanelFuncs = new getPanel[uiModules->count];
+    uiModules->getNameFuncs = new getUiName[uiModules->count];
+    if (!loadUiModuleFunctions(*uiModules)){
+        cout << "CRITICAL: Could not load all UI modules properly\n";
+        unloadLibs(modules->pointers, modules->count);
+        unloadLibs(uiModules->pointers, uiModules->count);
+        return INIT_MODULE_INVALID;
+    }
+    cout << "INFO: All UI modules successfully loaded\n";
 
     *instances = new void*[instanceInfo.count];
     if (!loadInstances(*modules, *instances, instanceInfo)){

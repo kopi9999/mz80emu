@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
-set(CMAKE_BUILD_TYPE Debug)
 
 set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_C_STANDARD 17)
@@ -34,6 +34,7 @@ endif()
 add_subdirectory(src build) # main emulator
 add_subdirectory(src/modules build/modules) # modules
 add_subdirectory(src/ui build/ui) # ui
+add_subdirectory(src/uiModules build/uiModules) # uiModules
 if(Boost_FOUND)
     add_subdirectory(src/unitTests build/unitTests) # unit tests
 endif()
