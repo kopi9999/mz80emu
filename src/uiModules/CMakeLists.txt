@@ -1,7 +1,10 @@
 add_library(testUiMod SHARED test/testUiMod.cpp uiModuleFunctions.cpp)
+add_library(memoryUiMod SHARED memory/memoryUiMod.cpp uiModuleFunctions.cpp)
 
 if(WIN32)
     target_link_libraries(testUiMod PRIVATE wx::core wx::base)
+    target_link_libraries(memoryUiMod PRIVATE wx::core wx::base)
 elseif(UNIX)
     target_link_libraries(testUiMod PRIVATE ${wxWidgets_LIBRARIES})
+    target_link_libraries(memoryUiMod PRIVATE ${wxWidgets_LIBRARIES})
 endif()

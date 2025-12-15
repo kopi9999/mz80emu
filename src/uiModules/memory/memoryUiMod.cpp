@@ -1,62 +1,60 @@
-#include "MemoryModule.hpp"
+#include "memoryUiMod.hpp"
 #include <ctime> 
 #include <sstream>
 #include <iomanip>
 #include <stdio.h>
 
-wxIMPLEMENT_APP(App);
+const char* moduleName = "memory";
+const char* moduleDescription = "UI module for displaying memory content";
+const uint16_t moduleMajorVersion = 1;
+const uint16_t moduleMinorVersion = 1;
+const uint16_t protocolVersion = 1;
 
-bool App::OnInit(){
-  MainFrame* mainFrame = new MainFrame("C++ GUI");
-  mainFrame->Show();
-  return true;
-}
+UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interfaces) :
+    wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize), 
+    instance((struct Instance*) instance),
+    interfaces(interfaces) {
+        wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
-MainFrame::MainFrame(const wxString& title)
-    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(800, 600)),refresherTimer(this)
-{   
-    wxPanel* panel = new wxPanel(this);
-    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+        wxBoxSizer* instanceSizer = new wxBoxSizer(wxHORIZONTAL);
+        instanceList = new wxListBox(this, wxID_ANY);
 
-    wxBoxSizer* instanceSizer = new wxBoxSizer(wxHORIZONTAL);
-    instanceList = new wxListBox(panel, wxID_ANY);
+        GridCreate(this);
+        //making the grid scalable with size of the window?? i think???
+        mainSizer->Add(grid, 1, wxEXPAND | wxALL, 0);
+        grid->SetRowLabelSize(40);
+        int lastColWidth = 120;
+        grid->SetColSize(10, lastColWidth);
+        grid->SetColMinimalWidth(0, 40);
+        grid->SetColMinimalAcceptableWidth(20);
+        grid->Bind(wxEVT_SIZE, [this](wxSizeEvent& event) {
+        int numCols = grid->GetNumberCols();    
+        int totalWidth = grid->GetClientSize().GetWidth();
+        int firstRowWidth = grid->GetRowLabelSize();
+        int lastColWidth = grid->GetColSize(10);
+        int colWidth = (totalWidth-firstRowWidth-lastColWidth) / (numCols-1); 
+        for (int c = 0; c < numCols-1; ++c)
+            grid->SetColSize(c, colWidth);
+        event.Skip();
+        });
+        //the refresh on change in one row
+        grid->Bind(wxEVT_GRID_CELL_CHANGED, &UiModulePanel::OnChangeRow, this);
 
-    GridCreate(panel);
-    //making the grid scalable with size of the window?? i think???
-    mainSizer->Add(grid, 1, wxEXPAND | wxALL, 0);
-    grid->SetRowLabelSize(40);
-    int lastColWidth = 120;
-    grid->SetColSize(10, lastColWidth);
-    grid->SetColMinimalWidth(0, 40);
-    grid->SetColMinimalAcceptableWidth(20);
-    grid->Bind(wxEVT_SIZE, [this](wxSizeEvent& event) {
-    int numCols = grid->GetNumberCols();    
-    int totalWidth = grid->GetClientSize().GetWidth();
-    int firstRowWidth = grid->GetRowLabelSize();
-    int lastColWidth = grid->GetColSize(10);
-    int colWidth = (totalWidth-firstRowWidth-lastColWidth) / (numCols-1); 
-    for (int c = 0; c < numCols-1; ++c)
-        grid->SetColSize(c, colWidth);
-    event.Skip();
-    });
-    //the refresh on change in one row
-    grid->Bind(wxEVT_GRID_CELL_CHANGED, &MainFrame::OnChangeRow, this);
-    
-    grid->Bind(wxEVT_CONTEXT_MENU, &MainFrame::OnGridContextMenu, this);
-    Bind(wxEVT_MENU, &MainFrame::OnRefreshMenu, this, ID_MENU_REFRESH);
+        grid->Bind(wxEVT_CONTEXT_MENU, &UiModulePanel::OnGridContextMenu, this);
+        Bind(wxEVT_MENU, &UiModulePanel::OnRefreshMenu, this, ID_MENU_REFRESH);
 
-    panel->SetSizer(mainSizer);
-    mainSizer->SetSizeHints(this);
+        this->SetSizer(mainSizer);
+        mainSizer->SetSizeHints(this);
 
 
-    //the refresh code
-    Bind(wxEVT_TIMER, &MainFrame::OnTimer, this);
-    refresherTimer.Start(40000);
-    startTime = wxGetLocalTimeMillis();
-};
+        //the refresh code
+        Bind(wxEVT_TIMER, &UiModulePanel::OnTimer, this);
+        refresherTimer.Start(40000);
+        startTime = wxGetLocalTimeMillis();
+    }
 
 //creates and fills grid with random data
-void MainFrame::GridCreate(wxPanel* panel)
+void UiModulePanel::GridCreate(wxPanel* panel)
 {
     const int numRows = 20;
     const int numCols = 11;
@@ -73,7 +71,7 @@ void MainFrame::GridCreate(wxPanel* panel)
 
 }
 
-void MainFrame::OnGridContextMenu(wxContextMenuEvent& event)
+void UiModulePanel::OnGridContextMenu(wxContextMenuEvent& event)
 {
     wxMenu menu;
     menu.Append(ID_MENU_REFRESH, "Refresh");
@@ -87,13 +85,13 @@ void MainFrame::OnGridContextMenu(wxContextMenuEvent& event)
     grid->PopupMenu(&menu, pos);
 }
 
-void MainFrame::OnRefreshMenu(wxCommandEvent&)
+void UiModulePanel::OnRefreshMenu(wxCommandEvent&)
 {
     Refresher(); // your already-existing function
 }
 
 //generates values for the grid
-void MainFrame::TableTextValues()
+void UiModulePanel::TableTextValues()
 {
     static bool seeded = false;
     if (!seeded) {
@@ -107,7 +105,7 @@ void MainFrame::TableTextValues()
 }
 
 //le refresher of grid on change
-void MainFrame::Refresher()
+void UiModulePanel::Refresher()
 {
     int numRow = 20;
     int numCol = 11;
@@ -116,14 +114,14 @@ void MainFrame::Refresher()
 }
 
 //timer
-void MainFrame::OnTimer(wxTimerEvent& event)
+void UiModulePanel::OnTimer(wxTimerEvent& event)
 {
     wxLongLong now = wxGetLocalTimeMillis();
     Refresher();
 }
 
 //the on change event that is activatet when vale is entered throu grind and affect the grid itslef but not yet the value table wip
-void MainFrame::OnChangeRow(wxGridEvent& event)
+void UiModulePanel::OnChangeRow(wxGridEvent& event)
 {
     int selectedRow = event.GetRow();
     int selectedCol = event.GetCol();
@@ -185,7 +183,7 @@ void MainFrame::OnChangeRow(wxGridEvent& event)
 }
 
 //fils grid with data given by te table
-void MainFrame::GridFill(int Rows , int Cols)
+void UiModulePanel::GridFill(int Rows , int Cols)
 {
     int selectedTableRecord = 0 ;
     unsigned char byteVal = 0x20;
@@ -218,7 +216,7 @@ void MainFrame::GridFill(int Rows , int Cols)
 }
 
 //WIP the right click menu that allowns to change the refresh rate
-void MainFrame::OnRightClick(wxGridEvent& event)
+void UiModulePanel::OnRightClick(wxGridEvent& event)
 {
     wxMenu menu;
 
@@ -227,6 +225,12 @@ void MainFrame::OnRightClick(wxGridEvent& event)
 
     // pokaż menu w miejscu kliknięcia
     PopupMenu(&menu, event.GetPosition());
+}
+
+
+wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
+{
+    return new UiModulePanel(parent, instance, interfaces);
 }
 
 //Make that if space bar is hit the refreshment stops and the value can be changed manualy 
