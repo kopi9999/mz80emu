@@ -1,24 +1,27 @@
 Modules:
-libtestMod.so
+libz80cpuMod.so
+libmemoryMod.so
 
 Module instances:
 0
-0
+1
 
 Interfaces:
 0
-1
 
 Derived interfaces:
 new
+0 1
 0 0
-1 0
+0 3
+0 5
+0 6
 
 Clock period:
-250000000
+500
 
 Clock depth:
-2
+1
 
 Strobe up instances:
 0
@@ -26,11 +29,11 @@ Strobe up instances:
 
 Strobe up interfaces:
 0
-0
+1
 
 Strobe up clock:
-true false
-false true
+true
+true
 
 Strobe down instances:
 0
@@ -38,15 +41,14 @@ Strobe down instances:
 
 Strobe down interfaces:
 0
-0
+1
 
 Strobe down clock:
-false true
-true false
+true
+true
 
 UI modules:
-libtestUiMod.so
+libmemoryUiMod.so
 
 UI module instances:
-0 0 0
-0 1 2
+0 1 1
