@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <stdio.h>
 
+using namespace std;
+
 const char* moduleName = "memory";
 const char* moduleDescription = "UI module for displaying memory content";
 const uint16_t moduleMajorVersion = 1;
@@ -28,14 +30,17 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         grid->SetColMinimalWidth(0, 40);
         grid->SetColMinimalAcceptableWidth(20);
         grid->Bind(wxEVT_SIZE, [this](wxSizeEvent& event) {
-        int numCols = grid->GetNumberCols();    
-        int totalWidth = grid->GetClientSize().GetWidth();
-        int firstRowWidth = grid->GetRowLabelSize();
-        int lastColWidth = grid->GetColSize(10);
-        int colWidth = (totalWidth-firstRowWidth-lastColWidth) / (numCols-1); 
-        for (int c = 0; c < numCols-1; ++c)
-            grid->SetColSize(c, colWidth);
-        event.Skip();
+            int numCols = grid->GetNumberCols();    
+            int totalWidth = grid->GetClientSize().GetWidth();
+            int firstRowWidth = grid->GetRowLabelSize();
+            int lastColWidth = grid->GetColSize(10);
+            int colWidth = (totalWidth-firstRowWidth-lastColWidth) / (numCols-1); 
+            for (int c = 0; c < numCols-1; ++c) {
+                grid->SetColSize(c, colWidth);
+                grid->SetColLabelValue(c, to_string(c));
+            }
+            grid->SetColLabelValue(numCols-1, "ASCII");
+            event.Skip();
         });
         //the refresh on change in one row
         grid->Bind(wxEVT_GRID_CELL_CHANGED, &UiModulePanel::OnChangeRow, this);
