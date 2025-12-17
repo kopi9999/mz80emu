@@ -37,7 +37,6 @@ class UiModulePanel : public wxPanel {
         wxListBox* strobeDownInstanceList;
         wxGrid* grid;
         wxTimer refresherTimer;
-        wxLongLong startTime;
 
         void OnTimer(wxTimerEvent& event);
 

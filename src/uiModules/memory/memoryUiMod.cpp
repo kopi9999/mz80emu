@@ -22,7 +22,7 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         instanceList = new wxListBox(this, wxID_ANY);
 
         GridCreate(this);
-        //making the grid scalable with size of the window?? i think???
+        //making the grid scalable with size of the window
         mainSizer->Add(grid, 1, wxEXPAND | wxALL, 0);
         grid->SetRowLabelSize(40);
         int lastColWidth = 120;
@@ -54,25 +54,22 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
 
         //the refresh code
         Bind(wxEVT_TIMER, &UiModulePanel::OnTimer, this);
-        refresherTimer.Start(40000);
-        startTime = wxGetLocalTimeMillis();
+        refresherTimer.Start(250);
     }
 
-//creates and fills grid with random data
+//creates and fills grid with initial data
 void UiModulePanel::GridCreate(wxPanel* panel)
 {
     const int numRows = 20;
     const int numCols = 11;
-    grid = new wxGrid( panel,    
+    grid = new wxGrid(
+        panel,
         -1,
         wxPoint( 0, 0 ),
-        wxSize( 800, 600 ) );
+        wxSize( 800, 600 )
+    );
     grid->CreateGrid(numRows, numCols);
-    GridFill(numRows , numCols);
-    //for(int c = 0; c < numRows; c++){
-    //    grid->SetLabel(c , c*10);
-    //}
-
+    GridFill(numRows, numCols);
 }
 
 void UiModulePanel::OnGridContextMenu(wxContextMenuEvent& event)
@@ -82,8 +79,9 @@ void UiModulePanel::OnGridContextMenu(wxContextMenuEvent& event)
 
     // Position correctly at mouse
     wxPoint pos = event.GetPosition();
-    if (pos == wxDefaultPosition)
+    if (pos == wxDefaultPosition) {
         pos = wxGetMousePosition();
+    }
 
     pos = grid->ScreenToClient(pos);
     grid->PopupMenu(&menu, pos);
@@ -91,24 +89,10 @@ void UiModulePanel::OnGridContextMenu(wxContextMenuEvent& event)
 
 void UiModulePanel::OnRefreshMenu(wxCommandEvent&)
 {
-    Refresher(); // your already-existing function
+    Refresher();
 }
 
-//generates values for the grid
-//void UiModulePanel::TableTextValues()
-//{
-    //static bool seeded = false;
-    //if (!seeded) {
-    //    std::srand(static_cast<unsigned int>(std::time(nullptr)));
-    //    seeded = true;
-   // }
-    //int size = sizeof(instance->data)/sizeof(instance->data[0]);
-    //for (size_t i = 0; i < size; ++i) {
-    //    instance->data[i] = static_cast<uint8_t>(std::rand() % 256); // Random byte (0-255)
-    //}
-//}
-
-//le refresher of grid on change
+// le refresher of grid on change
 void UiModulePanel::Refresher()
 {
     int numRow = 20;
@@ -117,21 +101,21 @@ void UiModulePanel::Refresher()
     grid->ForceRefresh();
 }
 
-//timer
+// timer
 void UiModulePanel::OnTimer(wxTimerEvent& event)
 {
     wxLongLong now = wxGetLocalTimeMillis();
     Refresher();
 }
 
-//the on change event that is activatet when vale is entered throu grind and affect the grid itslef but not yet the value table wip
+// on change event that is activated when value is entered through grid and affect the grid itself and the value table
 void UiModulePanel::OnChangeRow(wxGridEvent& event)
 {
     int selectedRow = event.GetRow();
     int selectedCol = event.GetCol();
     int numCol = 11;
  
-    //if the cell i normal and not asci
+    // if the cell is normal and not ascii
     if (selectedCol != 10){
     wxString asciiStr;
     wxString hexVal;
@@ -157,11 +141,11 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
     hexVal.ToUInt(&value, 16);
     instance->data[selectedRow * 10 + selectedCol] = value;
     }
-    //whan changes cell is the ASCI one 
+    // when changed cell is the ASCII one 
     else 
     {
         wxString hexVal = grid->GetCellValue(selectedRow , selectedCol);
-        //code that combines the input and the saved data
+        // code that combines the input and the saved data
         wxString asciiStr;
         size_t base = 10 * static_cast<size_t>(selectedRow);
         for (int col = 0; col < 10; ++col) {
@@ -179,7 +163,6 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
         {
                 std::stringstream ss;
                     unsigned int val = static_cast<unsigned char>(instance->data[byteVal]);
-                //ss << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << (int)byteVal;
                 ss << std::hex << std::uppercase << std::setfill('0') << std::setw(2)<< val;
                 grid->SetCellValue(selectedRow, j, ss.str());
 
@@ -191,7 +174,7 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
     grid->ForceRefresh();
 }
 
-//fils grid with data given by te table
+// fills grid with data given by the table
 void UiModulePanel::GridFill(int Rows , int Cols)
 {
     int selectedTableRecord = 0 ;
@@ -224,7 +207,7 @@ void UiModulePanel::GridFill(int Rows , int Cols)
         }
 }
 
-//WIP the right click menu that allowns to change the refresh rate
+//WIP the right click menu that allows to change the refresh rate
 void UiModulePanel::OnRightClick(wxGridEvent& event)
 {
     wxMenu menu;
@@ -232,7 +215,7 @@ void UiModulePanel::OnRightClick(wxGridEvent& event)
     menu.Append(1001, "Opcja 1");
     menu.Append(1002, "Opcja 2");
 
-    // pokaż menu w miejscu kliknięcia
+    // show menu at click position
     PopupMenu(&menu, event.GetPosition());
 }
 
