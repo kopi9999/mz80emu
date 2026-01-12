@@ -25,11 +25,11 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         GridCreate(this);
         // making the grid scalable with size of the window
         mainSizer->Add(grid, 1, wxEXPAND | wxALL, 0);
-        grid->SetRowLabelSize(40);
+        grid->SetRowLabelSize(50);
         int lastColWidth = 120;
         grid->SetColSize(10, lastColWidth);
         grid->SetColMinimalWidth(0, 40);
-        grid->SetColMinimalAcceptableWidth(6554);
+        grid->SetColMinimalAcceptableWidth(20);
         grid->Bind(wxEVT_SIZE, [this](wxSizeEvent& event) {
             int numCols = grid->GetNumberCols();
             int totalWidth = grid->GetClientSize().GetWidth();
@@ -63,7 +63,7 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
 // creates and fills grid with initial data
 void UiModulePanel::GridCreate(wxPanel* panel)
 {
-    const int numRows = 6554;
+    const int numRows = GRID_HEIGHT;
     const int numCols = 11;
     grid = new wxGrid(
         panel,
@@ -98,7 +98,7 @@ void UiModulePanel::OnRefreshMenu(wxCommandEvent&)
 // le refresher of grid on change
 void UiModulePanel::Refresher()
 {
-    int numRow = 6554;
+    int numRow = GRID_HEIGHT;
     int numCol = 11;
     GridFill(numRow , numCol);
     grid->ForceRefresh();
