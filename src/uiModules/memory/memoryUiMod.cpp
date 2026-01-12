@@ -15,7 +15,8 @@ const uint16_t protocolVersion = 1;
 UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interfaces) :
     wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize), 
     instance((struct Instance*) instance),
-    interfaces(interfaces) {
+    interfaces(interfaces),
+    refresherTimer(this) {
         wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
         wxBoxSizer* instanceSizer = new wxBoxSizer(wxHORIZONTAL);
