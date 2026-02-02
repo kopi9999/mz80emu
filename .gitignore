@@ -58,3 +58,4 @@ wxWidgets/
 boost/
 compile_flags.txt
 .cache/
+*~

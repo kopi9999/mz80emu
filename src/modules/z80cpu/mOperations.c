@@ -1,4 +1,6 @@
 #include "mOperations.h"
+#include "decode.h"
+#include "execute.h"
 
 enum Error m1_strobeUp (struct Instance* __restrict instance, void** __restrict interfaces) 
 {
@@ -20,12 +22,13 @@ enum Error m1_strobeUp (struct Instance* __restrict instance, void** __restrict 
         return SUCCESS;
     }
     if (instance->TCycle == 4) {
-        printf("\nLoaded instruction %d on address %d", instance->instruction, instance->PC);
+        instance->state = decodeInstruction(instance);
+        printf("\nLoaded instruction %d on address %d, decoded to %d", instance->instruction, instance->PC, instance->state);
         instance->PC++;
         instance->MState = 0;
         instance->TCycle = 0;
         *(uint8_t*) interfaces[7] = 0; // rfsh
-        return SUCCESS;
+        return execute(instance, interfaces);
     }
     return SUCCESS;
 }

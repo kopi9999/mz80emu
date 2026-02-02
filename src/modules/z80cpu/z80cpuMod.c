@@ -74,6 +74,8 @@ enum Error strobeUp(void*__restrict instance, void**__restrict interfaces)
 {
     struct Instance* instanceTmp = instance;
 
+    if (instanceTmp->halted) {printf("\nHALTED"); return SUCCESS;}
+
     if(instanceTmp->MState == 0 && instanceTmp->TCycle == 0){ // new cycle
         instanceTmp->MState = 1;
         instanceTmp->TCycle = 1;

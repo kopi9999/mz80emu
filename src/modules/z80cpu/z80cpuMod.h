@@ -210,9 +210,11 @@ struct Instance{
     uint8_t TCycle;
     uint8_t instruction;
     uint8_t tmp;
+    uint8_t halted;
 
     enum Register registerIn;
     enum Register registerOut;
+    enum Instruction state;
 
     uint16_t PC;
     uint16_t SP;
