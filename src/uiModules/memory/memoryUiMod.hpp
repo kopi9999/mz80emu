@@ -1,6 +1,8 @@
 #ifndef MEMORY_UI_MOD
 #define MEMORY_UI_MOD
 
+#define GRID_HEIGHT 6554
+
 #include <stdint.h>
 #include <wx/wx.h>
 #include <wx/listbox.h>

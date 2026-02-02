@@ -15,25 +15,26 @@ const uint16_t protocolVersion = 1;
 UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interfaces) :
     wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize), 
     instance((struct Instance*) instance),
-    interfaces(interfaces) {
+    interfaces(interfaces),
+    refresherTimer(this) {
         wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
         wxBoxSizer* instanceSizer = new wxBoxSizer(wxHORIZONTAL);
         instanceList = new wxListBox(this, wxID_ANY);
 
         GridCreate(this);
-        //making the grid scalable with size of the window
+        // making the grid scalable with size of the window
         mainSizer->Add(grid, 1, wxEXPAND | wxALL, 0);
-        grid->SetRowLabelSize(40);
+        grid->SetRowLabelSize(50);
         int lastColWidth = 120;
         grid->SetColSize(10, lastColWidth);
         grid->SetColMinimalWidth(0, 40);
         grid->SetColMinimalAcceptableWidth(20);
         grid->Bind(wxEVT_SIZE, [this](wxSizeEvent& event) {
-            int numCols = grid->GetNumberCols();    
+            int numCols = grid->GetNumberCols();
             int totalWidth = grid->GetClientSize().GetWidth();
             int firstRowWidth = grid->GetRowLabelSize();
-            int lastColWidth = grid->GetColSize(10);
+            int lastColWidth = grid->GetColSize(numCols-1);
             int colWidth = (totalWidth-firstRowWidth-lastColWidth) / (numCols-1); 
             for (int c = 0; c < numCols-1; ++c) {
                 grid->SetColSize(c, colWidth);
@@ -42,7 +43,7 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
             grid->SetColLabelValue(numCols-1, "ASCII");
             event.Skip();
         });
-        //the refresh on change in one row
+        // the refresh on change in one row
         grid->Bind(wxEVT_GRID_CELL_CHANGED, &UiModulePanel::OnChangeRow, this);
 
         grid->Bind(wxEVT_CONTEXT_MENU, &UiModulePanel::OnGridContextMenu, this);
@@ -51,16 +52,18 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         this->SetSizer(mainSizer);
         mainSizer->SetSizeHints(this);
 
+        grid->DisableDragColSize();
+        grid->DisableDragRowSize();
 
-        //the refresh code
+        // the refresh code
         Bind(wxEVT_TIMER, &UiModulePanel::OnTimer, this);
         refresherTimer.Start(250);
     }
 
-//creates and fills grid with initial data
+// creates and fills grid with initial data
 void UiModulePanel::GridCreate(wxPanel* panel)
 {
-    const int numRows = 20;
+    const int numRows = GRID_HEIGHT;
     const int numCols = 11;
     grid = new wxGrid(
         panel,
@@ -95,7 +98,7 @@ void UiModulePanel::OnRefreshMenu(wxCommandEvent&)
 // le refresher of grid on change
 void UiModulePanel::Refresher()
 {
-    int numRow = 20;
+    int numRow = GRID_HEIGHT;
     int numCol = 11;
     GridFill(numRow , numCol);
     grid->ForceRefresh();
@@ -157,17 +160,16 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
             }
 
         }
-        int selectedTableRecord = 0 ;
-        unsigned char byteVal = 10 * selectedRow ;
-        for(int j = 0; j < numCol-1; j++)
+        int selectedTableRecord = 0;
+        unsigned char byteVal = 10 * selectedRow;
+        for(int j = 0; j < numCol-1; ++j)
         {
-                std::stringstream ss;
-                    unsigned int val = static_cast<unsigned char>(instance->data[byteVal]);
-                ss << std::hex << std::uppercase << std::setfill('0') << std::setw(2)<< val;
-                grid->SetCellValue(selectedRow, j, ss.str());
+                std::stringstream stringstream;
+                unsigned int val = static_cast<unsigned char>(instance->data[byteVal]);
+                stringstream << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << val;
+                grid->SetCellValue(selectedRow, j, stringstream.str());
 
-                
-                    byteVal++;
+                byteVal++;
                 selectedTableRecord++;
         }
     }
@@ -177,11 +179,11 @@ void UiModulePanel::OnChangeRow(wxGridEvent& event)
 // fills grid with data given by the table
 void UiModulePanel::GridFill(int Rows , int Cols)
 {
-    int selectedTableRecord = 0 ;
+    int selectedTableRecord = 0;
     unsigned char byteVal = 0x20;
-    for(int i = 0 ; i < Rows; i++)
+    for(int i = 0; i < Rows; ++i)
     {
-        for(int j = 0; j < Cols-1; j++)
+        for(int j = 0; j < Cols-1; ++j)
         {
             uint8_t byte = instance->data[selectedTableRecord];
             wxString hex = wxString::Format("%02X", byte);
@@ -192,22 +194,21 @@ void UiModulePanel::GridFill(int Rows , int Cols)
     }
     
     for (int row = 0; row < Rows; ++row) {
-            wxString asciiStr;
-            for (int col = 0; col < Cols-1; ++col) {
-                selectedTableRecord = row*10+col;
-                uint8_t byte = instance->data[selectedTableRecord ];  // read raw byte
+        wxString asciiStr;
+        for (int col = 0; col < Cols-1; ++col) {
+            selectedTableRecord = row*10+col;
+            uint8_t byte = instance->data[selectedTableRecord]; // read raw byte
 
-                char ch = static_cast<char>(byte);
+            char ch = static_cast<char>(byte);
 
-                // show printable ASCII, otherwise show '.'
-                asciiStr += wxString::Format("%c",
-                    std::isprint(static_cast<unsigned char>(ch)) ? ch : '.');
-            }
-            grid->SetCellValue(row, Cols-1, asciiStr);
+            // show printable ASCII, otherwise show '.'
+            asciiStr += wxString::Format("%c", std::isprint(static_cast<unsigned char>(ch)) ? ch : '.');
         }
+        grid->SetCellValue(row, Cols-1, asciiStr);
+    }
 }
 
-//WIP the right click menu that allows to change the refresh rate
+// WIP the right click menu that allows to change the refresh rate
 void UiModulePanel::OnRightClick(wxGridEvent& event)
 {
     wxMenu menu;
@@ -224,10 +225,9 @@ wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
     return new UiModulePanel(parent, instance, interfaces);
 }
 
-//Make that if space bar is hit the refreshment stops and the value can be changed manualy 
-//Upon hiting enter the row ASCI form shoud refresh to acomodite change 
-//or alterativli on every change ASCI form shoud responce with value change 
-//
+//Make that if space bar is hit the refreshment stops and the value can be changed manualy
+//Upon hiting enter the row ASCI form shoud refresh to acomodite change
+//or alterativli on every change ASCI form shoud responce with value change
 
 // when 11 col is in edit mode clean it and start a new window / other form to eddit memory
 //when edited the value is set by delfy tu zero and the entered value is apped in the forn to zthe value
