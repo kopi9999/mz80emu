@@ -28,7 +28,7 @@ enum Error m1_strobeUp (struct Instance* __restrict instance, void** __restrict 
         instance->MState = 0;
         instance->TCycle = 0;
         *(uint8_t*) interfaces[7] = 0; // rfsh
-        return execute_up(instance, interfaces);
+        return SUCCESS;
     }
     return SUCCESS;
 }

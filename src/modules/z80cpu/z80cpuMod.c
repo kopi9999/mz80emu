@@ -1,4 +1,5 @@
 #include "mOperations.h"
+#include "execute.h"
 
 const char* moduleName = "Z80 CPU module";
 const char* moduleDescription = "Module emulating Z80 CPU";
@@ -84,7 +85,9 @@ enum Error strobeUp(void*__restrict instance, void**__restrict interfaces)
         return SUCCESS;
     }
 
-    if (instanceTmp->MState == 1){return m1_strobeUp(instanceTmp, interfaces);}
+    if (!instanceTmp->MState) {execute_up(instanceTmp, interfaces);}
+
+    if (instanceTmp->MState == 1) {return m1_strobeUp(instanceTmp, interfaces);}
     return SUCCESS;
 }
 
@@ -92,7 +95,11 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
 {
     struct Instance* instanceTmp = instance;
 
-    if (instanceTmp->MState == 1){return m1_strobeDown(instanceTmp, interfaces);}
+    if (instanceTmp->halted) {printf("\nHALTED"); return SUCCESS;}
+
+    if (!instanceTmp->MState) {return execute_down(instanceTmp, interfaces);}
+
+    if (instanceTmp->MState == 1) {return m1_strobeDown(instanceTmp, interfaces);}
     
     return SUCCESS;
 }
