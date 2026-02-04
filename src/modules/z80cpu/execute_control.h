@@ -4,5 +4,6 @@
 #include "z80cpuMod.h"
 
 enum Error halt(struct Instance* __restrict i);
+enum Error nop(struct Instance* __restrict i, void** __restrict inf);
 
 #endif

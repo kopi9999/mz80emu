@@ -22,13 +22,8 @@ enum Error m1_strobeUp (struct Instance* __restrict instance, void** __restrict 
         return SUCCESS;
     }
     if (instance->TCycle == 4) {
-        instance->state = decodeInstruction(instance);
-        printf("\nLoaded instruction %d on address %d, decoded to %d", instance->instruction, instance->PC, instance->state);
-        instance->PC++;
-        instance->MState = 0;
-        instance->TCycle = 0;
         *(uint8_t*) interfaces[7] = 0; // rfsh
-        return SUCCESS;
+	return execute_up(instance, interfaces);
     }
     return SUCCESS;
 }
@@ -47,6 +42,9 @@ enum Error m1_strobeDown (struct Instance* __restrict instance, void** __restric
     }
     if (instance->TCycle == 4){
         *(uint8_t*) interfaces[3] = 0; // mreq
+        instance->state = decodeInstruction(instance);
+        printf("\nLoaded instruction %d on address %d, decoded to %d", instance->instruction, instance->PC, instance->state);
+        instance->PC++;
         return SUCCESS;
     }
     return SUCCESS;
