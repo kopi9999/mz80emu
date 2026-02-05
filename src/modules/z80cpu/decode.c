@@ -85,7 +85,11 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                 else {return LD_$HL$_R;}
             } 
             else if ((i->instruction & 0b00000111) == UNDEFINED){return LD_R_$HL$;} 
-            else {return LD_R_Rp;}
+            else {
+	      i->registerOut = i->instruction & 0b00000111;
+	      i->registerIn = (i->instruction & 0b00111000) >> 3;
+              return LD_R_Rp;
+	    }
         }
         else { //00xxxxxx
             switch (i->instruction & 0b00000111) {

@@ -1,5 +1,6 @@
 #include "execute.h"
 #include "execute_control.h"
+#include "execute_load.h"
 
 enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   if (i->halted) {return halt(i, inf);}
@@ -7,6 +8,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case HALT: return halt(i, inf);
   case BAD:  return halt(i, inf);
   case NOP:  return nop(i, inf);
+  case LD_R_Rp: return ld_r_rp(i, inf);
   default:   return halt(i, inf);
   }
 }
