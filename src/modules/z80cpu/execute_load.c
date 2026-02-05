@@ -14,7 +14,7 @@ uint8_t getRegisterValue(struct Instance* __restrict i, enum Register r) {
 
 }
 
-enum Error ld_r_rp(struct Instance *__restrict i, void **__restrict inf) {
+enum Error ld_r_rp(struct Instance* __restrict i, void** __restrict inf) {
 
   switch (i->registerIn) {
   case A: i->A = getRegisterValue(i, A); break;
@@ -32,4 +32,35 @@ enum Error ld_r_rp(struct Instance *__restrict i, void **__restrict inf) {
   *(uint8_t*) inf[2] = 1; // m1
   *(uint16_t*) inf[0] = i->PC;
   return SUCCESS;
+}
+
+enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->MState == 1) {
+    i->MState = 2;
+    *(uint8_t*) inf[2] = 0; //m1
+    *(uint16_t*) inf[0] = H; //addr
+    *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8;
+    *(uint16_t *)inf[0] += L;
+    i->registerIn = (i->instruction & 0x00111000) >> 3;
+    return SUCCESS;
+  }
+  if (i->MState == 2) {
+    switch (i->registerIn) {
+    case A: i->A = i->tmp;
+    case B: i->B = i->tmp;
+    case C: i->C = i->tmp;
+    case D: i->D = i->tmp;
+    case E: i->E = i->tmp;
+    case H: i->H = i->tmp;
+    case L: i->L = i->tmp;
+    case UNDEFINED: return BAD_ARGUMENT;
+    }
+
+    i->MState = 1;
+    i->TCycle = 1;
+    *(uint8_t*) inf[2] = 1; // m1
+    *(uint16_t*) inf[0] = i->PC;
+    return SUCCESS;
+  }
+  return BAD_ARGUMENT;
 }

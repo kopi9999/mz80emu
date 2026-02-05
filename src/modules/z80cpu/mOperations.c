@@ -53,7 +53,7 @@ enum Error m1_strobeDown (struct Instance* __restrict instance, void** __restric
 enum Error m2_strobeUp (struct Instance* __restrict instance, void** __restrict interfaces) {
     if (instance->TCycle == 1) {instance->TCycle = 2; return SUCCESS;} 
     if (instance->TCycle == 2) {instance->TCycle = 3; return SUCCESS;} 
-    if (instance->TCycle == 3) {instance->TCycle = 1; return SUCCESS;} 
+    if (instance->TCycle == 3) {return execute_up(instance, interfaces);} 
 
     return SUCCESS;
 }
