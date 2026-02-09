@@ -210,6 +210,7 @@ struct Instance{
     uint8_t TCycle;
     uint8_t instruction;
     uint8_t tmp;
+    uint16_t tmpAddr;
     uint8_t halted;
     uint8_t stateIterator;
 

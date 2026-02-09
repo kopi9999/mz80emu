@@ -124,7 +124,6 @@ enum Error ld_a_$bc$(struct Instance *__restrict i, void **__restrict inf) {
     *(uint16_t*) inf[0] = i->B; //addr
     *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
     *(uint16_t *)inf[0] += i->C; //addr
-    i->registerIn = (i->instruction & 0b00111000) >> 3;
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -143,13 +142,47 @@ enum Error ld_a_$de$(struct Instance *__restrict i, void **__restrict inf) {
     *(uint16_t*) inf[0] = i->D; //addr
     *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
     *(uint16_t *)inf[0] += i->E; //addr
-    i->registerIn = (i->instruction & 0b00111000) >> 3;
     return SUCCESS;
   }
   if (i->MState == 2) {
     i->A = i->tmp;
     i->PC++;
     return nop(i, inf);
+  }
+  return BAD_ARGUMENT;
+}
+
+enum Error ld_a_$nn$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->MState == 1) {
+    i->MState = 2;
+    i->TCycle = 1;
+    *(uint8_t*) inf[2] = 0; //m1
+    *(uint16_t*) inf[0] = i->PC; //addr
+    i->stateIterator = 0;
+    return SUCCESS;
+  }
+  if (i->MState == 2) {
+    if (i->stateIterator == 0) {
+      i->tmpAddr = i->tmp;
+      i->tmpAddr = i->tmpAddr << 8;
+      i->TCycle = 1;
+      i->PC++;
+      *(uint16_t*) inf[0] = i->PC; //addr
+      i->stateIterator = 1;
+      return SUCCESS;
+    }
+    if (i->stateIterator == 1) {
+      i->tmpAddr += i->tmp;
+      i->TCycle = 1;
+      i->PC++;
+      *(uint16_t*) inf[0] = i->tmpAddr; //addr
+      i->stateIterator = 2;
+      return SUCCESS;
+    }
+    if (i->stateIterator == 2) {
+      i->A = i->tmp;
+      return nop(i, inf);
+    }
   }
   return BAD_ARGUMENT;
 }
