@@ -5,6 +5,5 @@
 
 enum Error halt(struct Instance* __restrict i, void** __restrict inf);
 enum Error nop(struct Instance* __restrict i, void** __restrict inf);
-enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf);
 
 #endif

@@ -10,6 +10,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case NOP:       return nop(i, inf);
   case LD_R_Rp:   return ld_r_rp(i, inf);
   case LD_R_$HL$: return ld_r_$hl$(i, inf);
+  case LD_R_N: return ld_r_n(i, inf);
   default:        return halt(i, inf);
   }
 }

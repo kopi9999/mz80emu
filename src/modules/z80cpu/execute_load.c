@@ -1,4 +1,5 @@
 #include "execute_load.h"
+#include "execute_control.h"
 
 uint8_t getRegisterValue(struct Instance* __restrict i, enum Register r) {
   switch (r) {
@@ -27,11 +28,7 @@ enum Error ld_r_rp(struct Instance* __restrict i, void** __restrict inf) {
   case UNDEFINED: return(BAD_ARGUMENT);
   }
 
-  i->MState = 1;
-  i->TCycle = 1;
-  *(uint8_t*) inf[2] = 1; // m1
-  *(uint16_t*) inf[0] = i->PC;
-  return SUCCESS;
+  return nop(i, inf);
 }
 
 enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
@@ -40,8 +37,8 @@ enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t*) inf[0] = H; //addr
-    *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8;
-    *(uint16_t *)inf[0] += L;
+    *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
+    *(uint16_t *)inf[0] += L; //addr
     i->registerIn = (i->instruction & 0x00111000) >> 3;
     return SUCCESS;
   }
@@ -57,11 +54,34 @@ enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     default: return BAD_ARGUMENT;
     }
 
-    i->MState = 1;
+    return nop(i, inf);
+  }
+  return BAD_ARGUMENT;
+}
+
+enum Error ld_r_n(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->MState == 1) {
+    i->MState = 2;
     i->TCycle = 1;
-    *(uint8_t*) inf[2] = 1; // m1
-    *(uint16_t*) inf[0] = i->PC;
+    *(uint8_t*) inf[2] = 0; //m1
+    *(uint16_t*) inf[0] = i->PC; //addr
+    i->registerIn = (i->instruction & 0x00111000) >> 3;
     return SUCCESS;
+  }
+
+  if (i->MState == 2) {
+    switch (i->registerIn) {
+    case A: i->A = i->tmp; break;
+    case B: i->B = i->tmp; break;
+    case C: i->C = i->tmp; break;
+    case D: i->D = i->tmp; break;
+    case E: i->E = i->tmp; break;
+    case H: i->H = i->tmp; break;
+    case L: i->L = i->tmp; break;
+    default: return BAD_ARGUMENT;
+    }
+
+    return nop(i, inf);
   }
   return BAD_ARGUMENT;
 }
