@@ -12,6 +12,8 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_R_$HL$: return ld_r_$hl$(i, inf);
   case LD_R_N:    return ld_r_n(i, inf);
   case LD_$HL$_R: return ld_$hl$_r(i, inf);
+  case LD_A_$BC$: return ld_r_$hl$(i, inf);
+  case LD_A_$DE$: return ld_r_$hl$(i, inf);
   default:        return halt(i, inf);
   }
 }

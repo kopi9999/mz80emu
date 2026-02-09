@@ -211,6 +211,7 @@ struct Instance{
     uint8_t instruction;
     uint8_t tmp;
     uint8_t halted;
+    uint8_t stateIterator;
 
     enum Register registerIn;
     enum Register registerOut;
