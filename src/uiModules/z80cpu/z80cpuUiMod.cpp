@@ -17,6 +17,41 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
     instance((struct Instance*) instance),
     interfaces(interfaces),
     refresherTimer(this) {
+        wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+        wxBoxSizer* registerSizer = new wxBoxSizer(wxHORIZONTAL);
+        wxBoxSizer* firstColumnRegisterSizer = new wxBoxSizer(wxVERTICAL);
+        wxBoxSizer* secondColumnRegisterSizer = new wxBoxSizer(wxVERTICAL);
+
+        firstColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Main registers"), 0, wxEXPAND | wxALL, 5);
+        wxFlexGridSizer* mainRegistersGrid = new wxFlexGridSizer(4, 3, 5, 5);
+        mainRegistersGrid->AddGrowableCol(0, 1);
+        mainRegistersGrid->AddGrowableCol(1, 1);
+        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("A")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("F")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "AF"));
+        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("B")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("C")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "BC"));
+        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("D")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("E")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "DE"));
+        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("H")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("L")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "HL"));
+        firstColumnRegisterSizer->Add(mainRegistersGrid, 1, wxEXPAND | wxALL, 5);
+
+        firstColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Index registers"), 0, wxEXPAND | wxALL, 5);
+        secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Alternate (shadow) registers"), 0, wxEXPAND | wxALL, 5);
+        secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Other registers"), 0, wxEXPAND | wxALL, 5);
+        secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Program counter"), 0, wxEXPAND | wxALL, 5);
+        secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Status"), 0, wxEXPAND | wxALL, 5);
+
+        registerSizer->Add(firstColumnRegisterSizer, 1, wxEXPAND | wxALL, 5);
+        registerSizer->Add(secondColumnRegisterSizer, 1, wxEXPAND | wxALL, 5);
+        mainSizer->Add(registerSizer, 0, wxEXPAND, 0);
+        this->SetSizer(mainSizer);
+
+
         // the refresh code
         Bind(wxEVT_TIMER, &UiModulePanel::OnTimer, this);
         refresherTimer.Start(250);

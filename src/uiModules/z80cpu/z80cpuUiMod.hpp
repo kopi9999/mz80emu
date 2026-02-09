@@ -9,10 +9,11 @@
 #include <wx/grid.h>
 #include <cstdint>
 #include "../uiModuleInternal.hpp"
+#include "editableLabel.hpp"
 
 #include "../../modules/z80cpu/z80cpuMod.h"
 
-enum { ID_MENU_REFRESH = wxID_HIGHEST + 1 };
+//enum { MAIN_REGISTRES_GRID = wxID_HIGHEST + 1 };
 
 class UiModulePanel : public wxPanel {
     public:
@@ -25,6 +26,8 @@ class UiModulePanel : public wxPanel {
         wxTimer refresherTimer;
 
         void OnTimer(wxTimerEvent& event);
+        
+        void CreateMainRegistersGrid(wxPanel* panel);
 };
 
 #endif
