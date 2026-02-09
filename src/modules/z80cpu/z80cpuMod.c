@@ -86,6 +86,8 @@ enum Error strobeUp(void*__restrict instance, void**__restrict interfaces)
     if (!instanceTmp->MState) {execute_up(instanceTmp, interfaces);}
 
     if (instanceTmp->MState == 1) {return m1_strobeUp(instanceTmp, interfaces);}
+    if (instanceTmp->MState == 2) {return m2_strobeUp(instanceTmp, interfaces);}
+    if (instanceTmp->MState == 3) {return m3_strobeUp(instanceTmp, interfaces);}
     return SUCCESS;
 }
 
@@ -96,6 +98,8 @@ enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
     if (!instanceTmp->MState) {return execute_down(instanceTmp, interfaces);}
 
     if (instanceTmp->MState == 1) {return m1_strobeDown(instanceTmp, interfaces);}
+    if (instanceTmp->MState == 2) {return m2_strobeDown(instanceTmp, interfaces);}
+    if (instanceTmp->MState == 3) {return m3_strobeDown(instanceTmp, interfaces);}
     
     return SUCCESS;
 }

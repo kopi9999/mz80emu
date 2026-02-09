@@ -9,7 +9,7 @@ uint8_t getRegisterValue(struct Instance* __restrict i, enum Register r) {
   case E: return(i->E);
   case H: return(i->H);
   case L: return(i->L);
-  case UNDEFINED: return(0);
+  default: return(0);
   }
 
 }
@@ -37,6 +37,7 @@ enum Error ld_r_rp(struct Instance* __restrict i, void** __restrict inf) {
 enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
   if (i->MState == 1) {
     i->MState = 2;
+    i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t*) inf[0] = H; //addr
     *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8;
@@ -46,14 +47,14 @@ enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
   }
   if (i->MState == 2) {
     switch (i->registerIn) {
-    case A: i->A = i->tmp;
-    case B: i->B = i->tmp;
-    case C: i->C = i->tmp;
-    case D: i->D = i->tmp;
-    case E: i->E = i->tmp;
-    case H: i->H = i->tmp;
-    case L: i->L = i->tmp;
-    case UNDEFINED: return BAD_ARGUMENT;
+    case A: i->A = i->tmp; break;
+    case B: i->B = i->tmp; break;
+    case C: i->C = i->tmp; break;
+    case D: i->D = i->tmp; break;
+    case E: i->E = i->tmp; break;
+    case H: i->H = i->tmp; break;
+    case L: i->L = i->tmp; break;
+    default: return BAD_ARGUMENT;
     }
 
     i->MState = 1;
