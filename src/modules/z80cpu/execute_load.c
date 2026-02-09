@@ -36,10 +36,10 @@ enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = H; //addr
+    *(uint16_t*) inf[0] = i->H; //addr
     *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
-    *(uint16_t *)inf[0] += L; //addr
-    i->registerIn = (i->instruction & 0x00111000) >> 3;
+    *(uint16_t *)inf[0] += i->L; //addr
+    i->registerIn = (i->instruction & 0b00111000) >> 3;
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -53,7 +53,7 @@ enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     case L: i->L = i->tmp; break;
     default: return BAD_ARGUMENT;
     }
-
+    i->PC++;
     return nop(i, inf);
   }
   return BAD_ARGUMENT;
@@ -65,7 +65,7 @@ enum Error ld_r_n(struct Instance *__restrict i, void **__restrict inf) {
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t*) inf[0] = i->PC; //addr
-    i->registerIn = (i->instruction & 0x00111000) >> 3;
+    i->registerIn = (i->instruction & 0b00111000) >> 3;
     return SUCCESS;
   }
 
@@ -80,7 +80,37 @@ enum Error ld_r_n(struct Instance *__restrict i, void **__restrict inf) {
     case L: i->L = i->tmp; break;
     default: return BAD_ARGUMENT;
     }
+    i->PC++;
+    return nop(i, inf);
+  }
+  return BAD_ARGUMENT;
+}
 
+enum Error ld_$hl$_r(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->MState == 1) {
+    i->MState = 3;
+    i->TCycle = 1;
+    *(uint8_t*) inf[2] = 0; //m1
+    *(uint16_t*) inf[0] = i->H; //addr
+    *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
+    *(uint16_t *)inf[0] += i->L; //addr
+
+    i->registerOut = i->instruction & 0b00000111;
+    switch (i->registerOut) {
+    case A: i->tmp = i->A; break;
+    case B: i->tmp = i->B; break;
+    case C: i->tmp = i->C; break;
+    case D: i->tmp = i->D; break;
+    case E: i->tmp = i->E; break;
+    case H: i->tmp = i->H; break;
+    case L: i->tmp = i->L; break;
+    default: return BAD_ARGUMENT;
+    }
+    
+    return SUCCESS;
+  }
+
+  if (i->MState == 3) {
     return nop(i, inf);
   }
   return BAD_ARGUMENT;
