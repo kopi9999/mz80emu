@@ -1,6 +1,7 @@
 #include "execute.h"
 #include "execute_control.h"
 #include "execute_load.h"
+#include "execute_jump.h"
 
 enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   if (i->halted) {return halt(i, inf);}
@@ -8,6 +9,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case HALT:      return halt(i, inf);
   case BAD:       return halt(i, inf);
   case NOP:       return nop(i, inf);
+    // 8bit load group
   case LD_R_Rp:   return ld_r_rp(i, inf);
   case LD_R_$HL$: return ld_r_$hl$(i, inf);
   case LD_R_N:    return ld_r_n(i, inf);
@@ -18,6 +20,9 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_$BC$_A: return ld_$bc$_a(i, inf);
   case LD_$DE$_A: return ld_$de$_a(i, inf);
   case LD_$NN$_A: return ld_$nn$_a(i, inf);
+    // jump group
+  case JP_NN:     return jp_nn(i, inf);  
+    
   default:        return halt(i, inf);
   }
 }
