@@ -2,6 +2,7 @@
 #include "execute_control.h"
 #include "execute_load.h"
 #include "execute_jump.h"
+#include "execute_arit.h"
 
 enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   if (i->halted) {return halt(i, inf);}
@@ -20,6 +21,8 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_$BC$_A: return ld_$bc$_a(i, inf);
   case LD_$DE$_A: return ld_$de$_a(i, inf);
   case LD_$NN$_A: return ld_$nn$_a(i, inf);
+    // 8bit arithmetic operation
+  case ADD_A_R:   return add_a_r(i, inf); 
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     

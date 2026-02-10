@@ -25,7 +25,7 @@ enum Error ld_r_rp(struct Instance* __restrict i, void** __restrict inf) {
   case E: i->E = getRegisterValue(i, E); break;
   case H: i->H = getRegisterValue(i, H); break;
   case L: i->L = getRegisterValue(i, L); break;
-  case UNDEFINED: return(BAD_ARGUMENT);
+  default: return(BAD_ARGUMENT);
   }
 
   return nop(i, inf);
