@@ -23,6 +23,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_$NN$_A: return ld_$nn$_a(i, inf);
     // 8bit arithmetic operation
   case ADD_A_R:   return add_a_r(i, inf); 
+  case ADD_A_N:   return add_a_n(i, inf); 
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     

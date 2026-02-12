@@ -8,6 +8,7 @@ enum Error jp_nn(struct Instance*__restrict i, void**__restrict inf) {
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t*) inf[0] = i->PC; //addr
     i->stateIterator = 0;
+    return SUCCESS;
   }
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
