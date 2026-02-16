@@ -32,6 +32,7 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         grid->SetColMinimalAcceptableWidth(20);
         grid->Bind(wxEVT_SIZE, [this](wxSizeEvent& event) {
             int numCols = grid->GetNumberCols();
+            int numRows = grid->GetNumberRows();
             int totalWidth = grid->GetClientSize().GetWidth();
             int firstRowWidth = grid->GetRowLabelSize();
             int lastColWidth = grid->GetColSize(numCols-1);
@@ -39,6 +40,9 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
             for (int c = 0; c < numCols-1; ++c) {
                 grid->SetColSize(c, colWidth);
                 grid->SetColLabelValue(c, to_string(c));
+            }
+            for (int d=0; d<numRows ; ++d){
+                grid->SetRowLabelValue(d, to_string(d));
             }
             grid->SetColLabelValue(numCols-1, "ASCII");
             event.Skip();
