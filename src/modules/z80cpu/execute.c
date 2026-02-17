@@ -34,6 +34,9 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case SBC_A_R:   return sbc_a_r(i, inf); 
   case SBC_A_N:   return sbc_a_n(i, inf); 
   case SBC_A_$HL$:return sbc_a_$hl$(i, inf); 
+  case AND_R:     return and_r(i, inf); 
+  case AND_N:     return and_n(i, inf); 
+  case AND_$HL$:  return and_$hl$(i, inf); 
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     

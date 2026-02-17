@@ -15,4 +15,7 @@ enum Error sub_$hl$(struct Instance* __restrict i, void** __restrict inf);
 enum Error sbc_a_r(struct Instance* __restrict i, void** __restrict inf);
 enum Error sbc_a_n(struct Instance* __restrict i, void** __restrict inf);
 enum Error sbc_a_$hl$(struct Instance* __restrict i, void** __restrict inf);
+enum Error and_r(struct Instance* __restrict i, void** __restrict inf);
+enum Error and_n(struct Instance* __restrict i, void** __restrict inf);
+enum Error and_$hl$(struct Instance* __restrict i, void** __restrict inf);
 #endif
