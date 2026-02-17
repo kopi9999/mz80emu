@@ -81,9 +81,9 @@ enum Instruction {
     AND_N,
     AND_$HL$,
 
-    OR_A_R,
-    OR_A_N,
-    OR_A_$HL$,
+    OR_R,
+    OR_N,
+    OR_$HL$,
 
     XOR_R,
     XOR_N,

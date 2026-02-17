@@ -67,8 +67,8 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                     if ((i->instruction & 0b00000111) == UNDEFINED) {return AND_$HL$;}
                     else {return AND_R;}
                 case 0b00101000: 
-                    if ((i->instruction & 0b00000111) == UNDEFINED) {return OR_A_$HL$;}
-                    else {return OR_A_R;}
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return OR_$HL$;}
+                    else {return OR_R;}
                 case 0b00110000:
                     if ((i->instruction & 0b00000111) == UNDEFINED) {return XOR_$HL$;}
                     else {return XOR_R;}

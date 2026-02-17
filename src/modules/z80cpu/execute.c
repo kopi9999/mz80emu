@@ -37,6 +37,12 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case AND_R:     return and_r(i, inf); 
   case AND_N:     return and_n(i, inf); 
   case AND_$HL$:  return and_$hl$(i, inf); 
+  case OR_R:      return or_r(i, inf); 
+  case OR_N:      return or_n(i, inf); 
+  case OR_$HL$:   return or_$hl$(i, inf); 
+  case XOR_R:     return xor_r(i, inf); 
+  case XOR_N:     return xor_n(i, inf); 
+  case XOR_$HL$:  return xor_$hl$(i, inf); 
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     

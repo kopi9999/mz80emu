@@ -18,4 +18,10 @@ enum Error sbc_a_$hl$(struct Instance* __restrict i, void** __restrict inf);
 enum Error and_r(struct Instance* __restrict i, void** __restrict inf);
 enum Error and_n(struct Instance* __restrict i, void** __restrict inf);
 enum Error and_$hl$(struct Instance* __restrict i, void** __restrict inf);
+enum Error or_r(struct Instance* __restrict i, void** __restrict inf);
+enum Error or_n(struct Instance* __restrict i, void** __restrict inf);
+enum Error or_$hl$(struct Instance* __restrict i, void** __restrict inf);
+enum Error xor_r(struct Instance* __restrict i, void** __restrict inf);
+enum Error xor_n(struct Instance* __restrict i, void** __restrict inf);
+enum Error xor_$hl$(struct Instance* __restrict i, void** __restrict inf);
 #endif
