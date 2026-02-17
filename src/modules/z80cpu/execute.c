@@ -28,6 +28,9 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case ADC_A_R:   return adc_a_r(i, inf); 
   case ADC_A_N:   return adc_a_n(i, inf); 
   case ADC_A_$HL$:return adc_a_$hl$(i, inf); 
+  case SUB_R:   return sub_r(i, inf); 
+  case SUB_N:   return sub_n(i, inf); 
+  case SUB_$HL$:return sub_$hl$(i, inf); 
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     
