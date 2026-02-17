@@ -24,4 +24,7 @@ enum Error or_$hl$(struct Instance* __restrict i, void** __restrict inf);
 enum Error xor_r(struct Instance* __restrict i, void** __restrict inf);
 enum Error xor_n(struct Instance* __restrict i, void** __restrict inf);
 enum Error xor_$hl$(struct Instance* __restrict i, void** __restrict inf);
+enum Error cp_r(struct Instance* __restrict i, void** __restrict inf);
+enum Error cp_n(struct Instance* __restrict i, void** __restrict inf);
+enum Error cp_$hl$(struct Instance* __restrict i, void** __restrict inf);
 #endif
