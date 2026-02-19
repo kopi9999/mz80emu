@@ -592,3 +592,26 @@ enum Error cp_$hl$(struct Instance *__restrict i, void **__restrict inf) {
   }
   return BAD_ARGUMENT;
 }
+
+enum Error inc_r(struct Instance *__restrict i, void **__restrict inf) {
+  uint8_t carries = 0;
+  uint8_t tmp;
+  switch ((i->instruction & 0b00111000) >> 3) {
+  case A: tmp = i->A; carries = getAddCarries(i->A, 1 ,0); i->A++; break;
+  case B: tmp = i->B; carries = getAddCarries(i->B, 1 ,0); i->B++; break;
+  case C: tmp = i->C; carries = getAddCarries(i->C, 1 ,0); i->C++; break;
+  case D: tmp = i->D; carries = getAddCarries(i->D, 1 ,0); i->D++; break;
+  case E: tmp = i->E; carries = getAddCarries(i->E, 1 ,0); i->E++; break;
+  case H: tmp = i->H; carries = getAddCarries(i->H, 1 ,0); i->H++; break;
+  case L: tmp = i->L; carries = getAddCarries(i->L, 1 ,0); i->L++; break;
+  default: return BAD_ARGUMENT;
+  }
+
+  uint8_t flags = i->F & 0b00000001;
+  if (i->A == 0) {flags += 0b01000000;} //Z flag
+  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+  if (carries & 0b00001000) {flags += 0b00010000;} //H flag
+  if (tmp == 0x7F) {flags += 0b00000100;} // P/V flag
+  i->F = flags;
+  return nop(i, inf);
+} 

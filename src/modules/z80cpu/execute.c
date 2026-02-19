@@ -46,6 +46,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case CP_R:      return cp_r(i, inf); 
   case CP_N:      return cp_n(i, inf); 
   case CP_$HL$:   return cp_$hl$(i, inf); 
+  case INC_R:   return inc_r(i, inf); 
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     
