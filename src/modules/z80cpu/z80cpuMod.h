@@ -99,7 +99,7 @@ enum Instruction {
     CP_S,
     INC_R,
     INC_$HL$,
-    DEC_Rp,
+    DEC_R,
     DEC_$HL$,
     DAA,
     CPL,

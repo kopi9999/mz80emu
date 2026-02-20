@@ -132,7 +132,7 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                     else {return INC_R;}
                 case 5: //00xxx101
                     if ((i->instruction & 0b00111000) == UNDEFINED * 8) {return DEC_$HL$;}
-                    else {return DEC_Rp;}
+                    else {return DEC_R;}
                 case 6: //00xxx110
                     if ((i->instruction & 0b00111000) == UNDEFINED * 8) {return LD_$HL$_N;}
                     else {return LD_R_N;}

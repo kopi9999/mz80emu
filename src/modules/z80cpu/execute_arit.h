@@ -28,4 +28,7 @@ enum Error cp_r(struct Instance* __restrict i, void** __restrict inf);
 enum Error cp_n(struct Instance* __restrict i, void** __restrict inf);
 enum Error cp_$hl$(struct Instance* __restrict i, void** __restrict inf);
 enum Error inc_r(struct Instance* __restrict i, void** __restrict inf);
+enum Error inc_$hl$(struct Instance* __restrict i, void** __restrict inf);
+enum Error dec_r(struct Instance* __restrict i, void** __restrict inf);
+enum Error dec_$hl$(struct Instance* __restrict i, void** __restrict inf);
 #endif
