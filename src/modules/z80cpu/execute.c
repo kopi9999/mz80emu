@@ -7,9 +7,7 @@
 enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   if (i->halted) {return halt(i, inf);}
   switch (i->state) {
-  case HALT:      return halt(i, inf);
   case BAD:       return halt(i, inf);
-  case NOP:       return nop(i, inf);
     // 8bit load group
   case LD_R_Rp:   return ld_r_rp(i, inf);
   case LD_R_$HL$: return ld_r_$hl$(i, inf);
@@ -50,6 +48,10 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case INC_$HL$:  return inc_$hl$(i, inf); 
   case DEC_R:     return dec_r(i, inf); 
   case DEC_$HL$:  return dec_$hl$(i, inf); 
+    // control group
+  case HALT:      return halt(i, inf);
+  case NOP:       return nop(i, inf);
+  case DAA:       return daa(i, inf);
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     
