@@ -1,5 +1,14 @@
 #include "execute_control.h"
 
+uint8_t pairity(uint8_t a) {
+  uint8_t pairity = 0;
+  for (uint8_t i = 0; i < 8; ++i) {
+    pairity += a & 0b00000001;
+    a = a >> 1;
+  }
+  return pairity;
+}
+
 enum Error halt(struct Instance* __restrict i, void** __restrict inf){
   i->halted = 1;
   i->PC--;
@@ -115,5 +124,10 @@ enum Error daa(struct Instance* __restrict i, void** __restrict inf){
       }
       return BAD_ARGUMENT;
   }
+  uint8_t flags = i->F & 0b00010011;
+  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (i->A == 0) {flags |= 0b01000000;} // Z flag
+  if (pairity(i->A) % 2 == 0) {flags |= 0b00000100;}
+  i->F = flags;
   return nop(i, inf);
 }
