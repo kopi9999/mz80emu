@@ -205,6 +205,13 @@ enum Register{
     A
 };
 
+enum Register16{
+  BC,
+  DE,
+  HL,
+  SP
+};
+
 struct Instance{
     uint8_t MState;
     uint8_t TCycle;
