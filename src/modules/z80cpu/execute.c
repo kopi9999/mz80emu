@@ -52,6 +52,9 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case HALT:      return halt(i, inf);
   case NOP:       return nop(i, inf);
   case DAA:       return daa(i, inf);
+  case CPL:       return cpl(i, inf);
+  case CCF:       return ccf(i, inf);
+  case SCF:       return scf(i, inf);
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     

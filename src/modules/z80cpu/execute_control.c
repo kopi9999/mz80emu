@@ -131,3 +131,21 @@ enum Error daa(struct Instance* __restrict i, void** __restrict inf){
   i->F = flags;
   return nop(i, inf);
 }
+
+enum Error cpl(struct Instance* __restrict i, void** __restrict inf){
+  i->A = !i->A;
+  i->F |= 0b00010010;
+  return nop(i, inf);
+}
+
+enum Error ccf(struct Instance* __restrict i, void** __restrict inf){
+  i->F ^= 0b00000001;
+  i->F &= 0b11111101;
+  return nop(i, inf);
+}
+
+enum Error scf(struct Instance* __restrict i, void** __restrict inf){
+  i->F |= 0b00000001;
+  i->F &= 0b11101101;
+  return nop(i, inf);
+}
