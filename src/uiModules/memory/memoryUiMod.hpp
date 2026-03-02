@@ -5,6 +5,7 @@
 
 #include <stdint.h>
 #include <wx/wx.h>
+#include <wx/file.h>
 #include <wx/listbox.h>
 #include <wx/checkbox.h>
 #include <wx/sizer.h>
@@ -57,7 +58,8 @@ class UiModulePanel : public wxPanel {
         void GridFill(int Rows , int Cols);
         void OnRightClick(wxGridEvent& event);
 
-        void ReadFromSelectedBINFile(); 
+        void ReadFromSelectedBINFile(const wxString& filePath); 
+        void SelectFileWindow(wxCommandEvent& event);
 };
 
 #endif

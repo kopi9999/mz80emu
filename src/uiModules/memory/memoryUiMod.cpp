@@ -238,10 +238,61 @@ wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
 
 //add saving to memory when changing single cell
 
-wxPanel* ReadFromSelectedBINFile()
+
+//reads from selected file
+wxPanel* ReadFromSelectedBINFile(const wxString& filePath)
 {
     int ReadFile = 0;
     //here have a file readerin BIN file to a some zmienna a nie trzeb gdzieś zroić 
     //guzik zeby odpalało takie menu do wyboru pliku co jest osobną funkcja w wxwidget 
     //i fukcja zapisze czy cos ok ok :3
+
+    wxFile file;
+    if (!file.Open(filePath, wxFile::read))
+    {
+        wxLogError("Couldnt open the file");
+        return false;
+    }
+
+    wxFileOffset fileSize = file.Length();
+
+    if (fileSize % sizeof(instance->data) != 0)
+    {
+        wxLogError("The file size is wrong");
+        return false;
+    }
+
+    size_t elementCount = fileSize / sizeof(instance->data);
+
+    table.resize(elementCount);
+
+    if (file.Read(table.data(), fileSize) != fileSize)
+    {
+        wxLogError("Error while reading the file");
+        return false;
+    }
+
+    file.Close();
+    return true;
+
+}
+
+//opens a selcet file window
+void UiModulePanel::SelectFileWindow(wxCommandEvent& event)
+{
+    wxFileDialog openFileDialog(
+        this,
+        "Open BIN File",
+        "",
+        "",
+        "Pliki BIN (*.bin)|*.bin",
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+    if (openFileDialog.ShowModal() == wxID_CANCEL)
+        return;
+
+    if (ReadFromSelectedBINFile(openFileDialog.GetPath()))
+    {
+        wxLogMessage("Loaded %zu elements", instance->data.size());
+    }
 }
