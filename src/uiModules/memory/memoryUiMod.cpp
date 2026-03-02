@@ -240,7 +240,7 @@ wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
 
 
 //reads from selected file
-wxPanel* ReadFromSelectedBINFile(const wxString& filePath)
+bool UiModulePanel::ReadFromSelectedBINFile(const wxString& filePath)
 {
     int ReadFile = 0;
     //here have a file readerin BIN file to a some zmienna a nie trzeb gdzieś zroić 
@@ -256,17 +256,10 @@ wxPanel* ReadFromSelectedBINFile(const wxString& filePath)
 
     wxFileOffset fileSize = file.Length();
 
-    if (fileSize % sizeof(instance->data) != 0)
-    {
-        wxLogError("The file size is wrong");
-        return false;
-    }
-
     size_t elementCount = fileSize / sizeof(instance->data);
 
-    table.resize(elementCount);
 
-    if (file.Read(table.data(), fileSize) != fileSize)
+    if (file.Read(instance->data, fileSize) != fileSize)
     {
         wxLogError("Error while reading the file");
         return false;
@@ -293,6 +286,6 @@ void UiModulePanel::SelectFileWindow(wxCommandEvent& event)
 
     if (ReadFromSelectedBINFile(openFileDialog.GetPath()))
     {
-        wxLogMessage("Loaded %zu elements", instance->data.size());
+        wxLogMessage("Loaded %zu elements", sizeof(instance->data));
     }
 }
