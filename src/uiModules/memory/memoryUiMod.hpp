@@ -56,6 +56,8 @@ class UiModulePanel : public wxPanel {
         void OnChangeRow(wxGridEvent& event);
         void GridFill(int Rows , int Cols);
         void OnRightClick(wxGridEvent& event);
+
+        void ReadFromSelectedBINFile(); 
 };
 
 #endif

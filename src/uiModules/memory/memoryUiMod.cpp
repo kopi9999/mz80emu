@@ -237,3 +237,11 @@ wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
 //when edited the value is set by delfy tu zero and the entered value is apped in the forn to zthe value
 
 //add saving to memory when changing single cell
+
+wxPanel* ReadFromSelectedBINFile()
+{
+    int ReadFile = 0;
+    //here have a file readerin BIN file to a some zmienna a nie trzeb gdzieś zroić 
+    //guzik zeby odpalało takie menu do wyboru pliku co jest osobną funkcja w wxwidget 
+    //i fukcja zapisze czy cos ok ok :3
+}
