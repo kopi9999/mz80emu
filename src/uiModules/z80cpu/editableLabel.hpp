@@ -19,10 +19,13 @@ class EditableLabel : public wxPanel {
         wxTextCtrl* edit;
         uint8_t* registerPointer;
 
+        wxTimer refresherTimer;
+
         void OnClick(wxMouseEvent&);
         void OnCommit(wxCommandEvent&);
         void OnKillFocus(wxFocusEvent&);
         void FinishEdit();
+        void OnTimer(wxTimerEvent& event);
 };
 
 #endif

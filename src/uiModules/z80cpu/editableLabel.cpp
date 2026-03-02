@@ -4,8 +4,8 @@ EditableLabel::EditableLabel(wxWindow* parent, uint8_t* registerPointer)
     : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE)
 {
     this->registerPointer = registerPointer;
-    text = new wxStaticText(this, wxID_ANY, registerPointer);
-    edit = new wxTextCtrl(this, wxID_ANY, registerPointer, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    text = new wxStaticText(this, wxID_ANY, wxString::Format("%02X", static_cast<unsigned int>(*registerPointer)));
+    edit = new wxTextCtrl(this, wxID_ANY, wxString::Format("%02X", static_cast<unsigned int>(*registerPointer)), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 
     edit->Hide();
 
@@ -17,6 +17,9 @@ EditableLabel::EditableLabel(wxWindow* parent, uint8_t* registerPointer)
     text->Bind(wxEVT_LEFT_DOWN, &EditableLabel::OnClick, this);
     edit->Bind(wxEVT_TEXT_ENTER, &EditableLabel::OnCommit, this);
     edit->Bind(wxEVT_KILL_FOCUS, &EditableLabel::OnKillFocus, this);
+
+    Bind(wxEVT_TIMER, &EditableLabel::OnTimer, this);
+    refresherTimer.Start(250);
 }
 
 wxString EditableLabel::GetValue() { return text->GetLabel(); }
@@ -42,9 +45,10 @@ void EditableLabel::OnKillFocus(wxFocusEvent&)
 
 void EditableLabel::FinishEdit()
 {
-    if (edit->GetValue().Length() == 1) {
-        *registerPointer = static_cast<uint8_t>(edit->GetValue()[0]);
-        text->SetLabel(registerPointer);
+    uint hexValue;
+    if (edit->GetValue().ToUInt(&hexValue, 16) && hexValue <= 0xFF) {
+        *registerPointer = static_cast<uint8_t>(hexValue);
+        text->SetLabel(edit->GetValue());
         edit->Hide();
         text->Show();
         Layout();
@@ -54,4 +58,8 @@ void EditableLabel::FinishEdit()
         text->Show();
         Layout();
     }
+}
+
+void EditableLabel::OnTimer(wxTimerEvent& event) {
+    
 }
