@@ -26,17 +26,17 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         wxFlexGridSizer* mainRegistersGrid = new wxFlexGridSizer(4, 3, 5, 5);
         mainRegistersGrid->AddGrowableCol(0, 1);
         mainRegistersGrid->AddGrowableCol(1, 1);
-        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("A")), 0, wxEXPAND, 0);
-        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("F")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, &this->instance->A), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, &this->instance->F), 0, wxEXPAND, 0);
         mainRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "AF"));
-        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("B")), 0, wxEXPAND, 0);
-        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("C")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, &this->instance->B), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, &this->instance->C), 0, wxEXPAND, 0);
         mainRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "BC"));
-        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("D")), 0, wxEXPAND, 0);
-        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("E")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, &this->instance->D), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, &this->instance->E), 0, wxEXPAND, 0);
         mainRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "DE"));
-        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("H")), 0, wxEXPAND, 0);
-        mainRegistersGrid->Add(new EditableLabel(this, wxString::Format("L")), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, &this->instance->H), 0, wxEXPAND, 0);
+        mainRegistersGrid->Add(new EditableLabel(this, &this->instance->L), 0, wxEXPAND, 0);
         mainRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "HL"));
         firstColumnRegisterSizer->Add(mainRegistersGrid, 1, wxEXPAND | wxALL, 5);
 

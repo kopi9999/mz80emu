@@ -1,10 +1,11 @@
 #include "editableLabel.hpp"
 
-EditableLabel::EditableLabel(wxWindow* parent, const wxString& value)
+EditableLabel::EditableLabel(wxWindow* parent, uint8_t* registerPointer)
     : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE)
 {
-    text = new wxStaticText(this, wxID_ANY, value);
-    edit = new wxTextCtrl(this, wxID_ANY, value, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    this->registerPointer = registerPointer;
+    text = new wxStaticText(this, wxID_ANY, registerPointer);
+    edit = new wxTextCtrl(this, wxID_ANY, registerPointer, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 
     edit->Hide();
 
@@ -41,8 +42,16 @@ void EditableLabel::OnKillFocus(wxFocusEvent&)
 
 void EditableLabel::FinishEdit()
 {
-    text->SetLabel(edit->GetValue());
-    edit->Hide();
-    text->Show();
-    Layout();
+    if (edit->GetValue().Length() == 1) {
+        *registerPointer = static_cast<uint8_t>(edit->GetValue()[0]);
+        text->SetLabel(registerPointer);
+        edit->Hide();
+        text->Show();
+        Layout();
+    }
+    else {
+        edit->Hide();
+        text->Show();
+        Layout();
+    }
 }

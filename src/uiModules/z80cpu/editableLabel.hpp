@@ -11,12 +11,13 @@
 
 class EditableLabel : public wxPanel {
     public:
-        EditableLabel(wxWindow* parent, const wxString& value);
+        EditableLabel(wxWindow* parent, uint8_t* registerPointer);
         wxString GetValue();
 
     private:
         wxStaticText* text;
         wxTextCtrl* edit;
+        uint8_t* registerPointer;
 
         void OnClick(wxMouseEvent&);
         void OnCommit(wxCommandEvent&);
