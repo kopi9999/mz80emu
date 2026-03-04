@@ -22,6 +22,7 @@ struct Instance{
 };
 
 enum { ID_MENU_REFRESH = wxID_HIGHEST + 1 };
+enum { ID_MENU_LOAD = wxID_HIGHEST + 1 };
 
 class UiModulePanel : public wxPanel {
     public:

@@ -52,6 +52,7 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
 
         grid->Bind(wxEVT_CONTEXT_MENU, &UiModulePanel::OnGridContextMenu, this);
         Bind(wxEVT_MENU, &UiModulePanel::OnRefreshMenu, this, ID_MENU_REFRESH);
+        Bind(wxEVT_MENU, &UiModulePanel::SelectFileWindow, this, ID_MENU_LOAD);
 
         this->SetSizer(mainSizer);
         mainSizer->SetSizeHints(this);
@@ -83,6 +84,7 @@ void UiModulePanel::OnGridContextMenu(wxContextMenuEvent& event)
 {
     wxMenu menu;
     menu.Append(ID_MENU_REFRESH, "Refresh");
+    menu.Append(ID_MENU_LOAD, "Load File");
 
     // Position correctly at mouse
     wxPoint pos = event.GetPosition();
