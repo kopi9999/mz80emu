@@ -53,6 +53,7 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         grid->Bind(wxEVT_CONTEXT_MENU, &UiModulePanel::OnGridContextMenu, this);
         Bind(wxEVT_MENU, &UiModulePanel::OnRefreshMenu, this, ID_MENU_REFRESH);
         Bind(wxEVT_MENU, &UiModulePanel::SelectFileWindow, this, ID_MENU_LOAD);
+        Bind(wxEVT_MENU, &UiModulePanel::SelectSaveFile, this, ID_MENU_SAVE);
 
         this->SetSizer(mainSizer);
         mainSizer->SetSizeHints(this);
@@ -85,6 +86,7 @@ void UiModulePanel::OnGridContextMenu(wxContextMenuEvent& event)
     wxMenu menu;
     menu.Append(ID_MENU_REFRESH, "Refresh");
     menu.Append(ID_MENU_LOAD, "Load File");
+    menu.Append(ID_MENU_SAVE, "Save File");
 
     // Position correctly at mouse
     wxPoint pos = event.GetPosition();
@@ -258,8 +260,6 @@ bool UiModulePanel::ReadFromSelectedBINFile(const wxString& filePath)
 
     wxFileOffset fileSize = file.Length();
 
-    size_t elementCount = fileSize / sizeof(instance->data);
-
 
     if (file.Read(instance->data, fileSize) != fileSize)
     {
@@ -270,6 +270,26 @@ bool UiModulePanel::ReadFromSelectedBINFile(const wxString& filePath)
     file.Close();
     return true;
 
+}
+
+bool UiModulePanel::SaveUint32TableToBin(const wxString& filePath)
+{
+    wxFile file;
+
+    // tworzy plik jeśli nie istnieje
+    if (!file.Create(filePath, true))
+    {
+        wxLogError("Could not create a file");
+        return false;
+    }
+    
+    size_t dataSize = instance->size;
+
+    // zapis danych binarnych
+    file.Write(instance->data, dataSize);
+
+    file.Close();
+    return true;
 }
 
 //opens a selcet file window
@@ -289,5 +309,26 @@ void UiModulePanel::SelectFileWindow(wxCommandEvent& event)
     if (ReadFromSelectedBINFile(openFileDialog.GetPath()))
     {
         wxLogMessage("Loaded %zu elements", sizeof(instance->data));
+    }
+}
+
+//saves a table to a file
+void UiModulePanel::SelectSaveFile(wxCommandEvent& event)
+{
+    wxFileDialog saveFileDialog(
+        this,
+        "Save BIN file",
+        "",
+        "",
+        "File BIN (*.bin)|*.bin",
+        wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+    );
+
+    if (saveFileDialog.ShowModal() == wxID_CANCEL)
+        return;
+
+    if (SaveUint32TableToBin(saveFileDialog.GetPath()))
+    {
+        wxLogMessage("Saved %zu elements", sizeof(instance->data));
     }
 }
