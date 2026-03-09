@@ -62,6 +62,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case RRA:       return rra(i, inf);
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
+  case JP_CC_NN:     return jp_cc_nn(i, inf);  
     
   default:        return halt(i, inf);
   }
