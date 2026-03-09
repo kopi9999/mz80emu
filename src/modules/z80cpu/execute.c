@@ -58,6 +58,8 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case SCF:       return scf(i, inf);
     // rotate and shift group
   case RLCA:      return rlca(i, inf);
+  case RLA:       return rla(i, inf);
+  case RRA:       return rra(i, inf);
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     
