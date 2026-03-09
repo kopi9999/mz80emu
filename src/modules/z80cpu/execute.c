@@ -3,6 +3,7 @@
 #include "execute_load.h"
 #include "execute_jump.h"
 #include "execute_arit.h"
+#include "execute_rotate.h"
 
 enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   if (i->halted) {return halt(i, inf);}
@@ -55,6 +56,8 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case CPL:       return cpl(i, inf);
   case CCF:       return ccf(i, inf);
   case SCF:       return scf(i, inf);
+    // rotate and shift group
+  case RLCA:      return rlca(i, inf);
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
     
