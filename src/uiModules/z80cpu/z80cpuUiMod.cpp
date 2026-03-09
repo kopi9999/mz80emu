@@ -42,6 +42,19 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         firstColumnRegisterSizer->Add(mainRegistersGrid, 1, wxEXPAND | wxALL, 5);
 
         firstColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Index registers"), 0, wxEXPAND | wxALL, 5);
+        wxFlexGridSizer* indexRegistersGrid = new wxFlexGridSizer(3, 3, 5, 5);
+        indexRegistersGrid->AddGrowableCol(0, 1);
+        indexRegistersGrid->AddGrowableCol(1, 1);
+        indexRegistersGrid->Add(new EditableLabel(this, ((uint8_t*)&this->instance->IX) + 1), 0, wxEXPAND, 0);
+        indexRegistersGrid->Add(new EditableLabel(this, ((uint8_t*)&this->instance->IX)), 0, wxEXPAND, 0);
+        indexRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "IX"));
+        indexRegistersGrid->Add(new EditableLabel(this, ((uint8_t*)&this->instance->IY) + 1), 0, wxEXPAND, 0);
+        indexRegistersGrid->Add(new EditableLabel(this, ((uint8_t*)&this->instance->IY)), 0, wxEXPAND, 0);
+        indexRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "IY"));
+        indexRegistersGrid->Add(new EditableLabel(this, ((uint8_t*)&this->instance->SP) + 1), 0, wxEXPAND, 0);
+        indexRegistersGrid->Add(new EditableLabel(this, ((uint8_t*)&this->instance->SP)), 0, wxEXPAND, 0);
+        indexRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "SP"));
+        firstColumnRegisterSizer->Add(indexRegistersGrid, 1, wxEXPAND | wxALL, 5);
 
         secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Alternate (shadow) registers"), 0, wxEXPAND | wxALL, 5);
         wxFlexGridSizer* alternateRegistersGrid = new wxFlexGridSizer(4, 3, 5, 5);
@@ -62,6 +75,13 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         secondColumnRegisterSizer->Add(alternateRegistersGrid, 1, wxEXPAND | wxALL, 5);
 
         secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Other registers"), 0, wxEXPAND | wxALL, 5);
+        wxFlexGridSizer* otherRegistersGrid = new wxFlexGridSizer(1, 3, 5, 5);
+        otherRegistersGrid->AddGrowableCol(0, 1);
+        otherRegistersGrid->AddGrowableCol(1, 1);
+        otherRegistersGrid->Add(new EditableLabel(this, &this->instance->I), 0, wxEXPAND, 0);
+        otherRegistersGrid->Add(new EditableLabel(this, &this->instance->R), 0, wxEXPAND, 0);
+        otherRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "I/R"));
+        secondColumnRegisterSizer->Add(otherRegistersGrid, 1, wxEXPAND | wxALL, 5);
 
         secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Program counter"), 0, wxEXPAND | wxALL, 5);
         wxFlexGridSizer* programCounterGrid = new wxFlexGridSizer(1, 3, 5, 5);
