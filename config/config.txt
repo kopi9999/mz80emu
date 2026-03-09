@@ -48,7 +48,9 @@ true
 true
 
 UI modules:
+libz80cpuUiMod.so
 libmemoryUiMod.so
 
 UI module instances:
-0 1 1
+0 0 1
+1 1 1
