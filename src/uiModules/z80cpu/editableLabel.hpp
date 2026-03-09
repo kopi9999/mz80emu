@@ -12,6 +12,7 @@
 class EditableLabel : public wxPanel {
     public:
         EditableLabel(wxWindow* parent, uint8_t* registerPointer);
+        ~EditableLabel();
         wxString GetValue();
 
     private:
@@ -21,10 +22,17 @@ class EditableLabel : public wxPanel {
 
         wxTimer refresherTimer;
 
+        bool isEditing = false;
+
         void OnClick(wxMouseEvent&);
         void OnCommit(wxCommandEvent&);
         void OnKillFocus(wxFocusEvent&);
-        void FinishEdit();
+        void OnKeyDown(wxKeyEvent&);
+
+        void SaveEdit();
+        void CancelEdit();
+        void Refresh();
+
         void OnTimer(wxTimerEvent& event);
 };
 
