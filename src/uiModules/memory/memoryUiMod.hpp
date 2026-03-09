@@ -5,6 +5,7 @@
 
 #include <stdint.h>
 #include <wx/wx.h>
+#include <wx/file.h>
 #include <wx/listbox.h>
 #include <wx/checkbox.h>
 #include <wx/sizer.h>
@@ -21,6 +22,8 @@ struct Instance{
 };
 
 enum { ID_MENU_REFRESH = wxID_HIGHEST + 1 };
+enum { ID_MENU_LOAD = wxID_HIGHEST + 2 };
+enum { ID_MENU_SAVE = wxID_HIGHEST + 3 };
 
 class UiModulePanel : public wxPanel {
     public:
@@ -56,6 +59,12 @@ class UiModulePanel : public wxPanel {
         void OnChangeRow(wxGridEvent& event);
         void GridFill(int Rows , int Cols);
         void OnRightClick(wxGridEvent& event);
+
+        bool ReadFromSelectedBINFile(const wxString& filePath); 
+        bool SaveUint32TableToBin(const wxString& filePath);
+        void SelectFileWindow(wxCommandEvent& event);
+        void SelectSaveFile(wxCommandEvent& event);
+        
 };
 
 #endif
