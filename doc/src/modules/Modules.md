@@ -10,18 +10,78 @@ Every **module** is a dynamic library, which contains functions for emulation of
 #### **`Error`**
 
 This enumerator is used as return value of module functions. It says whether the function was performed in right way. If an error occur, it informs about error type. The enumerator accepts following values:
+
 | Value | Explanation |
 | - | - |
 | `SUCCESS`:&nbsp;0 | No error occurred. **Tip:** because `SUCCESS` value is zero, enumerator value can be compared to bool in order to catch errors - `SUCCESS` is `false`, and other values are `true`. |
 | `BAD_ARGUMENT`:&nbsp;1 | Invalid argument has been passed to the function (it is possible because sometimes function parameters are void pointers). |
 | `MALLOC_ERROR`:&nbsp;2 | Memory allocation failed, e.g. due to insufficient amount of available RAM. |
+| SIZE_MISMATCH:3 | Size of given array is insufficient. |
+
+
+## Global variables
+
+| variable | description |
+| - | - |
+| `const char*` **`moduleName`** | Contains name of the module. |
+| `const char*` **`moduleDescription`** | Contains description of the module |
+| `const uint16_t` **`moduleMajorVersion`** | Contains major version of the module. Every major version contains breaking changes. |
+| `const uint16_t` **`moduleMinorVersion`** | Contains major version of the module. Minor versios does not contain breaking changes. |
+| `const uint16_t` **`protocolVersion`** | Contains version of communitation protocol utilised by module. |
+| `const char*` **`interfacesDescriptions`** | Contains descriptions of interfaces created by **`createInterfaces()`** function. |
 
 
 ## Exported Functions
 
+### Functions from `moduleFunctions.c` file
+
+#### **`enum Error getName(char* out, uint32_t maxLength)`**
+
+This function copies module name into a string pointed by **`out`** variable, with length specified by **`maxLength`**.
+
+| Argument | Explanation | Access |
+| - | - | - |
+| `char* out` | Pointer to array, where module name will be copied. | Write |
+| `uint32_t maxLength` | Length of output array. |  |
+
+#### **`enum Error getDescription(char* out, uint32_t maxLength)`**
+
+This function copies module description into a string pointed by **`out`** variable, with length specified by **`maxLength`**.
+
+| Argument | Explanation | Access |
+| - | - | - |
+| `char* out` | Pointer to array, where module name will be copied. | Write |
+| `uint32_t maxLength` | Length of output array. |  |
+
+#### **`uint16_t getMajorVersion()`**
+
+This function returns module major version (every major version contains breaking changes).
+
+#### **`uint16_t getMinorVersion()`**
+
+This function returns module minor version (Minor versios does not contain breaking changes).
+
+#### **`uint16_t getProtocolVersion()`**
+
+This function returns protocol version used by module.
+
+#### **`enum Error getInterfaceDescription(char* out, uint32_t maxLength, uint16_t number)`**
+
+This function copies description for single interface from **`interfacesDesctiptions`** array into a string pointed by **`out`** variable, with length specified by **`maxLength`**.
+
+| Argument | Explaination | Access |
+| - | - | - |
+| `char* out` | Pointer to array, where module name will be copied. | Write |
+| `uint32_t maxLength` | Length of output array. |  |
+| `uint16_t number` | Number of interface, which description was requested |  |
+
+
+### Functions used for emulation
+
 #### **`enum Error create(void* instance, void* parameters)`**
 
 This function creates an component instance.
+
 | Argument | Explanation | Access |
 | - | - | - |
 | `void** instance` | Pointer to variable, where instance pointer will be stored. | Write |
@@ -30,6 +90,7 @@ This function creates an component instance.
 #### **`enum Error createInterfaces(void* instance, void** interfaces, uint16_t* count)`**
 
 This function creates interfaces of an instance.
+
 | Argument | Explanation | Access |
 | - | - | - |
 | `void* instance` | Pointer to an instance variable. | Read |

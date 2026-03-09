@@ -1,5 +1,5 @@
-#define BOOST_TEST_MODULE testMz80emu
-#include <boost/test/unit_test.hpp>
+#define BOOST_TEST_MODULE header-only multiunit testMz80emu
+#include <boost/test/included/unit_test.hpp>
 
 #include "../misc.hpp"
 extern "C" {
@@ -305,6 +305,13 @@ BOOST_AUTO_TEST_SUITE( testMisc )
         
         BOOST_AUTO_TEST_CASE ( testTrim_emptyString ){
             string str = "";
+            trim(&str);
+            string expectedResult = "";
+            BOOST_TEST ( (str == expectedResult) );
+        }
+        
+        BOOST_AUTO_TEST_CASE ( testTrim_onlyWhitespace ){
+            string str = "\n\r\t ";
             trim(&str);
             string expectedResult = "";
             BOOST_TEST ( (str == expectedResult) );

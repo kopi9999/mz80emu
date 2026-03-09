@@ -1,8 +1,8 @@
 #define BOOST_TEST_MODULE testTestDll
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 extern "C" {
-    #include "..\testDll.h"
+    #include "../testMod.h"
 }
 
 BOOST_AUTO_TEST_SUITE( testTestDll )

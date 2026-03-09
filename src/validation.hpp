@@ -2,6 +2,7 @@
 #define VALIDATION_HPP
 
 #include <iostream>
+#include <cstdint>
 #include <vector>
 #include <string>
 

@@ -3,7 +3,9 @@
 #define TESTDLL
 
 #include <stdio.h>
-#include "../moduleWindows.h"
+#include <stdlib.h>
+
+#include "../moduleInternal.h"
 
 struct Instance{
     uint8_t value;

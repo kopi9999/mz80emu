@@ -1,0 +1,8 @@
+add_executable(configurator ConfiguratorFrame.cpp App.cpp)
+if(WIN32)
+    target_link_libraries(configurator wx::core wx::base)
+elseif(UNIX)
+    target_link_libraries(configurator ${wxWidgets_LIBRARIES})
+endif()
+
+

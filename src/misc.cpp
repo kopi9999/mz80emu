@@ -73,6 +73,13 @@ bool stringToBool(string str) {
     return false;
 }
 
+string boolToString(bool boolean) {
+    if (boolean) {
+        return "true";
+    }
+    return "false";
+}
+
 void trim(string* str) {
     if (*str == "") {
         return;
@@ -83,6 +90,10 @@ void trim(string* str) {
         i++;
     }
     *str = str->substr(i);
+    
+    if (*str == "") {
+        return;
+    }
 
     i = str->length();
     while (str[0][i-1] == ' ' || str[0][i-1] == '\n' || str[0][i-1] == '\r' || str[0][i-1] == '\t') {
@@ -111,4 +122,10 @@ enum CrashCode convertErrorToCrash(enum Error error)
         case MALLOC_ERROR: return MODULE_MALLOC_ERROR;
     }
     return MODULE_INVALID_ERROR;
+}
+
+void setCrashIfRunning(enum CrashCode* crashVar, enum CrashCode crash) {
+    if (*crashVar == RUNNING) {
+        *crashVar = crash;
+    }
 }

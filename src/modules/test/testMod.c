@@ -1,4 +1,12 @@
-#include "testdll.h"
+#include "testMod.h"
+
+const char* moduleName = "Testing module";
+const char* moduleDescription = "Module used for testing main loop, and also as a template.";
+const uint16_t moduleMajorVersion = 1;
+const uint16_t moduleMinorVersion = 1;
+const uint16_t protocolVersion = 1;
+const uint16_t interfacesNumber = 1;
+const char* interfacesDescriptions[] = {"uint8_t, used to send a number to another instance of this module for display"};
 
 enum Error create(void** instance, void*__restrict parameters)
 {

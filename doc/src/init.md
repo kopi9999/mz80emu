@@ -23,15 +23,15 @@ Returns: `CrashCode`
 | `RUNNING`                                | function finished successfully                               |
 | `INIT_MODULE_NOT_FOUND`                  | at least one of specified modules was not found              |
 | `INIT_MODULE_INVALID`                    | at least one of modules does not contain at least one of the required functions specified in the module protocol |
-| `INIT_INSTANCE_CREATION_ERROR`           | at least one of the instances could not have been  created   |
-| `INIT_INTERFACES_CREATION_ERROR`         | at least one of interfaces tables could not have been  created |
-| `INIT_DERIVED_INTERFACES_CREATION_ERROR` | at least one of derived interfaces tables could not have  been created |
+| `INIT_INSTANCE_CREATION_ERROR`           | at least one of the instances could not have been created   |
+| `INIT_INTERFACES_CREATION_ERROR`         | at least one of interface arrays could not have been created |
+| `INIT_DERIVED_INTERFACES_CREATION_ERROR` | at least one of derived interface arrays could not have been created |
 
 | Parameter                              | Explanation                                                  |
 | -------------------------------------- | ------------------------------------------------------------ |
 | `struct Modules* modules`              | pointer to a struct, where module names, pointers, and function pointers are stored |
 | `void*** instances`                    | pointer to instances array, which stores instance pointers   |
-| `void**** interfaces`                  | pointer to interfaces array, which stores interface array pointers |
+| `void**** interfaces`                  | pointer to interface array, which stores interface array pointers |
 | `struct InstanceInfo instanceInfo`     | struct containing information about instances                |
 | `struct InterfacesInfo interfacesInfo` | struct containing information about interfaces               |
 
@@ -75,7 +75,7 @@ Returns: `bool`
 | -------------------------------------- | ------------------------------------------------------------ |
 | `struct Modules modules`               | struct, where module names, pointers, and function pointers are stored |
 | `void** instances`                     | array, where instance pointers will be stored                |
-| `void**** interfaces`                  | pointer to interfaces array, which stores interface array pointers |
+| `void**** interfaces`                  | pointer to interface array, which stores interface array pointers |
 | `const uint32_t* instancesList`        | pointer to unsigned int, which holds IDs of instances. variable from InstanceInfo struct |
 | `struct InterfacesInfo interfacesInfo` | struct containing information about interfaces               |
 
@@ -87,7 +87,7 @@ Returns: `bool`
 
 | Parameter                              | Explanation                                                  |
 | -------------------------------------- | ------------------------------------------------------------ |
-| `void**** interfaces`                  | pointer to interfaces array, which stores interface array pointers |
+| `void**** interfaces`                  | pointer to interface array, which stores interface array pointers |
 | `struct InterfacesInfo interfacesInfo` | struct containing information about interfaces               |
 
 `loadDerivedInterfaces` creates derived interfaces specified in `interfacesInfo`. When a derived interface array could not have been loaded, returns `false`.

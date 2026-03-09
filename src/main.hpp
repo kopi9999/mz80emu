@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 extern "C" {
-    #include "modules\\moduleWindows.h"
+    #include "modules/module.h"
 }
 
 typedef enum Error (*createPtr)(void**, void*);
@@ -17,6 +17,7 @@ typedef enum Error (*destroyInterfacesPtr)(void*, void**, uint16_t);
 enum CrashCode{
     RUNNING,
     CONFIG_NOT_FOUND,
+    CONFIG_NOT_OPENED,
     CONFIG_VALUE_NAN,
     CONFIG_VALUE_NOT_BOOL,
     CONFIG_VALUE_INVALID,
@@ -57,30 +58,30 @@ struct DerivedInterfaceIds {
 };
 
 struct InstanceInfo {
-uint32_t count;
-uint32_t* list;
-void** parameters;
+    uint32_t count;
+    uint32_t* list;
+    void** parameters;
 };
 
 struct InterfacesInfo {
-uint32_t count;
-uint32_t derivedCount;
-uint32_t totalCount;
-uint32_t* list;
-DerivedInterfaceIds** derivedList;
-uint16_t* lengths;
-uint16_t* derivedLengths;
+    uint32_t count;
+    uint32_t derivedCount;
+    uint32_t totalCount;
+    uint32_t* list;
+    DerivedInterfaceIds** derivedList;
+    uint16_t* lengths;
+    uint16_t* derivedLengths;
 };
 
 struct ClockInfo{
-uint32_t period;
-uint32_t depth;
-uint32_t* strobeUpInstanceList;
-uint32_t* strobeUpInterfacesList;
-bool** strobeUpClock;
-uint32_t* strobeDownInstanceList;
-uint32_t* strobeDownInterfacesList;
-bool** strobeDownClock;
+    uint32_t period;
+    uint32_t depth;
+    uint32_t* strobeUpInstanceList;
+    uint32_t* strobeUpInterfacesList;
+    bool** strobeUpClock;
+    uint32_t* strobeDownInstanceList;
+    uint32_t* strobeDownInterfacesList;
+    bool** strobeDownClock;
 };
 
 #endif

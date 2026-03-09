@@ -1,4 +1,4 @@
-#include "../../boost/boost/test/unit_test.hpp"
+#include <boost/test/unit_test.hpp>
 #include "../validation.hpp"
 
 using namespace std;
@@ -219,7 +219,7 @@ BOOST_AUTO_TEST_SUITE( testValidation )
             BOOST_TEST ( !validateDerivedInterfaceCreated(test) );
             cout.rdbuf(buffer);
             string output = string_buffer.str();
-            BOOST_TEST( output == "ERROR: New derived interface has not been created, but its values were specified (\"Derived interfaces\" section of config.txt).\n" );
+            BOOST_TEST( output == "ERROR: New derived interface array has not been created, but its interfaces were specified (\"Derived interfaces\" section of config.txt).\n" );
         }
         
     BOOST_AUTO_TEST_SUITE_END()
@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_SUITE( testValidation )
             BOOST_TEST ( !validateDerivedInterfaceHasValues(test) );
             cout.rdbuf(buffer);
             string output = string_buffer.str();
-            BOOST_TEST( output == "ERROR: New derived interface has been created, but its values were not specified (\"Derived interfaces\" section of config.txt).\n" );
+            BOOST_TEST( output == "ERROR: New derived interface array has been created, but its interfaces were not specified (\"Derived interfaces\" section of config.txt).\n" );
         }
         
     BOOST_AUTO_TEST_SUITE_END()
