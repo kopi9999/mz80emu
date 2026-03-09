@@ -81,9 +81,9 @@ enum Instruction {
     AND_N,
     AND_$HL$,
 
-    OR_A_R,
-    OR_A_N,
-    OR_A_$HL$,
+    OR_R,
+    OR_N,
+    OR_$HL$,
 
     XOR_R,
     XOR_N,
@@ -99,7 +99,7 @@ enum Instruction {
     CP_S,
     INC_R,
     INC_$HL$,
-    DEC_Rp,
+    DEC_R,
     DEC_$HL$,
     DAA,
     CPL,
@@ -205,12 +205,21 @@ enum Register{
     A
 };
 
+enum Register16{
+  BC,
+  DE,
+  HL,
+  SP
+};
+
 struct Instance{
     uint8_t MState;
     uint8_t TCycle;
     uint8_t instruction;
     uint8_t tmp;
+    uint16_t tmpAddr;
     uint8_t halted;
+    uint8_t stateIterator;
 
     enum Register registerIn;
     enum Register registerOut;

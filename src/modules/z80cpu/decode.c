@@ -67,8 +67,8 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                     if ((i->instruction & 0b00000111) == UNDEFINED) {return AND_$HL$;}
                     else {return AND_R;}
                 case 0b00101000: 
-                    if ((i->instruction & 0b00000111) == UNDEFINED) {return OR_A_$HL$;}
-                    else {return OR_A_R;}
+                    if ((i->instruction & 0b00000111) == UNDEFINED) {return OR_$HL$;}
+                    else {return OR_R;}
                 case 0b00110000:
                     if ((i->instruction & 0b00000111) == UNDEFINED) {return XOR_$HL$;}
                     else {return XOR_R;}
@@ -85,7 +85,11 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                 else {return LD_$HL$_R;}
             } 
             else if ((i->instruction & 0b00000111) == UNDEFINED){return LD_R_$HL$;} 
-            else {return LD_R_Rp;}
+            else {
+	      i->registerOut = i->instruction & 0b00000111;
+	      i->registerIn = (i->instruction & 0b00111000) >> 3;
+              return LD_R_Rp;
+	    }
         }
         else { //00xxxxxx
             switch (i->instruction & 0b00000111) {
@@ -128,7 +132,7 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                     else {return INC_R;}
                 case 5: //00xxx101
                     if ((i->instruction & 0b00111000) == UNDEFINED * 8) {return DEC_$HL$;}
-                    else {return DEC_Rp;}
+                    else {return DEC_R;}
                 case 6: //00xxx110
                     if ((i->instruction & 0b00111000) == UNDEFINED * 8) {return LD_$HL$_N;}
                     else {return LD_R_N;}
