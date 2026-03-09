@@ -11,11 +11,9 @@ if(WIN32)
 endif()
 
 project(mz80emu)
-
 if(WIN32)
     set(wxBUILD_SHARED OFF)
     add_subdirectory(wxWidgets) # building static wxWidgets from source on windows
-
     if(EXISTS boost/)
         include_directories(boost) # local boost.test headers
         set(Boost_FOUND True)
