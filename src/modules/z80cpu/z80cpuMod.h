@@ -220,6 +220,7 @@ struct Instance{
     uint16_t tmpAddr;
     uint8_t halted;
     uint8_t stateIterator;
+    uint8_t skipTick;
 
     enum Register registerIn;
     enum Register registerOut;

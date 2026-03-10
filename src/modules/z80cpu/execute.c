@@ -62,13 +62,15 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case RRA:       return rra(i, inf);
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
-  case JP_CC_NN:     return jp_cc_nn(i, inf);  
+  case JP_CC_NN:  return jp_cc_nn(i, inf);  
+  case JR_E:      return jr_e(i, inf);  
     
   default:        return halt(i, inf);
   }
 }
 
 enum Error execute_down(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->skipTick) {return SUCCESS;}
   switch (i->state) {
   case HALT: return halt(i, inf);
   case BAD:  return halt(i, inf);
