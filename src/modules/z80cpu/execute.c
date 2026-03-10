@@ -64,7 +64,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case JP_NN:     return jp_nn(i, inf);  
   case JP_CC_NN:  return jp_cc_nn(i, inf);  
   case JR_E:      return jr_e(i, inf);  
-    
+  case JR_C_E:    return jr_c_e(i, inf);
   default:        return halt(i, inf);
   }
 }
