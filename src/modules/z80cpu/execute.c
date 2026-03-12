@@ -1,6 +1,7 @@
 #include "execute.h"
 #include "execute_control.h"
 #include "execute_load.h"
+#include "execute_exchange.h"
 #include "execute_jump.h"
 #include "execute_arit.h"
 #include "execute_rotate.h"
@@ -20,6 +21,11 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_$BC$_A: return ld_$bc$_a(i, inf);
   case LD_$DE$_A: return ld_$de$_a(i, inf);
   case LD_$NN$_A: return ld_$nn$_a(i, inf);
+    // exchange, block transfer and search group
+  case EX_DE_HL:  return ex_de_hl(i, inf); 
+  case EX_AF_AF:  return ex_af_af(i, inf); 
+  case EXX:       return exx(i, inf); 
+  case EX_$SP$_HL: return ex_$sp$_hl(i, inf); 
     // 8bit arithmetic operation
   case ADD_A_R:   return add_a_r(i, inf); 
   case ADD_A_N:   return add_a_n(i, inf); 
