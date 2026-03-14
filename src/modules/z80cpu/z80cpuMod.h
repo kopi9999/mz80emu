@@ -212,6 +212,18 @@ enum Register16{
   SP
 };
 
+enum Prefix{
+  NO_PREFIX,
+  CB_PREFIX,
+  ED_PREFIX
+};
+
+enum Override{
+  NO_OVERRIDE,
+  IX_OVERRIDE,
+  IY_OVERRIDE
+};
+
 struct Instance{
     uint8_t MState;
     uint8_t TCycle;
@@ -225,6 +237,8 @@ struct Instance{
     enum Register registerIn;
     enum Register registerOut;
     enum Instruction state;
+    enum Prefix currentPrefix;
+    enum Override currentOverride;
 
     uint16_t PC;
     uint16_t SP;

@@ -42,7 +42,20 @@ enum Error m1_strobeDown (struct Instance* __restrict instance, void** __restric
     }
     if (instance->TCycle == 4){
         *(uint8_t*) interfaces[3] = 0; // mreq
-        instance->state = decodeInstruction(instance);
+	if (instance->currentPrefix) {
+	  switch (instance->currentPrefix) {
+            default: return BAD_ARGUMENT;
+	    case CB_PREFIX: instance->state = decodeInstruction_CB(instance);
+	    case ED_PREFIX: instance->state = decodeInstruction_ED(instance);
+          }
+	} else if (instance->currentOverride) {          
+	  switch (instance->currentOverride) {
+            default: return BAD_ARGUMENT;
+	    case IX_OVERRIDE: instance->state = decodeInstruction_CB(instance);
+	    case IY_OVERRIDE: instance->state = decodeInstruction_ED(instance);
+          }
+	} else {instance->state = decodeInstruction(instance);}
+
         printf("\nLoaded instruction %d on address %d, decoded to %d", instance->instruction, instance->PC, instance->state);
         instance->PC++;
         return SUCCESS;

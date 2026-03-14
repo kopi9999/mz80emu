@@ -6,6 +6,26 @@
 #include "execute_arit.h"
 #include "execute_rotate.h"
 
+enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
+  i->currentPrefix = ED_PREFIX;
+  return nop(i, inf);
+}
+
+enum Error cb_prefix(struct Instance *__restrict i, void **__restrict inf) {
+  i->currentPrefix = CB_PREFIX;
+  return nop(i, inf); 
+}
+
+enum Error ix_override(struct Instance *__restrict i, void **__restrict inf) {
+  i->currentOverride = IX_OVERRIDE;
+  return nop(i, inf);
+}
+
+enum Error iy_override(struct Instance *__restrict i, void **__restrict inf) {
+  i->currentOverride = IY_OVERRIDE;
+  return nop(i, inf); 
+}
+
 enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   if (i->halted) {return halt(i, inf);}
   switch (i->state) {
@@ -75,6 +95,12 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case JR_Z_E:    return jr_z_e(i, inf);
   case JR_NZ_E:   return jr_nz_e(i, inf);
   case JP_$HL$:   return jp_$hl$(i, inf);
+    // prefixes
+  case ED_prefix: return ed_prefix(i, inf);
+  case CB_prefix: return cb_prefix(i, inf);
+  case IX_override: return ix_override(i, inf);
+  case IY_override: return iy_override(i, inf);
+    
   default:        return halt(i, inf);
   }
 }
@@ -87,3 +113,4 @@ enum Error execute_down(struct Instance *__restrict i, void **__restrict inf) {
   default:   return halt(i, inf);
   }
 }
+
