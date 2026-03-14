@@ -10,4 +10,6 @@ enum Error cpl(struct Instance* __restrict i, void** __restrict inf);
 enum Error ccf(struct Instance* __restrict i, void** __restrict inf);
 enum Error scf(struct Instance* __restrict i, void** __restrict inf);
 
+uint8_t pairity(uint8_t a);
+
 #endif
