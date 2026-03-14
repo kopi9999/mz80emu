@@ -8,22 +8,38 @@
 
 enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
   i->currentPrefix = ED_PREFIX;
-  return nop(i, inf);
+  i->MState = 1;
+  i->TCycle = 1;
+  *(uint8_t*) inf[2] = 1; // m1
+  *(uint16_t*) inf[0] = i->PC;
+  return SUCCESS;
 }
 
 enum Error cb_prefix(struct Instance *__restrict i, void **__restrict inf) {
   i->currentPrefix = CB_PREFIX;
-  return nop(i, inf); 
+  i->MState = 1;
+  i->TCycle = 1;
+  *(uint8_t*) inf[2] = 1; // m1
+  *(uint16_t*) inf[0] = i->PC;
+  return SUCCESS;
 }
 
 enum Error ix_override(struct Instance *__restrict i, void **__restrict inf) {
   i->currentOverride = IX_OVERRIDE;
-  return nop(i, inf);
+  i->MState = 1;
+  i->TCycle = 1;
+  *(uint8_t*) inf[2] = 1; // m1
+  *(uint16_t*) inf[0] = i->PC;
+  return SUCCESS;
 }
 
 enum Error iy_override(struct Instance *__restrict i, void **__restrict inf) {
   i->currentOverride = IY_OVERRIDE;
-  return nop(i, inf); 
+  i->MState = 1;
+  i->TCycle = 1;
+  *(uint8_t*) inf[2] = 1; // m1
+  *(uint16_t*) inf[0] = i->PC;
+  return SUCCESS;
 }
 
 enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
@@ -86,6 +102,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case RLCA:      return rlca(i, inf);
   case RLA:       return rla(i, inf);
   case RRA:       return rra(i, inf);
+  case RLC_R:     return rlc_r(i, inf); // CB prefix
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
   case JP_CC_NN:  return jp_cc_nn(i, inf);  

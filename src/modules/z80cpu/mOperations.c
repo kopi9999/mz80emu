@@ -45,16 +45,16 @@ enum Error m1_strobeDown (struct Instance* __restrict instance, void** __restric
 	if (instance->currentPrefix) {
 	  switch (instance->currentPrefix) {
             default: return BAD_ARGUMENT;
-	    case CB_PREFIX: instance->state = decodeInstruction_CB(instance);
-	    case ED_PREFIX: instance->state = decodeInstruction_ED(instance);
+	    case CB_PREFIX: instance->state = decodeInstruction_CB(instance); break;
+	    case ED_PREFIX: instance->state = decodeInstruction_ED(instance); break;
           }
 	} else if (instance->currentOverride) {          
 	  switch (instance->currentOverride) {
             default: return BAD_ARGUMENT;
-	    case IX_OVERRIDE: instance->state = decodeInstruction_CB(instance);
-	    case IY_OVERRIDE: instance->state = decodeInstruction_ED(instance);
+	    case IX_OVERRIDE: instance->state = decodeInstruction_CB(instance); break;
+	    case IY_OVERRIDE: instance->state = decodeInstruction_ED(instance); break;
           }
-	} else {instance->state = decodeInstruction(instance);}
+        } else {instance->state = decodeInstruction(instance);}
 
         printf("\nLoaded instruction %d on address %d, decoded to %d", instance->instruction, instance->PC, instance->state);
         instance->PC++;
