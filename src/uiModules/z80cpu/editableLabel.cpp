@@ -86,7 +86,7 @@ void EditableLabel::CancelEdit()
     Layout();
 }
 
-void EditableLabel::Refresh()
+void EditableLabel::RefreshValue()
 {
     if (isEditing)
         return;
@@ -98,7 +98,7 @@ void EditableLabel::Refresh()
 }
 
 void EditableLabel::OnTimer(wxTimerEvent& event) {
-    Refresh();
+    RefreshValue();
 }
 
 EditableLabel::~EditableLabel()
