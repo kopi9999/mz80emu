@@ -57,12 +57,45 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         firstColumnRegisterSizer->Add(indexRegistersGrid, 1, wxEXPAND | wxALL, 5);
         
         firstColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Interfaces"), 0, wxEXPAND | wxALL, 5);
-        wxFlexGridSizer* interfacesGrid = new wxFlexGridSizer(1, 3, 5, 5);
+        wxFlexGridSizer* interfacesGrid = new wxFlexGridSizer(6, 6, 5, 5);
         interfacesGrid->AddGrowableCol(0, 1);
         interfacesGrid->AddGrowableCol(1, 1);
         interfacesGrid->Add(new EditableLabel(this, ((uint8_t*) this->interfaces[0]) + 1), 0, wxEXPAND, 0);
         interfacesGrid->Add(new EditableLabel(this, ((uint8_t*) this->interfaces[0])), 0, wxEXPAND, 0);
         interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "address bus"));
+        interfacesGrid->Add(0, 0);
+        interfacesGrid->Add(0, 0);
+        interfacesGrid->Add(0, 0);
+        interfacesGrid->Add(new EditableLabel(this, (uint8_t*) this->interfaces[1]), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "data bus"));
+        interfacesGrid->Add(new EditableLabel(this, (uint8_t*) this->interfaces[2]), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "m1"));
+        interfacesGrid->Add(0, 0);
+        interfacesGrid->Add(0, 0);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "mreq"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "iorq"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "rd"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "wr"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "rfsh"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "halt"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[3], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[4], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[5], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[6], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[7], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[8], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "wait"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "int"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "nmi"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "reset"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "busrq"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "busack"), 0, wxEXPAND | wxALL, 5);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[9], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[10], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[11], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[12], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[13], 0b00000001), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new OneBitLabel(this, (uint8_t*) this->interfaces[14], 0b00000001), 0, wxEXPAND, 0);
         firstColumnRegisterSizer->Add(interfacesGrid, 1, wxEXPAND | wxALL, 5);
 
         secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Alternate (shadow) registers"), 0, wxEXPAND | wxALL, 5);
@@ -109,6 +142,13 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         statusGrid->AddGrowableCol(3, 1);
         statusGrid->AddGrowableCol(4, 1);
         statusGrid->AddGrowableCol(5, 1);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "S"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "Z"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "H"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "P/V"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "N"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "C"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(0, 0);
         statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b10000000), 0, wxEXPAND, 0);
         statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b01000000), 0, wxEXPAND, 0);
         statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b00010000), 0, wxEXPAND, 0);
@@ -116,12 +156,6 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b00000010), 0, wxEXPAND, 0);
         statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b00000001), 0, wxEXPAND, 0);
         statusGrid->Add(new wxStaticText(this, wxID_ANY, "Flags"));
-        statusGrid->Add(new wxStaticText(this, wxID_ANY, "S"), 0, wxEXPAND | wxALL, 5);
-        statusGrid->Add(new wxStaticText(this, wxID_ANY, "Z"), 0, wxEXPAND | wxALL, 5);
-        statusGrid->Add(new wxStaticText(this, wxID_ANY, "H"), 0, wxEXPAND | wxALL, 5);
-        statusGrid->Add(new wxStaticText(this, wxID_ANY, "P/V"), 0, wxEXPAND | wxALL, 5);
-        statusGrid->Add(new wxStaticText(this, wxID_ANY, "N"), 0, wxEXPAND | wxALL, 5);
-        statusGrid->Add(new wxStaticText(this, wxID_ANY, "C"), 0, wxEXPAND | wxALL, 5);
         secondColumnRegisterSizer->Add(statusGrid, 1, wxEXPAND | wxALL, 5);
 
 
