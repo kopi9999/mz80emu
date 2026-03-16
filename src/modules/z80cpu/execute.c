@@ -106,6 +106,8 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case RLC_$HL$:  return rlc_$hl$(i, inf); // CB prefix
   case RL_R:      return rl_r(i, inf); // CB prefix
   case RL_$HL$:   return rl_$hl$(i, inf); // CB prefix
+  case RRC_R:     return rrc_r(i, inf); // CB prefix
+  case RRC_$HL$:  return rrc_$hl$(i, inf); // CB prefix
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
   case JP_CC_NN:  return jp_cc_nn(i, inf);  
