@@ -108,6 +108,14 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case RL_$HL$:   return rl_$hl$(i, inf); // CB prefix
   case RRC_R:     return rrc_r(i, inf); // CB prefix
   case RRC_$HL$:  return rrc_$hl$(i, inf); // CB prefix
+  case RR_R:      return rr_r(i, inf); // CB prefix
+  case RR_$HL$:   return rr_$hl$(i, inf); // CB prefix
+  case SLA_R:     return sla_r(i, inf); // CB prefix
+  case SLA_$HL$:  return sla_$hl$(i, inf); // CB prefix
+  case SRA_R:     return sra_r(i, inf); // CB prefix
+  case SRA_$HL$:  return sra_$hl$(i, inf); // CB prefix
+  case SRL_R:     return srl_r(i, inf); // CB prefix
+  case SRL_$HL$:  return srl_$hl$(i, inf); // CB prefix
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
   case JP_CC_NN:  return jp_cc_nn(i, inf);  
