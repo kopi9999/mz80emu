@@ -50,7 +50,7 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         // the refresh on change in one row
         grid->Bind(wxEVT_GRID_CELL_CHANGED, &UiModulePanel::OnChangeRow, this);
 
-        grid->Bind(wxEVT_CONTEXT_MENU, &UiModulePanel::OnGridContextMenu, this);
+        grid->Bind(wxEVT_GRID_CELL_RIGHT_CLICK, &UiModulePanel::OnRightClick, this);
         Bind(wxEVT_MENU, &UiModulePanel::OnRefreshMenu, this, ID_MENU_REFRESH);
         Bind(wxEVT_MENU, &UiModulePanel::SelectFileWindow, this, ID_MENU_LOAD);
         Bind(wxEVT_MENU, &UiModulePanel::SelectSaveFile, this, ID_MENU_SAVE);
@@ -219,13 +219,21 @@ void UiModulePanel::GridFill(int Rows , int Cols)
 // WIP the right click menu that allows to change the refresh rate
 void UiModulePanel::OnRightClick(wxGridEvent& event)
 {
+    int selected_row = event.GetRow();
+    int selected_col = event.GetCol();
     wxMenu menu;
+    menu.Append(ID_MENU_REFRESH, "Refresh");
+    menu.Append(ID_MENU_LOAD, "Load File");
+    menu.Append(ID_MENU_SAVE, "Save File");
 
-    menu.Append(1001, "Opcja 1");
-    menu.Append(1002, "Opcja 2");
+    // Position correctly at mouse
+    wxPoint pos = event.GetPosition();
+    if (pos == wxDefaultPosition) {
+        pos = wxGetMousePosition();
+    }
 
-    // show menu at click position
-    PopupMenu(&menu, event.GetPosition());
+    pos = grid->ScreenToClient(pos);
+    grid->PopupMenu(&menu, pos);
 }
 
 wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
@@ -244,9 +252,15 @@ wxPanel* getPanel(wxControl* parent, void* instance, void** interfaces)
 
 
 //reads from selected file
-bool UiModulePanel::ReadFromSelectedBINFile(const wxString& filePath)
+bool UiModulePanel::ReadFromSelectedBINFile(const wxString& filePath )
 {
+    int selected_row  = grid->GetGridCursorRow();
+    int selected_col = grid->GetGridCursorCol();
+    size_t index = selected_row * 10 + selected_col;
     int ReadFile = 0;
+    uint8_t temp_data[65536] = {}; 
+
+    
     //here have a file readerin BIN file to a some zmienna a nie trzeb gdzieś zroić 
     //guzik zeby odpalało takie menu do wyboru pliku co jest osobną funkcja w wxwidget 
     //i fukcja zapisze czy cos ok ok :3
@@ -260,11 +274,16 @@ bool UiModulePanel::ReadFromSelectedBINFile(const wxString& filePath)
 
     wxFileOffset fileSize = file.Length();
 
+    
 
-    if (file.Read(instance->data, fileSize) != fileSize)
+    if (file.Read(temp_data, fileSize) != fileSize)
     {
         wxLogError("Error while reading the file");
         return false;
+    }
+
+    for(int x = 0; x+index <  65536 ; x++){
+        instance->data[index+x] = temp_data[x];
     }
 
     file.Close();
@@ -308,7 +327,7 @@ void UiModulePanel::SelectFileWindow(wxCommandEvent& event)
 
     if (ReadFromSelectedBINFile(openFileDialog.GetPath()))
     {
-        wxLogMessage("Loaded %zu elements", sizeof(instance->data));
+        wxLogMessage("Loaded", sizeof(instance->data));
     }
 }
 
@@ -329,6 +348,6 @@ void UiModulePanel::SelectSaveFile(wxCommandEvent& event)
 
     if (SaveUint32TableToBin(saveFileDialog.GetPath()))
     {
-        wxLogMessage("Saved %zu elements", sizeof(instance->data));
+        wxLogMessage("Saved", sizeof(instance->data));
     }
 }

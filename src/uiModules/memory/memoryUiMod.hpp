@@ -60,9 +60,9 @@ class UiModulePanel : public wxPanel {
         void GridFill(int Rows , int Cols);
         void OnRightClick(wxGridEvent& event);
 
-        bool ReadFromSelectedBINFile(const wxString& filePath); 
+        bool ReadFromSelectedBINFile(const wxString& filePath ); 
         bool SaveUint32TableToBin(const wxString& filePath);
-        void SelectFileWindow(wxCommandEvent& event);
+        void SelectFileWindow(wxCommandEvent& event );
         void SelectSaveFile(wxCommandEvent& event);
         
 };
