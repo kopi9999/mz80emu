@@ -13,7 +13,6 @@ class EditableLabel : public wxPanel {
     public:
         EditableLabel(wxWindow* parent, uint8_t* registerPointer);
         ~EditableLabel();
-        wxString GetValue();
 
     private:
         wxStaticText* text;

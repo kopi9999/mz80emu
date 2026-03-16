@@ -93,6 +93,27 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         secondColumnRegisterSizer->Add(programCounterGrid, 1, wxEXPAND | wxALL, 5);
 
         secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Status"), 0, wxEXPAND | wxALL, 5);
+        wxFlexGridSizer* statusGrid = new wxFlexGridSizer(2, 7, 5, 5);
+        statusGrid->AddGrowableCol(0, 1);
+        statusGrid->AddGrowableCol(1, 1);
+        statusGrid->AddGrowableCol(2, 1);
+        statusGrid->AddGrowableCol(3, 1);
+        statusGrid->AddGrowableCol(4, 1);
+        statusGrid->AddGrowableCol(5, 1);
+        statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b10000000), 0, wxEXPAND, 0);
+        statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b01000000), 0, wxEXPAND, 0);
+        statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b00010000), 0, wxEXPAND, 0);
+        statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b00000100), 0, wxEXPAND, 0);
+        statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b00000010), 0, wxEXPAND, 0);
+        statusGrid->Add(new OneBitLabel(this, &this->instance->F, 0b00000001), 0, wxEXPAND, 0);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "Flags"));
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "S"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "Z"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "H"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "P/V"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "N"), 0, wxEXPAND | wxALL, 5);
+        statusGrid->Add(new wxStaticText(this, wxID_ANY, "C"), 0, wxEXPAND | wxALL, 5);
+        secondColumnRegisterSizer->Add(statusGrid, 1, wxEXPAND | wxALL, 5);
 
 
         registerSizer->Add(firstColumnRegisterSizer, 1, wxEXPAND | wxALL, 5);
