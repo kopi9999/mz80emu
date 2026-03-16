@@ -55,6 +55,15 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         indexRegistersGrid->Add(new EditableLabel(this, ((uint8_t*)&this->instance->SP)), 0, wxEXPAND, 0);
         indexRegistersGrid->Add(new wxStaticText(this, wxID_ANY, "SP"));
         firstColumnRegisterSizer->Add(indexRegistersGrid, 1, wxEXPAND | wxALL, 5);
+        
+        firstColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Interfaces"), 0, wxEXPAND | wxALL, 5);
+        wxFlexGridSizer* interfacesGrid = new wxFlexGridSizer(1, 3, 5, 5);
+        interfacesGrid->AddGrowableCol(0, 1);
+        interfacesGrid->AddGrowableCol(1, 1);
+        interfacesGrid->Add(new EditableLabel(this, ((uint8_t*) this->interfaces[0]) + 1), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new EditableLabel(this, ((uint8_t*) this->interfaces[0])), 0, wxEXPAND, 0);
+        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "address bus"));
+        firstColumnRegisterSizer->Add(interfacesGrid, 1, wxEXPAND | wxALL, 5);
 
         secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Alternate (shadow) registers"), 0, wxEXPAND | wxALL, 5);
         wxFlexGridSizer* alternateRegistersGrid = new wxFlexGridSizer(4, 3, 5, 5);
