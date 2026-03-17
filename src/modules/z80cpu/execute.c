@@ -5,6 +5,7 @@
 #include "execute_jump.h"
 #include "execute_arit.h"
 #include "execute_rotate.h"
+#include "execute_bsr.h"
 
 enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
   i->currentPrefix = ED_PREFIX;
@@ -118,6 +119,8 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case SRL_$HL$:  return srl_$hl$(i, inf); // CB prefix
   case RLD:       return rld(i, inf); // ED prefix
   case RRD:       return rrd(i, inf); // ED prefix
+    // bit, set, and reset group
+  case BIT_B_R:   return bit_b_r(i, inf); // CB group
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
   case JP_CC_NN:  return jp_cc_nn(i, inf);  
