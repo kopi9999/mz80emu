@@ -700,3 +700,67 @@ if (i->MState == 1) {
 
   return BAD_ARGUMENT;
 }
+
+enum Error rld(struct Instance* __restrict i, void** __restrict inf){
+if (i->MState == 1) {
+    i->MState = 2;
+    i->TCycle = 1;
+    *(uint8_t*) inf[2] = 0; //m1
+    *(uint16_t*) inf[0] = i->H; //addr
+    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+    *(uint16_t*) inf[0] = i->L; //addr
+    i->stateIterator = 0;
+    return SUCCESS;
+  }
+  if (i->MState == 2) {
+    uint8_t tmp = (i->A & 0b00001111);
+    i->A = (i->A & 0b11110000) | ((i->tmp & 0b11110000) >> 4);
+    i->tmp = (i->tmp << 4) | tmp;
+     
+    i->F |= 0b00000001;
+    if (i->A == 0) {i->F |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {i->F |= 0b10000000;} //S flag
+    if (pairity(i->A) % 2 == 0) {i->F |= 0b00000100;} //P/V flag
+
+    i->TCycle = 1;
+    i->MState = 3;
+    return SUCCESS;
+  }
+  if (i->MState == 3) {
+    return nop(i, inf);
+  }
+
+  return BAD_ARGUMENT;
+}
+
+enum Error rrd(struct Instance* __restrict i, void** __restrict inf){
+if (i->MState == 1) {
+    i->MState = 2;
+    i->TCycle = 1;
+    *(uint8_t*) inf[2] = 0; //m1
+    *(uint16_t*) inf[0] = i->H; //addr
+    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+    *(uint16_t*) inf[0] = i->L; //addr
+    i->stateIterator = 0;
+    return SUCCESS;
+  }
+  if (i->MState == 2) {
+    uint8_t tmp = (i->A & 0b00001111);
+    i->A = (i->A & 0b11110000) | (i->tmp & 0b00001111);
+    i->tmp = (i->tmp >> 4) | (tmp << 4);
+     
+    i->F |= 0b00000001;
+    if (i->A == 0) {i->F |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {i->F |= 0b10000000;} //S flag
+    if (pairity(i->A) % 2 == 0) {i->F |= 0b00000100;} //P/V flag
+
+    i->TCycle = 1;
+    i->MState = 3;
+    return SUCCESS;
+  }
+  if (i->MState == 3) {
+    return nop(i, inf);
+  }
+
+  return BAD_ARGUMENT;
+}
