@@ -186,7 +186,7 @@ enum Instruction decodeInstruction_CB (struct Instance* __restrict i) {
             else {return BIT_B_R;}
         case 2: 
             if((i->instruction & 0b00000111) == UNDEFINED){return RES_B_$HL$;}
-            else {return RES_B_RN;}
+            else {return RES_B_R;}
         case 3:
             if((i->instruction & 0b00000111) == UNDEFINED){return SET_B_$HL$;}
             else {return SET_B_R;}

@@ -120,7 +120,12 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case RLD:       return rld(i, inf); // ED prefix
   case RRD:       return rrd(i, inf); // ED prefix
     // bit, set, and reset group
-  case BIT_B_R:   return bit_b_r(i, inf); // CB group
+  case BIT_B_R:   return bit_b_r(i, inf); // CB prefix
+  case BIT_B_$HL$:return bit_b_$hl$(i, inf); // CB prefix
+  case SET_B_R:   return set_b_r(i, inf); // CB prefix
+  case SET_B_$HL$:return set_b_$hl$(i, inf); // CB prefix
+  case RES_B_R:   return res_b_r(i, inf); // CB prefix
+  case RES_B_$HL$:return res_b_$hl$(i, inf); // CB prefix
     // jump group
   case JP_NN:     return jp_nn(i, inf);  
   case JP_CC_NN:  return jp_cc_nn(i, inf);  

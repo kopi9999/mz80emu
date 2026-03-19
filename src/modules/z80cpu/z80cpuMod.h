@@ -150,7 +150,7 @@ enum Instruction {
     BIT_B_$HL$,
     SET_B_R,
     SET_B_$HL$,
-    RES_B_RN,
+    RES_B_R,
     RES_B_$HL$,
 
     JP_NN,
