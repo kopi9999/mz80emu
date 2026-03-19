@@ -6,6 +6,7 @@
 #include "execute_arit.h"
 #include "execute_rotate.h"
 #include "execute_bsr.h"
+#include "execute_load16.h"
 
 enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
   i->currentPrefix = ED_PREFIX;
@@ -58,6 +59,10 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_$BC$_A: return ld_$bc$_a(i, inf);
   case LD_$DE$_A: return ld_$de$_a(i, inf);
   case LD_$NN$_A: return ld_$nn$_a(i, inf);
+    // 16bit load group
+  case LD_DD_NN:  return ld_dd_nn(i, inf);
+  case LD_HL_$NN$:return ld_hl_$nn$(i, inf);
+  case LD_DD_$NN$:return ld_dd_$nn$(i, inf); // ED prefix
     // exchange, block transfer and search group
   case EX_DE_HL:  return ex_de_hl(i, inf); 
   case EX_AF_AF:  return ex_af_af(i, inf); 
