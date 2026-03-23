@@ -291,9 +291,18 @@ bool UiModulePanel::ReadFromSelectedBINFile(const wxString& filePath )
 
 }
 
-bool UiModulePanel::SaveUint32TableToBin(const wxString& filePath)
+bool UiModulePanel::SaveUint32TableToBin(const wxString& filePath , int count)
 {
     wxFile file;
+    
+    int selected_row  = grid->GetGridCursorRow();
+    int selected_col = grid->GetGridCursorCol();
+    size_t index = selected_row * 10 + selected_col;
+    int ReadFile = 0;
+    if (count == 0 || count+index > 65536){
+        count = 65536;
+    }
+    uint8_t temp_data[count] = {}; 
 
     // tworzy plik jeśli nie istnieje
     if (!file.Create(filePath, true))
@@ -302,10 +311,16 @@ bool UiModulePanel::SaveUint32TableToBin(const wxString& filePath)
         return false;
     }
     
-    size_t dataSize = instance->size;
+    for(int x = 0; x < count ; x++){
+         temp_data[x] = instance->data[index+x];
+    }
+
+
+    
+    size_t dataSize = count;
 
     // zapis danych binarnych
-    file.Write(instance->data, dataSize);
+    file.Write(temp_data, count);
 
     file.Close();
     return true;
@@ -334,20 +349,70 @@ void UiModulePanel::SelectFileWindow(wxCommandEvent& event)
 //saves a table to a file
 void UiModulePanel::SelectSaveFile(wxCommandEvent& event)
 {
-    wxFileDialog saveFileDialog(
-        this,
-        "Save BIN file",
-        "",
-        "",
-        "File BIN (*.bin)|*.bin",
-        wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+    wxMessageDialog dlg(
+    this,
+    "(select NO if you want to save the WHOLE table)",
+    "Do you want to select the number of cells saved",
+    wxYES_NO | wxCANCEL
     );
+    int result = dlg.ShowModal();
 
-    if (saveFileDialog.ShowModal() == wxID_CANCEL)
-        return;
-
-    if (SaveUint32TableToBin(saveFileDialog.GetPath()))
+    if(result == wxID_YES)
     {
-        wxLogMessage("Saved", sizeof(instance->data));
+        wxNumberEntryDialog dlg(
+            this,
+            "How many cells save?",
+            "Number:",
+            "Select a numer",
+            10,      // wartość domyślna
+            1,       // min
+            65536   // max
+        );
+
+        if (dlg.ShowModal() == wxID_OK)
+        {
+            int count = dlg.GetValue();
+
+            wxFileDialog saveFileDialog(
+                this,
+                "Save BIN file",
+                "",
+                "",
+                "File BIN (*.bin)|*.bin",
+                wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+            );
+
+            if (saveFileDialog.ShowModal() == wxID_CANCEL)
+                return;
+
+            if (SaveUint32TableToBin(saveFileDialog.GetPath() , count))
+            {
+                wxLogMessage("Saved", sizeof(instance->data));
+            }
+        }
     }
+    else if(result == wxID_NO)
+    {
+        wxFileDialog saveFileDialog(
+            this,
+            "Save BIN file",
+            "",
+            "",
+            "File BIN (*.bin)|*.bin",
+            wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+        );
+
+        if (saveFileDialog.ShowModal() == wxID_CANCEL)
+            return;
+
+        if (SaveUint32TableToBin(saveFileDialog.GetPath() , 0))
+        {
+            wxLogMessage("Saved", sizeof(instance->data));
+        }
+    }
+    else
+    {
+        // zamknij
+    }
+    
 }
