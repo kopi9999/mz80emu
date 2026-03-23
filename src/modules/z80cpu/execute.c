@@ -63,6 +63,11 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_DD_NN:  return ld_dd_nn(i, inf);
   case LD_HL_$NN$:return ld_hl_$nn$(i, inf);
   case LD_DD_$NN$:return ld_dd_$nn$(i, inf); // ED prefix
+  case LD_$NN$_HL:return ld_$nn$_hl(i, inf);
+  case LD_$NN$_DD:return ld_$nn$_dd(i, inf); // ED prefix
+  case LD_SP_HL:  return ld_sp_hl(i, inf);
+  case PUSH_QQ:   return push_qq(i, inf);
+  case POP_QQ:    return pop_qq(i, inf);
     // exchange, block transfer and search group
   case EX_DE_HL:  return ex_de_hl(i, inf); 
   case EX_AF_AF:  return ex_af_af(i, inf); 
