@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iomanip>
 #include <stdio.h>
+#include <wx/gbsizer.h>
 
 using namespace std;
 
@@ -57,34 +58,37 @@ UiModulePanel::UiModulePanel(wxControl* parent, void* instance, void** interface
         firstColumnRegisterSizer->Add(indexRegistersGrid, 1, wxEXPAND | wxALL, 5);
         
         firstColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Interfaces"), 0, wxEXPAND | wxALL, 5);
-        wxFlexGridSizer* interfacesGrid = new wxFlexGridSizer(4, 6, 5, 5);
-        interfacesGrid->AddGrowableCol(0, 1);
-        interfacesGrid->AddGrowableCol(1, 1);
-        interfacesGrid->Add(new EditableLabel(this, ((uint8_t*) this->interfaces[0]) + 1), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new EditableLabel(this, ((uint8_t*) this->interfaces[0])), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "address bus"));
-        interfacesGrid->Add(0, 0);
-        interfacesGrid->Add(0, 0);
-        interfacesGrid->Add(0, 0);
-        interfacesGrid->Add(new EditableLabel(this, (uint8_t*) this->interfaces[1]), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "data bus"));
-        interfacesGrid->Add(new EditableLabel(this, (uint8_t*) this->interfaces[2]), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new wxStaticText(this, wxID_ANY, "m1"));
-        interfacesGrid->Add(0, 0);
-        interfacesGrid->Add(0, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "mreq", (uint8_t*) this->interfaces[3], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "iorq", (uint8_t*) this->interfaces[4], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "rd", (uint8_t*) this->interfaces[5], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "wr", (uint8_t*) this->interfaces[6], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "rfsh", (uint8_t*) this->interfaces[7], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "halt", (uint8_t*) this->interfaces[8], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "wait", (uint8_t*) this->interfaces[9], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "int", (uint8_t*) this->interfaces[10], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "nmi", (uint8_t*) this->interfaces[11], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "reset", (uint8_t*) this->interfaces[12], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "busrq", (uint8_t*) this->interfaces[13], 0b00000001), 0, wxEXPAND, 0);
-        interfacesGrid->Add(new OneBitLabel(this, "busack", (uint8_t*) this->interfaces[14], 0b00000001), 0, wxEXPAND, 0);
-        firstColumnRegisterSizer->Add(interfacesGrid, 1, wxEXPAND | wxALL, 5);
+        wxGridBagSizer* firstInterfacesGrid = new wxGridBagSizer(5, 5);
+        firstInterfacesGrid->Add(new EditableLabel(this, ((uint8_t*) this->interfaces[0]) + 1), wxGBPosition(0, 0), wxGBSpan(1, 1), wxEXPAND);
+        firstInterfacesGrid->Add(new EditableLabel(this, ((uint8_t*) this->interfaces[0])), wxGBPosition(0, 1), wxGBSpan(1, 1), wxEXPAND);
+        firstInterfacesGrid->Add(new wxStaticText(this, wxID_ANY, "address bus"), wxGBPosition(0, 2), wxGBSpan(1, 1));
+        firstInterfacesGrid->Add(new EditableLabel(this, (uint8_t*) this->interfaces[1]), wxGBPosition(1, 0), wxGBSpan(1, 2), wxEXPAND);
+        firstInterfacesGrid->Add(new wxStaticText(this, wxID_ANY, "data bus"), wxGBPosition(1, 2), wxGBSpan(1, 1));
+        firstInterfacesGrid->AddGrowableCol(0, 1);
+        firstInterfacesGrid->AddGrowableCol(1, 1);
+        wxFlexGridSizer* secondInterfacesGrid = new wxFlexGridSizer(2, 7, 5, 5);
+        secondInterfacesGrid->AddGrowableCol(0, 1);
+        secondInterfacesGrid->AddGrowableCol(1, 1);
+        secondInterfacesGrid->AddGrowableCol(2, 1);
+        secondInterfacesGrid->AddGrowableCol(3, 1);
+        secondInterfacesGrid->AddGrowableCol(4, 1);
+        secondInterfacesGrid->AddGrowableCol(5, 1);
+        secondInterfacesGrid->AddGrowableCol(6, 1);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "m1", (uint8_t*) this->interfaces[2], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "mreq", (uint8_t*) this->interfaces[3], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "iorq", (uint8_t*) this->interfaces[4], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "rd", (uint8_t*) this->interfaces[5], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "wr", (uint8_t*) this->interfaces[6], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "rfsh", (uint8_t*) this->interfaces[7], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "halt", (uint8_t*) this->interfaces[8], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "wait", (uint8_t*) this->interfaces[9], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "int", (uint8_t*) this->interfaces[10], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "nmi", (uint8_t*) this->interfaces[11], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "reset", (uint8_t*) this->interfaces[12], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "busrq", (uint8_t*) this->interfaces[13], 0b00000001), 0, wxEXPAND, 0);
+        secondInterfacesGrid->Add(new OneBitLabel(this, "busack", (uint8_t*) this->interfaces[14], 0b00000001), 0, wxEXPAND, 0);
+        firstColumnRegisterSizer->Add(firstInterfacesGrid, 1, wxEXPAND | wxALL, 5);
+        firstColumnRegisterSizer->Add(secondInterfacesGrid, 1, wxEXPAND | wxALL, 5);
 
         secondColumnRegisterSizer->Add(new wxStaticText(this, wxID_ANY, "Alternate (shadow) registers"), 0, wxEXPAND | wxALL, 5);
         wxFlexGridSizer* alternateRegistersGrid = new wxFlexGridSizer(4, 3, 5, 5);

@@ -14,6 +14,9 @@ OneBitLabel::OneBitLabel(wxWindow* parent, wxString labelText, uint8_t* register
         wxDefaultSize,
         wxST_NO_AUTORESIZE | wxALIGN_CENTER_HORIZONTAL
     );
+    wxSize labelSize = label->GetBestSize();
+    labelSize.x += 5;
+    label->SetMinSize(labelSize);
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(label, 1, wxEXPAND | wxALL, 2);
@@ -32,14 +35,18 @@ bool OneBitLabel::GetBitValue() {
 }
 
 void OneBitLabel::SetLabelColor(bool bitValue) {
+    wxFont font = label->GetFont();
     if (bitValue) {
         this->SetBackgroundColour(*wxGREEN);
         label->SetBackgroundColour(*wxGREEN);
+        font.SetWeight(wxFONTWEIGHT_BOLD);
     }
     else {
         this->SetBackgroundColour(*wxRED);
         label->SetBackgroundColour(*wxRED);
+        font.SetWeight(wxFONTWEIGHT_NORMAL);
     }
+    label->SetFont(font);
     label->Refresh();
 }
 

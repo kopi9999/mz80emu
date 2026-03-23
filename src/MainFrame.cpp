@@ -3,7 +3,7 @@
 #include <wx/listctrl.h>
 #include <wx/tglbtn.h>
 
-MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition, wxSize(800, 600)), crashHandlingTimer(this) {
+MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "mz80emu", wxDefaultPosition, wxSize(850, 650)), crashHandlingTimer(this) {
     wxImage::AddHandler(new wxPNGHandler);
     wxBitmap stopClock(wxT("../../src/ui/img/stopClock.png"), wxBITMAP_TYPE_PNG);
     wxBitmap runClock(wxT("../../src/ui/img/runClock.png"), wxBITMAP_TYPE_PNG);
