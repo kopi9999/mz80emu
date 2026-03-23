@@ -52,5 +52,5 @@ libz80cpuUiMod.so
 libmemoryUiMod.so
 
 UI module instances:
-0 0 1
+0 0 0
 1 1 1
