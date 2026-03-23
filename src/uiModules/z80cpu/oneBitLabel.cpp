@@ -12,11 +12,11 @@ OneBitLabel::OneBitLabel(wxWindow* parent, wxString labelText, uint8_t* register
         labelText,
         wxDefaultPosition,
         wxDefaultSize,
-        wxST_NO_AUTORESIZE
+        wxST_NO_AUTORESIZE | wxALIGN_CENTER_HORIZONTAL
     );
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-    sizer->Add(label, 0, wxEXPAND | wxALL, 2);
+    sizer->Add(label, 1, wxEXPAND | wxALL, 2);
     SetSizer(sizer);
     
     label->Bind(wxEVT_LEFT_DOWN, &OneBitLabel::OnClick, this);
@@ -33,9 +33,11 @@ bool OneBitLabel::GetBitValue() {
 
 void OneBitLabel::SetLabelColor(bool bitValue) {
     if (bitValue) {
+        this->SetBackgroundColour(*wxGREEN);
         label->SetBackgroundColour(*wxGREEN);
     }
     else {
+        this->SetBackgroundColour(*wxRED);
         label->SetBackgroundColour(*wxRED);
     }
     label->Refresh();
