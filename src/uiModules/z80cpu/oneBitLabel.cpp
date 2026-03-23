@@ -1,20 +1,25 @@
 #include "oneBitLabel.hpp"
 
-OneBitLabel::OneBitLabel(wxWindow* parent, wxString label, uint8_t* registerPointer, uint8_t mask)
-    : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize),
+OneBitLabel::OneBitLabel(wxWindow* parent, wxString labelText, uint8_t* registerPointer, uint8_t mask)
+    : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE),
     refresherTimer(this)
 {
     this->registerPointer = registerPointer;
     this->mask = mask;
-    button = new wxButton(this, wxID_ANY, label);
-    //button->SetMinSize(wxSize(50, 20));
-    SetButtonColor(GetBitValue());
+    label = new wxStaticText(
+        this,
+        wxID_ANY,
+        labelText,
+        wxDefaultPosition,
+        wxDefaultSize,
+        wxST_NO_AUTORESIZE
+    );
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-    sizer->Add(button, 1, wxEXPAND | wxALL, 2);
+    sizer->Add(label, 0, wxEXPAND | wxALL, 2);
     SetSizer(sizer);
-
-    button->Bind(wxEVT_BUTTON, &OneBitLabel::OnClick, this);
+    
+    label->Bind(wxEVT_LEFT_DOWN, &OneBitLabel::OnClick, this);
     Bind(wxEVT_TIMER, &OneBitLabel::OnTimer, this);
     refresherTimer.Start(250);
 }
@@ -26,28 +31,23 @@ bool OneBitLabel::GetBitValue() {
     return false;
 }
 
-void OneBitLabel::SetButtonColor(bool bitValue) {
+void OneBitLabel::SetLabelColor(bool bitValue) {
     if (bitValue) {
-        button->SetBackgroundColour(*wxGREEN);
+        label->SetBackgroundColour(*wxGREEN);
     }
     else {
-        button->SetBackgroundColour(*wxRED);
+        label->SetBackgroundColour(*wxRED);
     }
-    button->Refresh();
+    label->Refresh();
 }
 
-void OneBitLabel::OnClick(wxCommandEvent& event) {
+void OneBitLabel::OnClick(wxMouseEvent& event) {
     *registerPointer = *registerPointer xor mask;
-    SetButtonColor(GetBitValue());
-}
-
-void OneBitLabel::RefreshValue()
-{
-    SetButtonColor(GetBitValue());
+    SetLabelColor(GetBitValue());
 }
 
 void OneBitLabel::OnTimer(wxTimerEvent& event) {
-    RefreshValue();
+    SetLabelColor(GetBitValue());
 }
 
 OneBitLabel::~OneBitLabel()

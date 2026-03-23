@@ -14,8 +14,6 @@
 
 #include "../../modules/z80cpu/z80cpuMod.h"
 
-//enum { MAIN_REGISTERS_GRID = wxID_HIGHEST + 1 };
-
 class UiModulePanel : public wxPanel {
     public:
         UiModulePanel(wxControl* parent, void* instance, void** interfaces);
