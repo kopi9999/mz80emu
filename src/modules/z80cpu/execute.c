@@ -72,7 +72,15 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case EX_DE_HL:  return ex_de_hl(i, inf); 
   case EX_AF_AF:  return ex_af_af(i, inf); 
   case EXX:       return exx(i, inf); 
-  case EX_$SP$_HL: return ex_$sp$_hl(i, inf); 
+  case EX_$SP$_HL:return ex_$sp$_hl(i, inf); 
+  case LDI:       return ldi(i, inf); //ED prefix 
+  case LDIR:      return ldir(i, inf); //ED prefix 
+  case LDD:       return ldd(i, inf); //ED prefix 
+  case LDDR:      return lddr(i, inf); //ED prefix 
+  case CPI:       return cpi(i, inf); //ED prefix 
+  case CPIR:      return cpir(i, inf); //ED prefix 
+  case CPD:       return cpd(i, inf); //ED prefix 
+  case CPDR:      return cpdr(i, inf); //ED prefix 
     // 8bit arithmetic operation
   case ADD_A_R:   return add_a_r(i, inf); 
   case ADD_A_N:   return add_a_n(i, inf); 

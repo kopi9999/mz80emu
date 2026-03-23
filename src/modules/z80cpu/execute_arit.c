@@ -1,18 +1,6 @@
 #include "execute_arit.h"
 #include "execute_control.h"
 
-uint8_t getAddCarries(uint8_t a, uint8_t b, uint8_t previousCarry) {
-  uint8_t out = 0;
-  uint8_t tmp = 0;
-  for (uint8_t i = 0; i < 8; i++) {
-    tmp = (a & 0b00000001) + (b & 0b00000001);
-    if (i) {tmp += (out >> (i - 1)) & 0b00000001;}
-    else {tmp += previousCarry;}
-    if (tmp > 1) {out += 1 << (i - 1);}
-  }
-  return out;
-}
-
 enum Error add_a_r(struct Instance *__restrict i, void **__restrict inf) {
   uint8_t carries = 0;
   switch (i->instruction & 0b00000111) {
