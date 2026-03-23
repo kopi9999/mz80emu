@@ -37,8 +37,8 @@ void OneBitLabel::SetButtonColor(bool bitValue) {
 }
 
 void OneBitLabel::OnClick(wxCommandEvent& event) {
-    bool newValue = !GetBitValue();
-    SetButtonColor(newValue);
+    *registerPointer = *registerPointer xor mask;
+    SetButtonColor(GetBitValue());
 }
 
 void OneBitLabel::RefreshValue()
