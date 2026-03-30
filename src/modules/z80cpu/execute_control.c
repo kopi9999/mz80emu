@@ -9,6 +9,31 @@ uint8_t pairity(uint8_t a) {
   return pairity;
 }
 
+void increment16(uint8_t *H, uint8_t *L) {
+  if (*L == 0b11111111) {
+    *H += 1;
+  }
+  *L += 1;
+}
+void decrement16(uint8_t *H, uint8_t *L) {
+  if (*L == 0b00000000) {
+    *H -= 1;
+  }
+  *L -= 1;
+}
+
+uint8_t getAddCarries(uint8_t a, uint8_t b, uint8_t previousCarry) {
+  uint8_t out = 0;
+  uint8_t tmp = 0;
+  for (uint8_t i = 0; i < 8; i++) {
+    tmp = (a & 0b00000001) + (b & 0b00000001);
+    if (i) {tmp += (out >> (i - 1)) & 0b00000001;}
+    else {tmp += previousCarry;}
+    if (tmp > 1) {out += 1 << (i - 1);}
+  }
+  return out;
+}
+
 enum Error halt(struct Instance* __restrict i, void** __restrict inf){
   i->halted = 1;
   i->PC--;
@@ -19,6 +44,9 @@ enum Error halt(struct Instance* __restrict i, void** __restrict inf){
 enum Error nop(struct Instance* __restrict i, void** __restrict inf){
   i->MState = 1;
   i->TCycle = 1;
+  i->currentPrefix = NO_PREFIX;
+  i->currentOverride = NO_OVERRIDE;
+  i->stateIterator = 0;
   *(uint8_t*) inf[2] = 1; // m1
   *(uint16_t*) inf[0] = i->PC;
   return SUCCESS;

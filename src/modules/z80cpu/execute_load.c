@@ -193,7 +193,7 @@ enum Error ld_$bc$_a(struct Instance *__restrict i, void **__restrict inf) {
     *(uint16_t*) inf[0] = i->B; //addr
     *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
     *(uint16_t *)inf[0] += i->C; //addr
-    i->A = i->tmp;
+    i->tmp = i->A;
     return SUCCESS;
   }
   if (i->MState == 3) {
@@ -210,7 +210,7 @@ enum Error ld_$de$_a(struct Instance *__restrict i, void **__restrict inf) {
     *(uint16_t*) inf[0] = i->D; //addr
     *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
     *(uint16_t *)inf[0] += i->E; //addr
-    i->A = i->tmp;
+    i->tmp = i->A;
     return SUCCESS;
   }
   if (i->MState == 3) {

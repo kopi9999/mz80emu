@@ -186,7 +186,7 @@ enum Instruction decodeInstruction_CB (struct Instance* __restrict i) {
             else {return BIT_B_R;}
         case 2: 
             if((i->instruction & 0b00000111) == UNDEFINED){return RES_B_$HL$;}
-            else {return RES_B_RN;}
+            else {return RES_B_R;}
         case 3:
             if((i->instruction & 0b00000111) == UNDEFINED){return SET_B_$HL$;}
             else {return SET_B_R;}
@@ -194,7 +194,7 @@ enum Instruction decodeInstruction_CB (struct Instance* __restrict i) {
     return 0;
 }
 enum Instruction decodeInstruction_ED (struct Instance* __restrict i) {
-    if ((i->instruction & 0b11000000) == 1) {
+   if (((i->instruction & 0b11000000) >> 6) == 1) {
         switch (i->instruction & 0b00000111){
             case 0: return IN_R_$C$;
             case 1: 
@@ -216,7 +216,7 @@ enum Instruction decodeInstruction_ED (struct Instance* __restrict i) {
                 if (i->instruction & 0b00100000) {return BAD;}
                 else if (i->instruction & 0b00001000) {return BAD;}
                 else {return IM_N;}
-            case 7: switch(i->instruction & 0b00111000) {
+     	    case 7: switch((i->instruction & 0b00111000) >> 3) {
                 case 0: return LD_I_A;
                 case 1: return LD_R_A;
                 case 2: return LD_A_I;
@@ -227,31 +227,31 @@ enum Instruction decodeInstruction_ED (struct Instance* __restrict i) {
                 case 7: return BAD;
             }
         }
-    } else if ((i->instruction & 0b11100000) == 5) {
+    } else if (((i->instruction & 0b11100000) >> 5) == 5) {
         switch (i->instruction & 0b00000111) {
             case 0:
-                switch (i->instruction & 0b00011000) {
+	        switch ((i->instruction & 0b00011000) >> 3) {
                     case 0: return LDI;
                     case 1: return LDD;
                     case 2: return LDIR;
                     case 3: return LDDR;
                 }
             case 1:
-                switch (i->instruction & 0b00011000) {
+	        switch ((i->instruction & 0b00011000) >> 3) {
                     case 0: return CPI;
                     case 1: return CPD;
                     case 2: return CPIR;
                     case 3: return CPDR;
                 }
             case 2:
-                switch (i->instruction & 0b00011000) {
+	        switch ((i->instruction & 0b00011000) >> 3) {
                     case 0: return INI;
                     case 1: return IND;
                     case 2: return INIR;
                     case 3: return INDR;
                 }
             case 3:
-                switch (i->instruction & 0b00011000) {
+	        switch ((i->instruction & 0b00011000) >> 3) {
                     case 0: return OUTI;
                     case 1: return OUTD;
                     case 2: return OTIR;
@@ -260,4 +260,13 @@ enum Instruction decodeInstruction_ED (struct Instance* __restrict i) {
         }
     }
     return BAD;
+}
+
+
+enum Instruction decodeInstruction_IX (struct Instance* __restrict i) {
+  return BAD; //not implemented
+}
+
+enum Instruction decodeInstruction_IY (struct Instance* __restrict i) {
+  return BAD; //not implemented
 }
