@@ -31,8 +31,6 @@ EditableLabel::EditableLabel(wxWindow* parent, uint8_t* registerPointer)
     refresherTimer.Start(250);
 }
 
-wxString EditableLabel::GetValue() { return text->GetLabel(); }
-
 void EditableLabel::OnClick(wxMouseEvent& event)
 {
     isEditing = true;
@@ -88,7 +86,7 @@ void EditableLabel::CancelEdit()
     Layout();
 }
 
-void EditableLabel::Refresh()
+void EditableLabel::RefreshValue()
 {
     if (isEditing)
         return;
@@ -100,7 +98,7 @@ void EditableLabel::Refresh()
 }
 
 void EditableLabel::OnTimer(wxTimerEvent& event) {
-    Refresh();
+    RefreshValue();
 }
 
 EditableLabel::~EditableLabel()

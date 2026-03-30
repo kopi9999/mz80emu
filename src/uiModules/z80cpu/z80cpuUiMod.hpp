@@ -10,10 +10,9 @@
 #include <cstdint>
 #include "../uiModuleInternal.hpp"
 #include "editableLabel.hpp"
+#include "oneBitLabel.hpp"
 
 #include "../../modules/z80cpu/z80cpuMod.h"
-
-//enum { MAIN_REGISTRES_GRID = wxID_HIGHEST + 1 };
 
 class UiModulePanel : public wxPanel {
     public:
