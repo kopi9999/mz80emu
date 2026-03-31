@@ -49,13 +49,24 @@ enum Error add_a_n(struct Instance *__restrict i, void **__restrict inf) {
 }  
 
 enum Error add_a_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -126,13 +137,24 @@ enum Error adc_a_n(struct Instance *__restrict i, void **__restrict inf) {
 }  
 
 enum Error adc_a_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -202,13 +224,24 @@ enum Error sub_n(struct Instance *__restrict i, void **__restrict inf) {
 }  
 
 enum Error sub_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -280,13 +313,24 @@ enum Error sbc_a_n(struct Instance *__restrict i, void **__restrict inf) {
 }  
 
 enum Error sbc_a_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -350,13 +394,24 @@ enum Error and_n(struct Instance *__restrict i, void **__restrict inf) {
 }  
 
 enum Error and_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -415,13 +470,24 @@ enum Error or_n(struct Instance *__restrict i, void **__restrict inf) {
 }  
 
 enum Error or_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -480,13 +546,24 @@ enum Error xor_n(struct Instance *__restrict i, void **__restrict inf) {
 }  
 
 enum Error xor_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -554,13 +631,24 @@ enum Error cp_n(struct Instance *__restrict i, void **__restrict inf) {
 }  
 
 enum Error cp_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -605,13 +693,24 @@ enum Error inc_r(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error inc_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -659,13 +758,24 @@ enum Error dec_r(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error dec_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
