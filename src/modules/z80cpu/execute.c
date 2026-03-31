@@ -9,6 +9,9 @@
 #include "execute_load16.h"
 
 enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride & !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   i->currentPrefix = ED_PREFIX;
   i->MState = 1;
   i->TCycle = 1;
@@ -18,6 +21,9 @@ enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error cb_prefix(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride & !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   i->currentPrefix = CB_PREFIX;
   i->MState = 1;
   i->TCycle = 1;
