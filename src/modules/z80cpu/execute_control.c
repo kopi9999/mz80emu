@@ -34,12 +34,21 @@ uint8_t getAddCarries(uint8_t a, uint8_t b, uint8_t previousCarry) {
   return out;
 }
 
+enum Error get_displacement(struct Instance *__restrict i, void **__restrict inf) {
+  i->MState = 2;
+  i->TCycle = 1;
+  *(uint8_t*) inf[2] = 0; //m1
+  *(uint16_t*) inf[0] = i->PC; //addr
+  i->PC++;
+  i->gotDisplacement = 1;
+  return SUCCESS;
+}
+
 enum Error halt(struct Instance* __restrict i, void** __restrict inf){
   i->halted = 1;
   i->PC--;
   return nop(i, inf);
 }
-
 
 enum Error nop(struct Instance* __restrict i, void** __restrict inf){
   i->MState = 1;
@@ -47,6 +56,8 @@ enum Error nop(struct Instance* __restrict i, void** __restrict inf){
   i->currentPrefix = NO_PREFIX;
   i->currentOverride = NO_OVERRIDE;
   i->stateIterator = 0;
+  i->gotDisplacement = 0;
+  i->resetAfterDisplacement = 0;
   *(uint8_t*) inf[2] = 1; // m1
   *(uint16_t*) inf[0] = i->PC;
   return SUCCESS;

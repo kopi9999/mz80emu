@@ -233,6 +233,9 @@ struct Instance{
     uint8_t halted;
     uint8_t stateIterator;
     uint8_t skipTick;
+    int8_t displacement;
+    uint8_t gotDisplacement;
+    uint8_t resetAfterDisplacement;
 
     enum Register registerIn;
     enum Register registerOut;

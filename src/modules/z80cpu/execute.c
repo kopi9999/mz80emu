@@ -46,6 +46,12 @@ enum Error iy_override(struct Instance *__restrict i, void **__restrict inf) {
 
 enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   if (i->halted) {return halt(i, inf);}
+  if (!i->resetAfterDisplacement && i->gotDisplacement) {
+    i->displacement = i->tmp;
+    i->MState = 1;
+    i->TCycle = 4;
+    i->resetAfterDisplacement = 1;
+  }
   switch (i->state) {
   case BAD:       return halt(i, inf);
     // 8bit load group

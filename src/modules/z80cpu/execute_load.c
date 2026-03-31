@@ -32,13 +32,24 @@ enum Error ld_r_rp(struct Instance* __restrict i, void** __restrict inf) {
 }
 
 enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
-    *(uint16_t *)inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement;
+    }
+    else if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement;
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
+      *(uint16_t *)inf[0] += i->L;                      // addr
+    }
     i->registerIn = (i->instruction & 0b00111000) >> 3;
     return SUCCESS;
   }
