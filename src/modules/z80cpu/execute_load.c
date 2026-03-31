@@ -98,14 +98,25 @@ enum Error ld_r_n(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error ld_$hl$_r(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   if (i->MState == 1) {
     i->MState = 3;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
-    *(uint16_t *)inf[0] += i->L; //addr
-
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
+      *(uint16_t *)inf[0] += i->L; //addr
+    }
+    
     i->registerOut = i->instruction & 0b00000111;
     switch (i->registerOut) {
     case A: i->tmp = i->A; break;
@@ -116,6 +127,43 @@ enum Error ld_$hl$_r(struct Instance *__restrict i, void **__restrict inf) {
     case H: i->tmp = i->H; break;
     case L: i->tmp = i->L; break;
     default: return BAD_ARGUMENT;
+    }
+    
+    return SUCCESS;
+  }
+
+  if (i->MState == 3) {
+    return nop(i, inf);
+  }
+  return BAD_ARGUMENT;
+}
+
+enum Error ld_$hl$_n(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride && !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
+  if (i->MState == 1) {
+    i->MState = 2;
+    i->TCycle = 1;
+    *(uint16_t*) inf[0] = i->PC; //addr
+    *(uint8_t*) inf[2] = 0; //m1
+    i->PC++;
+    return SUCCESS;
+  }
+
+  if (i->MState == 2) {
+    i->MState = 3;
+    i->TCycle = 1;
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
+      *(uint16_t *)inf[0] += i->L; //addr
     }
     
     return SUCCESS;
