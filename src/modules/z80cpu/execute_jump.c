@@ -270,9 +270,17 @@ enum Error jr_nz_e(struct Instance*__restrict i, void**__restrict inf) {
 }
 
 enum Error jp_$hl$(struct Instance*__restrict i, void**__restrict inf) {
-  i->tmpAddr = i->H;
-  i->tmpAddr = i->tmpAddr << 8;
-  i->tmpAddr += i->L;
+  if (i->currentOverride == IX_OVERRIDE) {
+    i->tmpAddr = i->IX + i->displacement; //addr
+  }
+  if (i->currentOverride == IY_OVERRIDE) {
+    i->tmpAddr = i->IY + i->displacement; //addr
+  }
+  else {
+    i->tmpAddr = i->H;
+    i->tmpAddr = i->tmpAddr << 8;
+    i->tmpAddr += i->L;
+  }
   i->PC = i->tmpAddr;
   return nop(i, inf);
 }
