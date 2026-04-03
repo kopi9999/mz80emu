@@ -7,6 +7,7 @@
 #include "execute_rotate.h"
 #include "execute_bsr.h"
 #include "execute_load16.h"
+#include "execute_call.h"
 
 enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
   if (i->currentOverride & !i->gotDisplacement) {
@@ -166,6 +167,12 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case JR_Z_E:    return jr_z_e(i, inf);
   case JR_NZ_E:   return jr_nz_e(i, inf);
   case JP_$HL$:   return jp_$hl$(i, inf);
+    // call group
+  case CALL_NN:   return call_nn(i, inf); 
+  case CALL_CC_NN:return call_cc_nn(i, inf); 
+  case RET:       return ret(i, inf); 
+  case RET_CC:    return ret_cc(i, inf); 
+  case RST_P:     return rst_p(i, inf); 
     // prefixes
   case ED_prefix: return ed_prefix(i, inf);
   case CB_prefix: return cb_prefix(i, inf);
