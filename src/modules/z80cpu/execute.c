@@ -173,6 +173,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case RET:       return ret(i, inf); 
   case RET_CC:    return ret_cc(i, inf); 
   case RST_P:     return rst_p(i, inf); 
+  case NEG:       return neg(i, inf); // ED prefix
     // prefixes
   case ED_prefix: return ed_prefix(i, inf);
   case CB_prefix: return cb_prefix(i, inf);

@@ -9,6 +9,7 @@ enum Error daa(struct Instance* __restrict i, void** __restrict inf);
 enum Error cpl(struct Instance* __restrict i, void** __restrict inf);
 enum Error ccf(struct Instance* __restrict i, void** __restrict inf);
 enum Error scf(struct Instance* __restrict i, void** __restrict inf);
+enum Error neg(struct Instance* __restrict i, void** __restrict inf);
 
 uint8_t pairity(uint8_t a);
 void increment16(uint8_t *H, uint8_t *L); 

@@ -188,3 +188,18 @@ enum Error scf(struct Instance* __restrict i, void** __restrict inf){
   i->F &= 0b11101101;
   return nop(i, inf);
 }
+
+enum Error neg(struct Instance* __restrict i, void** __restrict inf){
+  uint8_t carry = getAddCarries(0, !(i->A)+1, 0);
+  carry = !carry;
+  i->tmp = i->A;
+  i->A = !i->A;
+  i->F &= 0;
+  i->F |= 0b00000010; // N flag
+  if (i->A & 0b10000000) { i->F |= 0b10000000; } // S flag
+  if (i->A == 0) { i->F |= 0b01000000; } // Z flag
+  if (carry & 0b00001000) { i->F |= 0b00010000; } // H flag
+  if (i->tmp == 0x80) { i->F |= 0b00000100; } // P/V flag
+  if (i->tmp != 0x00) { i->F |= 0b00000001; } // C flag
+  return nop(i, inf);
+}
