@@ -134,6 +134,10 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case SCF:       return scf(i, inf);
     // 16bit arithmetic group
   case ADD_HL_SS: return add_hl_ss(i, inf); 
+  case ADC_HL_SS: return adc_hl_ss(i, inf); // ED prefix
+  case SBC_HL_SS: return sbc_hl_ss(i, inf); // ED prefix
+  case INC_SS:    return inc_ss(i, inf);
+  case DEC_SS:    return dec_ss(i, inf);
     // rotate and shift group
   case RLCA:      return rlca(i, inf);
   case RLA:       return rla(i, inf);
