@@ -8,6 +8,7 @@
 #include "execute_bsr.h"
 #include "execute_load16.h"
 #include "execute_call.h"
+#include "execute_arit16.h"
 
 enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
   if (i->currentOverride & !i->gotDisplacement) {
@@ -131,6 +132,8 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case CPL:       return cpl(i, inf);
   case CCF:       return ccf(i, inf);
   case SCF:       return scf(i, inf);
+    // 16bit arithmetic group
+  case ADD_HL_SS: return add_hl_ss(i, inf); 
     // rotate and shift group
   case RLCA:      return rlca(i, inf);
   case RLA:       return rla(i, inf);
