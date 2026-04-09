@@ -7,8 +7,13 @@
 #include "execute_rotate.h"
 #include "execute_bsr.h"
 #include "execute_load16.h"
+#include "execute_call.h"
+#include "execute_arit16.h"
 
 enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride & !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   i->currentPrefix = ED_PREFIX;
   i->MState = 1;
   i->TCycle = 1;
@@ -18,6 +23,9 @@ enum Error ed_prefix(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error cb_prefix(struct Instance *__restrict i, void **__restrict inf) {
+  if (i->currentOverride & !i->gotDisplacement) {
+    return get_displacement(i, inf);
+  }
   i->currentPrefix = CB_PREFIX;
   i->MState = 1;
   i->TCycle = 1;
@@ -46,6 +54,12 @@ enum Error iy_override(struct Instance *__restrict i, void **__restrict inf) {
 
 enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   if (i->halted) {return halt(i, inf);}
+  if (!i->resetAfterDisplacement && i->gotDisplacement) {
+    i->displacement = i->tmp;
+    i->MState = 1;
+    i->TCycle = 4;
+    i->resetAfterDisplacement = 1;
+  }
   switch (i->state) {
   case BAD:       return halt(i, inf);
     // 8bit load group
@@ -53,6 +67,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_R_$HL$: return ld_r_$hl$(i, inf);
   case LD_R_N:    return ld_r_n(i, inf);
   case LD_$HL$_R: return ld_$hl$_r(i, inf);
+  case LD_$HL$_N: return ld_$hl$_n(i, inf);
   case LD_A_$BC$: return ld_a_$bc$(i, inf);
   case LD_A_$DE$: return ld_a_$de$(i, inf);
   case LD_A_$NN$: return ld_a_$nn$(i, inf);
@@ -117,6 +132,12 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case CPL:       return cpl(i, inf);
   case CCF:       return ccf(i, inf);
   case SCF:       return scf(i, inf);
+    // 16bit arithmetic group
+  case ADD_HL_SS: return add_hl_ss(i, inf); 
+  case ADC_HL_SS: return adc_hl_ss(i, inf); // ED prefix
+  case SBC_HL_SS: return sbc_hl_ss(i, inf); // ED prefix
+  case INC_SS:    return inc_ss(i, inf);
+  case DEC_SS:    return dec_ss(i, inf);
     // rotate and shift group
   case RLCA:      return rlca(i, inf);
   case RLA:       return rla(i, inf);
@@ -153,6 +174,14 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case JR_Z_E:    return jr_z_e(i, inf);
   case JR_NZ_E:   return jr_nz_e(i, inf);
   case JP_$HL$:   return jp_$hl$(i, inf);
+  case DJNZ_E:    return djnz_e(i, inf);
+    // call group
+  case CALL_NN:   return call_nn(i, inf); 
+  case CALL_CC_NN:return call_cc_nn(i, inf); 
+  case RET:       return ret(i, inf); 
+  case RET_CC:    return ret_cc(i, inf); 
+  case RST_P:     return rst_p(i, inf); 
+  case NEG:       return neg(i, inf); // ED prefix
     // prefixes
   case ED_prefix: return ed_prefix(i, inf);
   case CB_prefix: return cb_prefix(i, inf);

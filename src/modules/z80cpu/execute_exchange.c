@@ -61,18 +61,41 @@ enum Error ex_$sp$_hl(struct Instance*__restrict i, void**__restrict inf) {
   }
   
   if (i->MState == 2) {
+    uint8_t tmp;
     if (i->stateIterator == 0) {      
-      uint8_t tmp = i->L;
-      i->L = i->tmp;
+      if (i->currentOverride == IX_OVERRIDE) {
+        tmp = i->IX & 0x00FF;
+        i->IX = (i->IX & 0xFF00) | i->tmp;
+      }
+      else if (i->currentOverride == IY_OVERRIDE) {
+        tmp = i->IY & 0x00FF;
+        i->IY = (i->IY & 0xFF00) | i->tmp;
+      }
+      else {
+	tmp = i->L;
+	i->L = i->tmp;
+      }
       i->tmp = tmp;
+
       i->MState = 3;
       i->TCycle = 1;
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      uint8_t tmp = i->H;
-      i->H = i->tmp;
+      if (i->currentOverride == IX_OVERRIDE) {
+        tmp = (i->IX & 0xFF00) >> 8;
+        i->IX = (i->IX & 0x00FF) | i->tmp;
+      }
+      else if (i->currentOverride == IY_OVERRIDE) {
+        tmp = (i->IY & 0xFF00) >> 8;
+        i->IY = (i->IY & 0x00FF) | i->tmp;
+      }
+      else {
+	tmp = i->H;
+	i->H = i->tmp;
+      }
       i->tmp = tmp;
+      
       i->MState = 3;
       i->TCycle = 1;
       return SUCCESS;
