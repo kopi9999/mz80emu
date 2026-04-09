@@ -47,6 +47,7 @@ enum Error get_displacement(struct Instance *__restrict i, void **__restrict inf
 enum Error halt(struct Instance* __restrict i, void** __restrict inf){
   i->halted = 1;
   i->PC--;
+  *(uint8_t*) inf[8] = 1; // halt
   return nop(i, inf);
 }
 

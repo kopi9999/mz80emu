@@ -174,6 +174,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case JR_Z_E:    return jr_z_e(i, inf);
   case JR_NZ_E:   return jr_nz_e(i, inf);
   case JP_$HL$:   return jp_$hl$(i, inf);
+  case DJNZ_E:    return djnz_e(i, inf);
     // call group
   case CALL_NN:   return call_nn(i, inf); 
   case CALL_CC_NN:return call_cc_nn(i, inf); 
