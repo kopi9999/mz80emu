@@ -26,20 +26,30 @@ uint8_t getAddCarries(uint8_t a, uint8_t b, uint8_t previousCarry) {
   uint8_t out = 0;
   uint8_t tmp = 0;
   for (uint8_t i = 0; i < 8; i++) {
-    tmp = (a & 0b00000001) + (b & 0b00000001);
+    tmp = (a & (0b00000001 << i)) + (b & (0b00000001 << i));
     if (i) {tmp += (out >> (i - 1)) & 0b00000001;}
     else {tmp += previousCarry;}
-    if (tmp > 1) {out += 1 << (i - 1);}
+    if (tmp > 1) {out |= 1 << i;}
   }
   return out;
+}
+
+enum Error get_displacement(struct Instance *__restrict i, void **__restrict inf) {
+  i->MState = 2;
+  i->TCycle = 1;
+  *(uint8_t*) inf[2] = 0; //m1
+  *(uint16_t*) inf[0] = i->PC; //addr
+  i->PC++;
+  i->gotDisplacement = 1;
+  return SUCCESS;
 }
 
 enum Error halt(struct Instance* __restrict i, void** __restrict inf){
   i->halted = 1;
   i->PC--;
+  *(uint8_t*) inf[8] = 1; // halt
   return nop(i, inf);
 }
-
 
 enum Error nop(struct Instance* __restrict i, void** __restrict inf){
   i->MState = 1;
@@ -47,6 +57,8 @@ enum Error nop(struct Instance* __restrict i, void** __restrict inf){
   i->currentPrefix = NO_PREFIX;
   i->currentOverride = NO_OVERRIDE;
   i->stateIterator = 0;
+  i->gotDisplacement = 0;
+  i->resetAfterDisplacement = 0;
   *(uint8_t*) inf[2] = 1; // m1
   *(uint16_t*) inf[0] = i->PC;
   return SUCCESS;
@@ -175,5 +187,20 @@ enum Error ccf(struct Instance* __restrict i, void** __restrict inf){
 enum Error scf(struct Instance* __restrict i, void** __restrict inf){
   i->F |= 0b00000001;
   i->F &= 0b11101101;
+  return nop(i, inf);
+}
+
+enum Error neg(struct Instance* __restrict i, void** __restrict inf){
+  uint8_t carry = getAddCarries(0, !(i->A)+1, 0);
+  carry = !carry;
+  i->tmp = i->A;
+  i->A = !i->A;
+  i->F &= 0;
+  i->F |= 0b00000010; // N flag
+  if (i->A & 0b10000000) { i->F |= 0b10000000; } // S flag
+  if (i->A == 0) { i->F |= 0b01000000; } // Z flag
+  if (carry & 0b00001000) { i->F |= 0b00010000; } // H flag
+  if (i->tmp == 0x80) { i->F |= 0b00000100; } // P/V flag
+  if (i->tmp != 0x00) { i->F |= 0b00000001; } // C flag
   return nop(i, inf);
 }

@@ -75,6 +75,24 @@ enum Error strobeUp(void*__restrict instance, void**__restrict interfaces)
 {
     struct Instance* instanceTmp = instance;
 
+    if (*(uint8_t *) interfaces[12]) { // reset
+      struct Instance nullInstance = {};
+      *instanceTmp = nullInstance;
+
+      *(uint16_t*) interfaces[0] = 0; // address
+      *(uint8_t*) interfaces[1] = 0; // data
+      *(uint8_t*) interfaces[2] = 0; // m1
+      *(uint8_t*) interfaces[3] = 0; // mreq
+      *(uint8_t*) interfaces[4] = 0; // ioreq
+      *(uint8_t*) interfaces[5] = 0; // rd  
+      *(uint8_t*) interfaces[6] = 0; // wr  
+      *(uint8_t*) interfaces[7] = 0; // rfsh
+      //*(uint8_t*) interfaces[8] = 0; // halt
+      *(uint8_t*) interfaces[9] = 0; // wait
+      *(uint8_t*) interfaces[13] = 0; // busrq
+      return SUCCESS;
+    }
+    
     if(instanceTmp->MState == 0 && instanceTmp->TCycle == 0){ // new cycle
         instanceTmp->MState = 1;
         instanceTmp->TCycle = 1;
@@ -94,6 +112,10 @@ enum Error strobeUp(void*__restrict instance, void**__restrict interfaces)
 enum Error strobeDown(void*__restrict instance, void**__restrict interfaces)
 {
     struct Instance* instanceTmp = instance;
+
+    if (*(uint8_t *) interfaces[12]) { // reset
+      return SUCCESS;
+    }
 
     if (!instanceTmp->MState) {return execute_down(instanceTmp, interfaces);}
 

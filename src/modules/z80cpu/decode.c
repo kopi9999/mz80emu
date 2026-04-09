@@ -261,12 +261,3 @@ enum Instruction decodeInstruction_ED (struct Instance* __restrict i) {
     }
     return BAD;
 }
-
-
-enum Instruction decodeInstruction_IX (struct Instance* __restrict i) {
-  return BAD; //not implemented
-}
-
-enum Instruction decodeInstruction_IY (struct Instance* __restrict i) {
-  return BAD; //not implemented
-}

@@ -11,5 +11,6 @@ enum Error jr_nc_e(struct Instance* __restrict i, void** __restrict inf);
 enum Error jr_z_e(struct Instance* __restrict i, void** __restrict inf);
 enum Error jr_nz_e(struct Instance* __restrict i, void** __restrict inf);
 enum Error jp_$hl$(struct Instance* __restrict i, void** __restrict inf);
+enum Error djnz_e(struct Instance* __restrict i, void** __restrict inf);
 
 #endif

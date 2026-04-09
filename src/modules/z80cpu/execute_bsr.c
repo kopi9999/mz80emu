@@ -24,9 +24,17 @@ enum Error bit_b_$hl$(struct Instance* __restrict i, void** __restrict inf){
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -60,9 +68,17 @@ enum Error set_b_$hl$(struct Instance* __restrict i, void** __restrict inf){
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -99,9 +115,17 @@ enum Error res_b_$hl$(struct Instance* __restrict i, void** __restrict inf){
     i->MState = 2;
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
-    *(uint16_t*) inf[0] = i->H; //addr
-    *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-    *(uint16_t*) inf[0] += i->L; //addr
+    if (i->currentOverride == IX_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IX + i->displacement; //addr
+    }
+    if (i->currentOverride == IY_OVERRIDE) {
+      *(uint16_t*) inf[0] = i->IY + i->displacement; //addr
+    }
+    else {
+      *(uint16_t*) inf[0] = i->H; //addr
+      *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
+      *(uint16_t*) inf[0] += i->L; //addr
+    }
     return SUCCESS;
   }
   if (i->MState == 2) {
