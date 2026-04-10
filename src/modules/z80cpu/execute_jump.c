@@ -97,8 +97,6 @@ enum Error jr_e(struct Instance*__restrict i, void**__restrict inf) {
   }
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
-      i->tmpAddr = i->tmp;
-      i->TCycle = 1;
       i->PC++;
       i->stateIterator = 1;
       i->skipTick = 1;
@@ -109,8 +107,7 @@ enum Error jr_e(struct Instance*__restrict i, void**__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 5) {
-      i->tmp = i->tmpAddr;
-      int8_t tmp = (int8_t) i->tmp;
+      int8_t tmp = i->tmp;
       i->PC += tmp;
       i->skipTick = 0;
       return nop(i, inf);
@@ -130,11 +127,9 @@ enum Error jr_c_e(struct Instance*__restrict i, void**__restrict inf) {
   }
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
-      i->tmpAddr = i->tmp;
-      i->TCycle = 1;
       i->PC++;
       
-      if (i->F & 0b00000001) {
+      if (!(i->F & 0b00000001)) {
         return nop(i, inf);
       }
       i->stateIterator = 1;
@@ -146,8 +141,7 @@ enum Error jr_c_e(struct Instance*__restrict i, void**__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 5) {
-      i->tmp = i->tmpAddr;
-      int8_t tmp = (int8_t) i->tmp;
+      int8_t tmp = i->tmp;
       i->PC += tmp;
       i->skipTick = 0;
       return nop(i, inf);
@@ -167,11 +161,9 @@ enum Error jr_nc_e(struct Instance*__restrict i, void**__restrict inf) {
   }
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
-      i->tmpAddr = i->tmp;
-      i->TCycle = 1;
       i->PC++;
       
-      if (!(i->F & 0b00000001)) {
+      if (i->F & 0b00000001) {
         return nop(i, inf);
       }
       i->stateIterator = 1;
@@ -183,8 +175,7 @@ enum Error jr_nc_e(struct Instance*__restrict i, void**__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 5) {
-      i->tmp = i->tmpAddr;
-      int8_t tmp = (int8_t) i->tmp;
+      int8_t tmp = i->tmp;
       i->PC += tmp;
       i->skipTick = 0;
       return nop(i, inf);
@@ -204,11 +195,9 @@ enum Error jr_z_e(struct Instance*__restrict i, void**__restrict inf) {
   }
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
-      i->tmpAddr = i->tmp;
-      i->TCycle = 1;
       i->PC++;
       
-      if (i->F & 0b01000000) {
+      if (!(i->F & 0b01000000)) {
         return nop(i, inf);
       }
       i->stateIterator = 1;
@@ -220,8 +209,7 @@ enum Error jr_z_e(struct Instance*__restrict i, void**__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 5) {
-      i->tmp = i->tmpAddr;
-      int8_t tmp = (int8_t) i->tmp;
+      int8_t tmp = i->tmp;
       i->PC += tmp;
       i->skipTick = 0;
       return nop(i, inf);
@@ -241,11 +229,9 @@ enum Error jr_nz_e(struct Instance*__restrict i, void**__restrict inf) {
   }
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
-      i->tmpAddr = i->tmp;
-      i->TCycle = 1;
       i->PC++;
       
-      if (!(i->F & 0b01000000)) {
+      if (i->F & 0b01000000) {
         return nop(i, inf);
       }
       i->stateIterator = 1;
@@ -257,8 +243,7 @@ enum Error jr_nz_e(struct Instance*__restrict i, void**__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 5) {
-      i->tmp = i->tmpAddr;
-      int8_t tmp = (int8_t) i->tmp;
+      int8_t tmp = i->tmp;
       i->PC += tmp;
       i->skipTick = 0;
       return nop(i, inf);
@@ -297,7 +282,7 @@ enum Error djnz_e(struct Instance*__restrict i, void**__restrict inf) {
   }
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
-      int8_t tmp = i->tmp - 2;
+      int8_t tmp = i->tmp;
       i->PC += tmp;
       return nop(i, inf);
     }

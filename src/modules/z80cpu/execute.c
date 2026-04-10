@@ -74,6 +74,10 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_$BC$_A: return ld_$bc$_a(i, inf);
   case LD_$DE$_A: return ld_$de$_a(i, inf);
   case LD_$NN$_A: return ld_$nn$_a(i, inf);
+  case LD_A_I:    return nop(i, inf); // not implemented, ED group
+  case LD_A_R:    return nop(i, inf); // not implemented, ED group
+  case LD_I_A:    return nop(i, inf); // not implemented, ED group
+  case LD_R_A:    return nop(i, inf); // not implemented, ED group
     // 16bit load group
   case LD_DD_NN:  return ld_dd_nn(i, inf);
   case LD_HL_$NN$:return ld_hl_$nn$(i, inf);
@@ -188,6 +192,19 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case RET_CC:    return ret_cc(i, inf); 
   case RST_P:     return rst_p(i, inf); 
   case NEG:       return neg(i, inf); // ED prefix
+    // io group
+  case IN_A_$N$:  i->PC++; return nop(i, inf); // not implemented
+  case IN_R_$C$:  return nop(i, inf); // not implemented, ed prefix
+  case INI:       return nop(i, inf); // not implemented, ED prefix
+  case INIR:      return nop(i, inf); // not implemented, ED prefix
+  case IND:       return nop(i, inf); // not implemented, ED prefix
+  case INDR:      return nop(i, inf); // not implemented, ED prefix
+  case OUT_$N$_A: i->PC++; return nop(i, inf); // not implemented
+  case OUT_$C$_R: return nop(i, inf); // not implemented, ED prefix
+  case OUTI:      return nop(i, inf); // not implemented, ED prefix
+  case OTIR:      return nop(i, inf); // not implemented, ED prefix
+  case OUTD:      return nop(i, inf); // not implemented, ED prefix
+  case OTDR:      return nop(i, inf); // not implemented, ED prefix
     // prefixes
   case ED_prefix: return ed_prefix(i, inf);
   case CB_prefix: return cb_prefix(i, inf);
