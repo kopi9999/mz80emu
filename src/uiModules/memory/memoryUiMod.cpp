@@ -78,6 +78,10 @@ void UiModulePanel::GridCreate(wxPanel* panel)
         wxSize( 800, 600 )
     );
     grid->CreateGrid(numRows, numCols);
+    wxFont monoFont(10, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+
+    grid->SetDefaultCellFont(monoFont);
+    grid->SetLabelFont(monoFont);
     GridFill(numRows, numCols);
 }
 
@@ -337,7 +341,7 @@ void UiModulePanel::SelectFileWindow(wxCommandEvent& event)
         "Open BIN File",
         "",
         "",
-        "Pliki BIN (*.bin)|*.bin",
+        "Pliki BIN (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*",
         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
     if (openFileDialog.ShowModal() == wxID_CANCEL)
