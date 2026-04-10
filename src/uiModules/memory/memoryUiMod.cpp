@@ -227,10 +227,7 @@ void UiModulePanel::OnRightClick(wxGridEvent& event)
     menu.Append(ID_MENU_SAVE, "Save File");
 
     // Position correctly at mouse
-    wxPoint pos = event.GetPosition();
-    if (pos == wxDefaultPosition) {
-        pos = wxGetMousePosition();
-    }
+    wxPoint pos = wxGetMousePosition();
 
     pos = grid->ScreenToClient(pos);
     grid->PopupMenu(&menu, pos);
@@ -282,7 +279,13 @@ bool UiModulePanel::ReadFromSelectedBINFile(const wxString& filePath )
         return false;
     }
 
-    for(int x = 0; x+index <  65536 ; x++){
+    int File_Lenth = file.Length() + index;
+    if (File_Lenth >= 65536)
+    {
+        File_Lenth =  65536;
+    }
+
+    for(int x = 0; x+index <  File_Lenth ; x++){
         instance->data[index+x] = temp_data[x];
     }
 
@@ -409,10 +412,6 @@ void UiModulePanel::SelectSaveFile(wxCommandEvent& event)
         {
             wxLogMessage("Saved", sizeof(instance->data));
         }
-    }
-    else
-    {
-        // zamknij
     }
     
 }
