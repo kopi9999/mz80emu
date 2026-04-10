@@ -428,7 +428,6 @@ enum Error and_$hl$(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error or_r(struct Instance *__restrict i, void **__restrict inf) {
-  i->tmp = i->A;
   switch (i->instruction & 0b00000111) {
   case A: i->A |= i->A; break;
   case B: i->A |= i->B; break;
@@ -441,8 +440,8 @@ enum Error or_r(struct Instance *__restrict i, void **__restrict inf) {
   }
 
   uint8_t flags = 0b00010000;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+  if (i->A == 0) {flags |= 0b01000000;} //Z flag
+  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
   i->F = flags;
   return nop(i, inf);
   }  

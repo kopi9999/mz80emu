@@ -68,7 +68,6 @@ enum Error ld_hl_$nn$(struct Instance *__restrict i, void **__restrict inf) {
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
       i->tmpAddr = i->tmp;
-      i->tmpAddr = i->tmpAddr << 8;
       i->TCycle = 1;
       i->PC++;
       *(uint16_t*) inf[0] = i->PC; //addr
@@ -76,7 +75,7 @@ enum Error ld_hl_$nn$(struct Instance *__restrict i, void **__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr += i->tmp;
+      i->tmpAddr |= i->tmp << 8;
       i->TCycle = 1;
       *(uint16_t*) inf[0] = i->tmpAddr; //addr
       i->stateIterator = 2;
@@ -127,7 +126,6 @@ enum Error ld_dd_$nn$(struct Instance *__restrict i, void **__restrict inf) {
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
       i->tmpAddr = i->tmp;
-      i->tmpAddr = i->tmpAddr << 8;
       i->TCycle = 1;
       i->PC++;
       *(uint16_t*) inf[0] = i->PC; //addr
@@ -135,7 +133,7 @@ enum Error ld_dd_$nn$(struct Instance *__restrict i, void **__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr += i->tmp;
+      i->tmpAddr |= i->tmp << 8;
       i->TCycle = 1;
       *(uint16_t*) inf[0] = i->tmpAddr; //addr
       i->stateIterator = 2;
@@ -181,7 +179,6 @@ enum Error ld_$nn$_hl(struct Instance *__restrict i, void **__restrict inf) {
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
       i->tmpAddr = i->tmp;
-      i->tmpAddr = i->tmpAddr << 8;
       i->TCycle = 1;
       i->PC++;
       *(uint16_t*) inf[0] = i->PC; //addr
@@ -189,7 +186,7 @@ enum Error ld_$nn$_hl(struct Instance *__restrict i, void **__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr += i->tmp;
+      i->tmpAddr |= i->tmp << 8;
       i->TCycle = 1;
       i->MState = 3;
       *(uint16_t*) inf[0] = i->tmpAddr; //addr
@@ -242,7 +239,6 @@ enum Error ld_$nn$_dd(struct Instance *__restrict i, void **__restrict inf) {
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
       i->tmpAddr = i->tmp;
-      i->tmpAddr = i->tmpAddr << 8;
       i->TCycle = 1;
       i->PC++;
       *(uint16_t*) inf[0] = i->PC; //addr
@@ -250,7 +246,7 @@ enum Error ld_$nn$_dd(struct Instance *__restrict i, void **__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr += i->tmp;
+      i->tmpAddr |= i->tmp << 8;
       i->TCycle = 1;
       i->MState = 3;
       *(uint16_t*) inf[0] = i->tmpAddr; //addr

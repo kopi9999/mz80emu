@@ -97,7 +97,9 @@ enum Instruction {
     HALT,
     DI,
     EL,
-    IM_N,
+    IM_0,
+    IM_1,
+    IM_2,
 
     ADD_HL_SS,
     ADC_HL_SS,

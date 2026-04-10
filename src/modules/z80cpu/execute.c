@@ -132,6 +132,12 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case CPL:       return cpl(i, inf);
   case CCF:       return ccf(i, inf);
   case SCF:       return scf(i, inf);
+  case DI:        return nop(i, inf); //not implemented
+  case EI:        return nop(i, inf); //not implemented
+  case IM_0:      return nop(i, inf); //not implemented, ED prefix
+  case IM_1:      return nop(i, inf); //not implemented, ED prefix
+  case IM_2:      return nop(i, inf); //not implemented, ED prefix
+    
     // 16bit arithmetic group
   case ADD_HL_SS: return add_hl_ss(i, inf); 
   case ADC_HL_SS: return adc_hl_ss(i, inf); // ED prefix

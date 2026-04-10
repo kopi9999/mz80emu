@@ -48,7 +48,7 @@ enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     else {
       *(uint16_t*) inf[0] = i->H; //addr
       *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
-      *(uint16_t *)inf[0] += i->L;                      // addr
+      *(uint16_t *)inf[0] |= i->L;                      // addr
     }
     i->registerIn = (i->instruction & 0b00111000) >> 3;
     return SUCCESS;
@@ -64,7 +64,6 @@ enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     case L: i->L = i->tmp; break;
     default: return BAD_ARGUMENT;
     }
-    i->PC++;
     return nop(i, inf);
   }
   return BAD_ARGUMENT;
@@ -228,7 +227,7 @@ enum Error ld_a_$nn$(struct Instance *__restrict i, void **__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr += i->tmp << 8;
+      i->tmpAddr |= i->tmp << 8;
       i->TCycle = 1;
       i->PC++;
       *(uint16_t*) inf[0] = i->tmpAddr; //addr
