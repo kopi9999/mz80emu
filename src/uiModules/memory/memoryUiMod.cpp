@@ -381,7 +381,7 @@ void UiModulePanel::SelectSaveFile(wxCommandEvent& event)
                 "Save BIN file",
                 "",
                 "",
-                "File BIN (*.bin)|*.bin",
+                "File BIN (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*",
                 wxFD_SAVE | wxFD_OVERWRITE_PROMPT
             );
 
@@ -401,7 +401,7 @@ void UiModulePanel::SelectSaveFile(wxCommandEvent& event)
             "Save BIN file",
             "",
             "",
-            "File BIN (*.bin)|*.bin",
+            "File BIN (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*",
             wxFD_SAVE | wxFD_OVERWRITE_PROMPT
         );
 
