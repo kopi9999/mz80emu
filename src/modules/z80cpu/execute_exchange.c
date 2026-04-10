@@ -123,6 +123,14 @@ enum Error ex_$sp$_hl(struct Instance*__restrict i, void**__restrict inf) {
       i->stateIterator++;
       return SUCCESS;
     }
+    if (i->stateIterator < 8) {
+      i->stateIterator++;
+      return SUCCESS;
+    }
+    if (i->stateIterator == 8) {
+      i->skipTick = 0;
+      return nop(i, inf);
+    }
   }
   return BAD_ARGUMENT;
 }

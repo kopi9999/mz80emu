@@ -13,7 +13,7 @@ enum Error call_nn(struct Instance* __restrict i, void** __restrict inf) {
   }
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
-      i->tmpAddr = i->tmp << 8;
+      i->tmpAddr = i->tmp;
       i->TCycle = 1;
       *(uint16_t*) inf[0] = i->PC; //addr
       i->PC++;
@@ -21,7 +21,7 @@ enum Error call_nn(struct Instance* __restrict i, void** __restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr |= i->tmp;
+      i->tmpAddr |= i->tmp << 8;
       i->MState = 3;
       i->TCycle = 1;
       i->SP--;
@@ -60,7 +60,7 @@ enum Error call_cc_nn(struct Instance* __restrict i, void** __restrict inf) {
   }
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
-      i->tmpAddr = i->tmp << 8;
+      i->tmpAddr = i->tmp;
       i->TCycle = 1;
       *(uint16_t*) inf[0] = i->PC; //addr
       i->PC++;
@@ -68,7 +68,7 @@ enum Error call_cc_nn(struct Instance* __restrict i, void** __restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr |= i->tmp;
+      i->tmpAddr |= i->tmp << 8;
       switch ((i->instruction & 0b00111000) >> 3) {
         case 0: if (i->F & 0b01000000) {return nop(i, inf);} break; // non zero
         case 1: if (i->F & 0b01000000) {break;} return nop(i, inf); // zero
@@ -127,7 +127,7 @@ enum Error ret(struct Instance* __restrict i, void** __restrict inf) {
     if (i->stateIterator == 1) {
       i->tmpAddr |= i->tmp << 8;
       i->PC = i->tmpAddr;
-      return SUCCESS;
+      return nop(i, inf);
     }
   }
   return BAD_ARGUMENT;
@@ -144,6 +144,7 @@ enum Error ret_cc(struct Instance* __restrict i, void** __restrict inf) {
       case 5: if (i->F & 0b00000100) {break;} return nop(i, inf); // pairity even
       case 6: if (i->F & 0b10000100) {return nop(i, inf);} break; // sign positive
       case 7: if (i->F & 0b10000000) {break;} return nop(i, inf); // sign negative
+      default: return BAD_ARGUMENT;
     }
     i->MState = 2;
     i->TCycle = 1;
@@ -165,7 +166,7 @@ enum Error ret_cc(struct Instance* __restrict i, void** __restrict inf) {
     if (i->stateIterator == 1) {
       i->tmpAddr |= i->tmp << 8;
       i->PC = i->tmpAddr;
-      return SUCCESS;
+      return nop(i, inf);
     }
   }
   return BAD_ARGUMENT;

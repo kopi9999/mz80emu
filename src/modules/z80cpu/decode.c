@@ -24,7 +24,14 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                             case 0b00100000: return EX_DE_HL ;
                             case 0b00110000: return EI;
                         } 
-                    }  else { return JP_NN;}
+                    }  else {
+                       switch(i->instruction & 0b00110000){
+                            case 0b00000000: return JP_NN;
+                            case 0b00010000: return BAD;
+		            case 0b00100000: return EX_$SP$_HL;
+                            case 0b00110000: return DI;
+		       }
+		    }
                 case 4: return CALL_CC_NN;
                 case 5: 
                     if (i->instruction & 0b00001000) {

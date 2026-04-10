@@ -13,7 +13,6 @@ enum Error jp_nn(struct Instance*__restrict i, void**__restrict inf) {
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
       i->tmpAddr = i->tmp;
-      i->tmpAddr = i->tmpAddr << 8;
       i->TCycle = 1;
       i->PC++;
       *(uint16_t*) inf[0] = i->PC; //addr
@@ -21,7 +20,7 @@ enum Error jp_nn(struct Instance*__restrict i, void**__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr += i->tmp;
+      i->tmpAddr |= i->tmp << 8;
       i->PC = i->tmpAddr;
       return nop(i, inf);
     }
@@ -72,7 +71,6 @@ enum Error jp_cc_nn(struct Instance*__restrict i, void**__restrict inf) {
   if (i->MState == 2) {
     if (i->stateIterator == 0) {
       i->tmpAddr = i->tmp;
-      i->tmpAddr = i->tmpAddr << 8;
       i->TCycle = 1;
       i->PC++;
       *(uint16_t*) inf[0] = i->PC; //addr
@@ -80,7 +78,7 @@ enum Error jp_cc_nn(struct Instance*__restrict i, void**__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr += i->tmp;
+      i->tmpAddr |= i->tmp << 8;
       i->PC = i->tmpAddr;
       return nop(i, inf);
     }
@@ -277,9 +275,8 @@ enum Error jp_$hl$(struct Instance*__restrict i, void**__restrict inf) {
     i->tmpAddr = i->IY + i->displacement; //addr
   }
   else {
-    i->tmpAddr = i->H;
-    i->tmpAddr = i->tmpAddr << 8;
-    i->tmpAddr += i->L;
+    i->tmpAddr = i->H << 8;
+    i->tmpAddr |= i->L;
   }
   i->PC = i->tmpAddr;
   return nop(i, inf);
