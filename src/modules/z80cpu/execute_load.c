@@ -18,13 +18,13 @@ uint8_t getRegisterValue(struct Instance* __restrict i, enum Register r) {
 enum Error ld_r_rp(struct Instance* __restrict i, void** __restrict inf) {
 
   switch (i->registerIn) {
-  case A: i->A = getRegisterValue(i, A); break;
-  case B: i->B = getRegisterValue(i, B); break;
-  case C: i->C = getRegisterValue(i, C); break;
-  case D: i->D = getRegisterValue(i, D); break;
-  case E: i->E = getRegisterValue(i, E); break;
-  case H: i->H = getRegisterValue(i, H); break;
-  case L: i->L = getRegisterValue(i, L); break;
+  case A: i->A = getRegisterValue(i, i->registerOut); break;
+  case B: i->B = getRegisterValue(i, i->registerOut); break;
+  case C: i->C = getRegisterValue(i, i->registerOut); break;
+  case D: i->D = getRegisterValue(i, i->registerOut); break;
+  case E: i->E = getRegisterValue(i, i->registerOut); break;
+  case H: i->H = getRegisterValue(i, i->registerOut); break;
+  case L: i->L = getRegisterValue(i, i->registerOut); break;
   default: return(BAD_ARGUMENT);
   }
 
