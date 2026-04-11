@@ -379,18 +379,18 @@ enum Error pop_qq(struct Instance *__restrict i, void **__restrict inf) {
       i->SP++;
       *(uint16_t*) inf[0] += 1; //addr
       if (i->currentOverride == IX_OVERRIDE) {
-	i->tmp = i->IX & 0x00FF;
+	i->IX = i->tmp;
       }
       else if (i->currentOverride == IY_OVERRIDE) {
-	i->tmp = i->IY & 0x00FF;
+	i->IX = i->tmp;
       }
       else {
 	switch ((i->instruction & 0b00110000) >> 4) {
           default: return BAD_ARGUMENT;
-          case BC: i->tmp = i->C; break;
-          case DE: i->tmp = i->E; break;
-          case HL: i->tmp = i->L; break;
-          case SP: i->tmp = i->F; break; //AF
+          case BC: i->C = i->tmp; break;
+          case DE: i->E = i->tmp; break;
+          case HL: i->L = i->tmp; break;
+          case SP: i->F = i->tmp; break; //AF
         }
       }
       i->stateIterator = 1;
@@ -399,18 +399,18 @@ enum Error pop_qq(struct Instance *__restrict i, void **__restrict inf) {
     if (i->stateIterator == 1) {
       i->SP++;
       if (i->currentOverride == IX_OVERRIDE) {
-	i->tmp = i->IX >> 8;
+	i->IX |= i->tmp << 8;
       }
       else if (i->currentOverride == IY_OVERRIDE) {
-	i->tmp = i->IY >> 8;
+	i->IX |= i->tmp << 8;
       }
       else {
 	switch ((i->instruction & 0b00110000) >> 4) {
           default: return BAD_ARGUMENT;
-          case BC: i->tmp = i->B; break;
-          case DE: i->tmp = i->D; break;
-          case HL: i->tmp = i->H; break;
-          case SP: i->tmp = i->A; break; //AF
+          case BC: i->B = i->tmp; break;
+          case DE: i->D = i->tmp; break;
+          case HL: i->H = i->tmp; break;
+          case SP: i->A = i->tmp; break; //AF
         }
       }
       return nop(i, inf);

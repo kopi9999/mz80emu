@@ -162,7 +162,7 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
 }
 
 enum Instruction decodeInstruction_CB (struct Instance* __restrict i) {
-    switch(i->instruction & 0b11000000) {
+    switch((i->instruction & 0b11000000) >> 6) {
         case 0: 
             switch(i->instruction & 0b00111000){
                 case 0: 

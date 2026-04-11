@@ -141,14 +141,14 @@ enum Error ldi(struct Instance*__restrict i, void**__restrict inf) {
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t *)inf[0] = i->H << 8; // addr
-    *(uint16_t *)inf[0] |= i->H; // addr
+    *(uint16_t *)inf[0] |= i->L; // addr
     i->stateIterator = 0;
     return SUCCESS;
   }
   
   if (i->MState == 2) {
-    *(uint16_t *)inf[0] = i->E << 8; // addr
-    *(uint16_t *)inf[0] |= i->D; // addr
+    *(uint16_t *)inf[0] = i->D << 8; // addr
+    *(uint16_t *)inf[0] |= i->E; // addr
     i->MState = 3;
     i->TCycle = 1;
     return SUCCESS;
@@ -171,7 +171,7 @@ enum Error ldir(struct Instance*__restrict i, void**__restrict inf) {
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t *)inf[0] = i->H << 8; // addr
-    *(uint16_t *)inf[0] |= i->H; // addr
+    *(uint16_t *)inf[0] |= i->L; // addr
     i->F &= 0b11101001;
     i->F |= 0b00000100;
     i->stateIterator = 0;
@@ -179,8 +179,8 @@ enum Error ldir(struct Instance*__restrict i, void**__restrict inf) {
   }
   
   if (i->MState == 2) {
-    *(uint16_t *)inf[0] = i->E << 8; // addr
-    *(uint16_t *)inf[0] |= i->D; // addr
+    *(uint16_t *)inf[0] = i->D << 8; // addr
+    *(uint16_t *)inf[0] |= i->E; // addr
     i->MState = 3;
     i->TCycle = 1;
     return SUCCESS;
@@ -190,14 +190,14 @@ enum Error ldir(struct Instance*__restrict i, void**__restrict inf) {
     increment16(&(i->H), &(i->L));
     decrement16(&(i->B), &(i->C));
 
-    if (i->B != 0 && i->C == 0) {
+    if (i->B == 0 && i->C == 0) {
       i->F &= 0b11111011;
       return nop(i, inf);
     }
     i->MState = 2;
     i->TCycle = 1;
     *(uint16_t *)inf[0] = i->H << 8; // addr
-    *(uint16_t *)inf[0] |= i->H; // addr
+    *(uint16_t *)inf[0] |= i->L; // addr
     return SUCCESS;
   }
   return BAD_ARGUMENT;
@@ -209,14 +209,14 @@ enum Error ldd(struct Instance*__restrict i, void**__restrict inf) {
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t *)inf[0] = i->H << 8; // addr
-    *(uint16_t *)inf[0] |= i->H; // addr
+    *(uint16_t *)inf[0] |= i->L; // addr
     i->stateIterator = 0;
     return SUCCESS;
   }
   
   if (i->MState == 2) {
-    *(uint16_t *)inf[0] = i->E << 8; // addr
-    *(uint16_t *)inf[0] |= i->D; // addr
+    *(uint16_t *)inf[0] = i->D << 8; // addr
+    *(uint16_t *)inf[0] |= i->E; // addr
     i->MState = 3;
     i->TCycle = 1;
     return SUCCESS;
@@ -239,7 +239,7 @@ enum Error lddr(struct Instance*__restrict i, void**__restrict inf) {
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t *)inf[0] = i->H << 8; // addr
-    *(uint16_t *)inf[0] |= i->H; // addr
+    *(uint16_t *)inf[0] |= i->L; // addr
     i->F &= 0b11101001;
     i->F |= 0b00000100;
     i->stateIterator = 0;
@@ -247,8 +247,8 @@ enum Error lddr(struct Instance*__restrict i, void**__restrict inf) {
   }
   
   if (i->MState == 2) {
-    *(uint16_t *)inf[0] = i->E << 8; // addr
-    *(uint16_t *)inf[0] |= i->D; // addr
+    *(uint16_t *)inf[0] = i->D << 8; // addr
+    *(uint16_t *)inf[0] |= i->E; // addr
     i->MState = 3;
     i->TCycle = 1;
     return SUCCESS;
@@ -258,14 +258,14 @@ enum Error lddr(struct Instance*__restrict i, void**__restrict inf) {
     decrement16(&(i->H), &(i->L));
     decrement16(&(i->B), &(i->C));
 
-    if (i->B != 0 && i->C == 0) {
+    if (i->B == 0 && i->C == 0) {
       i->F &= 0b11111011;
       return nop(i, inf);
     }
     i->MState = 2;
     i->TCycle = 1;
     *(uint16_t *)inf[0] = i->H << 8; // addr
-    *(uint16_t *)inf[0] |= i->H; // addr
+    *(uint16_t *)inf[0] |= i->L; // addr
     return SUCCESS;
   }
   return BAD_ARGUMENT;
