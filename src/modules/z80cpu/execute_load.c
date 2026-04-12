@@ -18,13 +18,13 @@ uint8_t getRegisterValue(struct Instance* __restrict i, enum Register r) {
 enum Error ld_r_rp(struct Instance* __restrict i, void** __restrict inf) {
 
   switch (i->registerIn) {
-  case A: i->A = getRegisterValue(i, A); break;
-  case B: i->B = getRegisterValue(i, B); break;
-  case C: i->C = getRegisterValue(i, C); break;
-  case D: i->D = getRegisterValue(i, D); break;
-  case E: i->E = getRegisterValue(i, E); break;
-  case H: i->H = getRegisterValue(i, H); break;
-  case L: i->L = getRegisterValue(i, L); break;
+  case A: i->A = getRegisterValue(i, i->registerOut); break;
+  case B: i->B = getRegisterValue(i, i->registerOut); break;
+  case C: i->C = getRegisterValue(i, i->registerOut); break;
+  case D: i->D = getRegisterValue(i, i->registerOut); break;
+  case E: i->E = getRegisterValue(i, i->registerOut); break;
+  case H: i->H = getRegisterValue(i, i->registerOut); break;
+  case L: i->L = getRegisterValue(i, i->registerOut); break;
   default: return(BAD_ARGUMENT);
   }
 
@@ -48,7 +48,7 @@ enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     else {
       *(uint16_t*) inf[0] = i->H; //addr
       *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
-      *(uint16_t *)inf[0] += i->L;                      // addr
+      *(uint16_t *)inf[0] |= i->L;                      // addr
     }
     i->registerIn = (i->instruction & 0b00111000) >> 3;
     return SUCCESS;
@@ -64,7 +64,6 @@ enum Error ld_r_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     case L: i->L = i->tmp; break;
     default: return BAD_ARGUMENT;
     }
-    i->PC++;
     return nop(i, inf);
   }
   return BAD_ARGUMENT;
@@ -163,7 +162,7 @@ enum Error ld_$hl$_n(struct Instance *__restrict i, void **__restrict inf) {
     else {
       *(uint16_t*) inf[0] = i->H; //addr
       *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
-      *(uint16_t *)inf[0] += i->L; //addr
+      *(uint16_t *)inf[0] |= i->L; //addr
     }
     
     return SUCCESS;
@@ -182,7 +181,7 @@ enum Error ld_a_$bc$(struct Instance *__restrict i, void **__restrict inf) {
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t*) inf[0] = i->B; //addr
     *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
-    *(uint16_t *)inf[0] += i->C; //addr
+    *(uint16_t *)inf[0] |= i->C; //addr
     return SUCCESS;
   }
   if (i->MState == 2) {
@@ -228,7 +227,7 @@ enum Error ld_a_$nn$(struct Instance *__restrict i, void **__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
-      i->tmpAddr += i->tmp << 8;
+      i->tmpAddr |= i->tmp << 8;
       i->TCycle = 1;
       i->PC++;
       *(uint16_t*) inf[0] = i->tmpAddr; //addr
@@ -293,7 +292,6 @@ enum Error ld_$nn$_a(struct Instance *__restrict i, void **__restrict inf) {
       i->PC++;
       *(uint16_t*) inf[0] = i->PC; //addr
       i->stateIterator = 1;
-      printf("tmpAddr = %d", i->tmpAddr);
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
@@ -304,7 +302,6 @@ enum Error ld_$nn$_a(struct Instance *__restrict i, void **__restrict inf) {
       *(uint16_t*) inf[0] = i->tmpAddr; //addr
       i->tmp = i->A;
       i->stateIterator = 2;
-      printf("tmpAddr = %d", i->tmpAddr);
       return SUCCESS;
     }
   }

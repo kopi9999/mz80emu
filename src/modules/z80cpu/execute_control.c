@@ -26,10 +26,22 @@ uint8_t getAddCarries(uint8_t a, uint8_t b, uint8_t previousCarry) {
   uint8_t out = 0;
   uint8_t tmp = 0;
   for (uint8_t i = 0; i < 8; i++) {
-    tmp = (a & (0b00000001 << i)) + (b & (0b00000001 << i));
+    tmp = ((a >> i) & 0b00000001) + ((b >> i) & 0b00000001);
     if (i) {tmp += (out >> (i - 1)) & 0b00000001;}
     else {tmp += previousCarry;}
     if (tmp > 1) {out |= 1 << i;}
+  }
+  return out;
+}
+
+uint8_t getSubtractBorrows(uint8_t a, uint8_t b, uint8_t previousBorrow) {
+  uint8_t out = 0;
+  int8_t tmp = 0;
+  for (uint8_t i = 0; i < 8; i++) {
+    tmp = ((a >> i) & 0b00000001) - ((b >> i) & 0b00000001);
+    if (i) {tmp -= (out >> (i - 1)) & 0b00000001;}
+    else {tmp -= previousBorrow;}
+    if (tmp < 0) {out |= 1 << i;}
   }
   return out;
 }
@@ -191,15 +203,14 @@ enum Error scf(struct Instance* __restrict i, void** __restrict inf){
 }
 
 enum Error neg(struct Instance* __restrict i, void** __restrict inf){
-  uint8_t carry = getAddCarries(0, !(i->A)+1, 0);
-  carry = !carry;
+  uint8_t borrows = getSubtractBorrows(0, i->A, 0);
   i->tmp = i->A;
-  i->A = !i->A;
-  i->F &= 0;
+  i->A = 0 - i->A;
+  i->F = 0;
   i->F |= 0b00000010; // N flag
   if (i->A & 0b10000000) { i->F |= 0b10000000; } // S flag
   if (i->A == 0) { i->F |= 0b01000000; } // Z flag
-  if (carry & 0b00001000) { i->F |= 0b00010000; } // H flag
+  if (borrows & 0b00001000) { i->F |= 0b00010000; } // H flag
   if (i->tmp == 0x80) { i->F |= 0b00000100; } // P/V flag
   if (i->tmp != 0x00) { i->F |= 0b00000001; } // C flag
   return nop(i, inf);

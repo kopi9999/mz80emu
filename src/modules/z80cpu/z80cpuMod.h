@@ -80,7 +80,6 @@ enum Instruction {
     CP_$HL$,
 
     AND_S,
-    OR_S,
     XOR_S,
     CP_S,
     INC_R,
@@ -97,7 +96,9 @@ enum Instruction {
     HALT,
     DI,
     EL,
-    IM_N,
+    IM_0,
+    IM_1,
+    IM_2,
 
     ADD_HL_SS,
     ADC_HL_SS,

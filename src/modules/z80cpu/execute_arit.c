@@ -15,10 +15,10 @@ enum Error add_a_r(struct Instance *__restrict i, void **__restrict inf) {
   }
 
   uint8_t flags = 0;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-  if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-  if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+  if (i->A == 0) {flags |= 0b01000000;} //Z flag
+  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
+  if (carries & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
   i->F = flags;
   return nop(i, inf);
   }  
@@ -37,10 +37,10 @@ enum Error add_a_n(struct Instance *__restrict i, void **__restrict inf) {
     i->A += i->tmp;
 
     uint8_t flags = 0;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (carries & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -74,10 +74,10 @@ enum Error add_a_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     i->A += i->tmp;
 
     uint8_t flags = 0;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (carries & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -102,10 +102,10 @@ enum Error adc_a_r(struct Instance *__restrict i, void **__restrict inf) {
   }
 
   uint8_t flags = 0;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-  if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-  if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+  if (i->A == 0) {flags |= 0b01000000;} //Z flag
+  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
+  if (carries & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
   i->F = flags;
   return nop(i, inf);
   }  
@@ -125,10 +125,10 @@ enum Error adc_a_n(struct Instance *__restrict i, void **__restrict inf) {
     i->A += i->tmp + carry;
 
     uint8_t flags = 0;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (carries & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -163,10 +163,10 @@ enum Error adc_a_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     i->A += i->tmp + carry;
 
     uint8_t flags = 0;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (carries & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -175,24 +175,23 @@ enum Error adc_a_$hl$(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error sub_r(struct Instance *__restrict i, void **__restrict inf) {
-  uint8_t carries = 0;
+  uint8_t borrows = 0;
   switch (i->instruction & 0b00000111) {
-  case A: carries = getAddCarries(i->A, (!i->A + 1), 0); i->A -= i->A; break;
-  case B: carries = getAddCarries(i->A, (!i->B + 1), 0); i->A -= i->B; break;
-  case C: carries = getAddCarries(i->A, (!i->C + 1), 0); i->A -= i->C; break;
-  case D: carries = getAddCarries(i->A, (!i->D + 1), 0); i->A -= i->D; break;
-  case E: carries = getAddCarries(i->A, (!i->E + 1), 0); i->A -= i->E; break;
-  case H: carries = getAddCarries(i->A, (!i->H + 1), 0); i->A -= i->H; break;
-  case L: carries = getAddCarries(i->A, (!i->L + 1), 0); i->A -= i->L; break;
+  case A: borrows = getSubtractBorrows(i->A, i->A, 0); i->A -= i->A; break;
+  case B: borrows = getSubtractBorrows(i->A, i->B, 0); i->A -= i->B; break;
+  case C: borrows = getSubtractBorrows(i->A, i->C, 0); i->A -= i->C; break;
+  case D: borrows = getSubtractBorrows(i->A, i->D, 0); i->A -= i->D; break;
+  case E: borrows = getSubtractBorrows(i->A, i->E, 0); i->A -= i->E; break;
+  case H: borrows = getSubtractBorrows(i->A, i->H, 0); i->A -= i->H; break;
+  case L: borrows = getSubtractBorrows(i->A, i->L, 0); i->A -= i->L; break;
   default: return BAD_ARGUMENT;
   }
 
-  carries = !carries;
   uint8_t flags = 0b00000010;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-  if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-  if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+  if (i->A == 0) {flags |= 0b01000000;} //Z flag
+  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+  if (borrows & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
   i->F = flags;
   return nop(i, inf);
   }  
@@ -207,15 +206,14 @@ enum Error sub_n(struct Instance *__restrict i, void **__restrict inf) {
   }
   if (i->MState == 2) {
     i->PC += 1;
-    uint8_t carries = getAddCarries(i->A, (!i->tmp + 1), 0);
-    carries = !carries;
+    uint8_t borrows = getSubtractBorrows(i->A, i->tmp, 0);
     i->A -= i->tmp;
 
     uint8_t flags = 0b00000010;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (borrows & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -245,15 +243,14 @@ enum Error sub_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     return SUCCESS;
   }
   if (i->MState == 2) {
-    uint8_t carries = getAddCarries(i->A, (!i->tmp + 1), 0);
-    carries = !carries;
+    uint8_t borrows = getSubtractBorrows(i->A, i->tmp, 0);
     i->A -= i->tmp;
 
     uint8_t flags = 0b00000010;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (borrows & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -262,25 +259,24 @@ enum Error sub_$hl$(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error sbc_a_r(struct Instance *__restrict i, void **__restrict inf) {
-  uint8_t carries = 0;
-  uint8_t carry = i->F & 0b00000001;
+  uint8_t borrows = 0;
+  uint8_t borrow = i->F & 0b00000001;
   switch (i->instruction & 0b00000111) {
-  case A: carries = getAddCarries(i->A, (!i->A + 1), carry); i->A -= i->A - carry; break;
-  case B: carries = getAddCarries(i->A, (!i->B + 1), carry); i->A -= i->B - carry; break;
-  case C: carries = getAddCarries(i->A, (!i->C + 1), carry); i->A -= i->C - carry; break;
-  case D: carries = getAddCarries(i->A, (!i->D + 1), carry); i->A -= i->D - carry; break;
-  case E: carries = getAddCarries(i->A, (!i->E + 1), carry); i->A -= i->E - carry; break;
-  case H: carries = getAddCarries(i->A, (!i->H + 1), carry); i->A -= i->H - carry; break;
-  case L: carries = getAddCarries(i->A, (!i->L + 1), carry); i->A -= i->L - carry; break;
+  case A: borrows = getSubtractBorrows(i->A, i->A, borrow); i->A -= i->A - borrow; break;
+  case B: borrows = getSubtractBorrows(i->A, i->B, borrow); i->A -= i->B - borrow; break;
+  case C: borrows = getSubtractBorrows(i->A, i->C, borrow); i->A -= i->C - borrow; break;
+  case D: borrows = getSubtractBorrows(i->A, i->D, borrow); i->A -= i->D - borrow; break;
+  case E: borrows = getSubtractBorrows(i->A, i->E, borrow); i->A -= i->E - borrow; break;
+  case H: borrows = getSubtractBorrows(i->A, i->H, borrow); i->A -= i->H - borrow; break;
+  case L: borrows = getSubtractBorrows(i->A, i->L, borrow); i->A -= i->L - borrow; break;
   default: return BAD_ARGUMENT;
   }
 
-  carries = !carries;
   uint8_t flags = 0b00000010;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-  if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-  if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+  if (i->A == 0) {flags |= 0b01000000;} //Z flag
+  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+  if (borrows & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
   i->F = flags;
   return nop(i, inf);
   }  
@@ -295,16 +291,15 @@ enum Error sbc_a_n(struct Instance *__restrict i, void **__restrict inf) {
   }
   if (i->MState == 2) {
     i->PC += 1;
-    uint8_t carry = i->F & 0b00000001;
-    uint8_t carries = getAddCarries(i->A, (!i->tmp + 1), carry);
-    carries = !carries;
+    uint8_t borrow = i->F & 0b00000001;
+    uint8_t borrows = getSubtractBorrows(i->A, i->tmp, borrow);
     i->A -= i->tmp;
 
     uint8_t flags = 0b00000010;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (borrows & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -334,16 +329,15 @@ enum Error sbc_a_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     return SUCCESS;
   }
   if (i->MState == 2) {
-    uint8_t carry = i->F & 0b00000001;
-    uint8_t carries = getAddCarries(i->A, (!i->tmp + 1), carry);
-    carries = !carries;
+    uint8_t borrow = i->F & 0b00000001;
+    uint8_t borrows = getSubtractBorrows(i->A, i->tmp, borrow);
     i->A -= i->tmp;
 
     uint8_t flags = 0b00000010;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (borrows & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -365,8 +359,9 @@ enum Error and_r(struct Instance *__restrict i, void **__restrict inf) {
   }
 
   uint8_t flags = 0b00010000;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+  if (i->A == 0) {flags |= 0b01000000;} //Z flag
+  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (!(pairity(i->A) % 2)) {flags |= 0b00000100;} //P/V flag
   i->F = flags;
   return nop(i, inf);
   }  
@@ -384,8 +379,9 @@ enum Error and_n(struct Instance *__restrict i, void **__restrict inf) {
     i->A &= i->tmp;
 
     uint8_t flags = 0b00010000;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (!(pairity(i->A) % 2)) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -418,8 +414,9 @@ enum Error and_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     i->A &= i->tmp;
 
     uint8_t flags = 0b00000010;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (!(pairity(i->A) % 2)) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -428,7 +425,6 @@ enum Error and_$hl$(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error or_r(struct Instance *__restrict i, void **__restrict inf) {
-  i->tmp = i->A;
   switch (i->instruction & 0b00000111) {
   case A: i->A |= i->A; break;
   case B: i->A |= i->B; break;
@@ -440,9 +436,10 @@ enum Error or_r(struct Instance *__restrict i, void **__restrict inf) {
   default: return BAD_ARGUMENT;
   }
 
-  uint8_t flags = 0b00010000;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+  uint8_t flags = 0;
+  if (i->A == 0) {flags |= 0b01000000;} //Z flag
+  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (!(pairity(i->A) % 2)) {flags |= 0b00000100;} //P/V flag
   i->F = flags;
   return nop(i, inf);
   }  
@@ -459,9 +456,10 @@ enum Error or_n(struct Instance *__restrict i, void **__restrict inf) {
     i->PC += 1;
     i->A |= i->tmp;
 
-    uint8_t flags = 0b00010000;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+    uint8_t flags = 0;
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (!(pairity(i->A) % 2)) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -493,9 +491,10 @@ enum Error or_$hl$(struct Instance *__restrict i, void **__restrict inf) {
   if (i->MState == 2) {
     i->A |= i->tmp;
 
-    uint8_t flags = 0b00000010;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+    uint8_t flags = 0;
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (!(pairity(i->A) % 2)) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -516,9 +515,10 @@ enum Error xor_r(struct Instance *__restrict i, void **__restrict inf) {
   default: return BAD_ARGUMENT;
   }
 
-  uint8_t flags = 0b00010000;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+  uint8_t flags = 0;
+  if (i->A == 0) {flags |= 0b01000000;} //Z flag
+  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (!(pairity(i->A) % 2)) {flags |= 0b00000100;} //P/V flag
   i->F = flags;
   return nop(i, inf);
   }  
@@ -535,9 +535,10 @@ enum Error xor_n(struct Instance *__restrict i, void **__restrict inf) {
     i->PC += 1;
     i->A ^= i->tmp;
 
-    uint8_t flags = 0b00010000;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+    uint8_t flags = 0;
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (!(pairity(i->A) % 2)) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -569,9 +570,10 @@ enum Error xor_$hl$(struct Instance *__restrict i, void **__restrict inf) {
   if (i->MState == 2) {
     i->A ^= i->tmp;
 
-    uint8_t flags = 0b00000010;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
+    uint8_t flags = 0;
+    if (i->A == 0) {flags |= 0b01000000;} //Z flag
+    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (!(pairity(i->A) % 2)) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -581,24 +583,28 @@ enum Error xor_$hl$(struct Instance *__restrict i, void **__restrict inf) {
 
 enum Error cp_r(struct Instance *__restrict i, void **__restrict inf) {
   i->tmp = i->A;
-  uint8_t carries = 0;
+  uint8_t borrows = 0;
+  uint8_t tmp = 0;
   switch (i->instruction & 0b00000111) {
-  case A: carries = getAddCarries(i->A, (!i->A + 1), 0); i->tmp -= i->A; break;
-  case B: carries = getAddCarries(i->A, (!i->B + 1), 0); i->tmp -= i->B; break;
-  case C: carries = getAddCarries(i->A, (!i->C + 1), 0); i->tmp -= i->C; break;
-  case D: carries = getAddCarries(i->A, (!i->D + 1), 0); i->tmp -= i->D; break;
-  case E: carries = getAddCarries(i->A, (!i->E + 1), 0); i->tmp -= i->E; break;
-  case H: carries = getAddCarries(i->A, (!i->H + 1), 0); i->tmp -= i->H; break;
-  case L: carries = getAddCarries(i->A, (!i->L + 1), 0); i->tmp -= i->L; break;
+  case A: i->tmp = i->A; break;
+  case B: i->tmp = i->B; break;
+  case C: i->tmp = i->C; break;
+  case D: i->tmp = i->D; break;
+  case E: i->tmp = i->E; break;
+  case H: i->tmp = i->H; break;
+  case L: i->tmp = i->L; break;
   default: return BAD_ARGUMENT;
   }
 
-  carries = !carries;
+  borrows = getSubtractBorrows(i->A, i->tmp, 0);
+  tmp -= i->tmp;
+
   uint8_t flags = 0b00000010;
-  if (i->tmp == 0) {flags += 0b01000000;} //Z flag
-  if (i->tmp & 0b10000000) {flags += 0b10000000;} //S flag
-  if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-  if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+  if (tmp == 0) {flags |= 0b01000000;} //Z flag
+  if (tmp & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+  if (borrows & 0b10000000) {flags |= 0b00000001;} // C flag
+  if ((i->A ^ i->tmp) & (i->A ^ tmp) & 0x80) {flags |= 0b00000100;} //P/V flag
   i->F = flags;
   return nop(i, inf);
   }  
@@ -612,17 +618,17 @@ enum Error cp_n(struct Instance *__restrict i, void **__restrict inf) {
     return SUCCESS;
   }
   if (i->MState == 2) {
-    i->PC += 1;
+    i->PC++;
     uint8_t tmp = i->A;
-    uint8_t carries = getAddCarries(i->A, (!i->tmp + 1), 0);
-    carries = !carries;
+    uint8_t borrows = getSubtractBorrows(i->A, i->tmp, 0);
     tmp -= i->tmp;
 
     uint8_t flags = 0b00000010;
-    if (tmp == 0) {flags += 0b01000000;} //Z flag
-    if (tmp & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (tmp == 0) {flags |= 0b01000000;} //Z flag
+    if (tmp & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (borrows & 0b10000000) {flags |= 0b00000001;} //C flag
+    if ((i->A ^ i->tmp) & (i->A ^ tmp) & 0x80) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -653,15 +659,15 @@ enum Error cp_$hl$(struct Instance *__restrict i, void **__restrict inf) {
   }
   if (i->MState == 2) {
     uint8_t tmp = i->A;
-    uint8_t carries = getAddCarries(i->A, (!i->tmp + 1), 0);
-    carries = !carries;
+    uint8_t borrows = getSubtractBorrows(i->A, i->tmp, 0);
     tmp -= i->tmp;
 
     uint8_t flags = 0b00000010;
-    if (tmp == 0) {flags += 0b01000000;} //Z flag
-    if (tmp & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (carries & 0b10000000) {flags += 0b00000101;} // C and P/V flag
+    if (tmp == 0) {flags |= 0b01000000;} //Z flag
+    if (tmp & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (borrows & 0b10000000) {flags |= 0b00000001;} // C flag
+    if ((i->A ^ i->tmp) & (i->A ^ tmp) & 0x80) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -684,10 +690,10 @@ enum Error inc_r(struct Instance *__restrict i, void **__restrict inf) {
   }
 
   uint8_t flags = i->F & 0b00000001;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-  if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-  if (tmp == 0x7F) {flags += 0b00000100;} // P/V flag
+  if (tmp + 1 == 0) {flags |= 0b01000000;} //Z flag
+  if (tmp + 1 & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
+  if (tmp == 0x7F) {flags |= 0b00000100;} // P/V flag
   i->F = flags;
   return nop(i, inf);
 }
@@ -709,7 +715,7 @@ enum Error inc_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     else {
       *(uint16_t*) inf[0] = i->H; //addr
       *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-      *(uint16_t*) inf[0] += i->L; //addr
+      *(uint16_t*) inf[0] |= i->L; //addr
     }
     return SUCCESS;
   }
@@ -718,10 +724,10 @@ enum Error inc_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     i->TCycle = 1;
     uint8_t carries = getAddCarries(i->tmp, 1, 0);
     uint8_t flags = i->F & 0b00000001;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (i->tmp == 0x7F) {flags += 0b00000100;} //P/V flag
+    if (i->tmp + 1 == 0) {flags |= 0b01000000;} //Z flag
+    if (i->tmp + 1 & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (i->tmp == 0x7F) {flags |= 0b00000100;} //P/V flag
     i->tmp++;
     i->F = flags;
     
@@ -733,26 +739,25 @@ enum Error inc_$hl$(struct Instance *__restrict i, void **__restrict inf) {
   return BAD_ARGUMENT;
 }
 enum Error dec_r(struct Instance *__restrict i, void **__restrict inf) {
-  uint8_t carries = 0;
+  uint8_t borrows = 0;
   uint8_t tmp;
   switch ((i->instruction & 0b00111000) >> 3) {
-  case A: tmp = i->A; carries = getAddCarries(i->A, !1+1 ,0); i->A--; break;
-  case B: tmp = i->B; carries = getAddCarries(i->B, !1+1 ,0); i->B--; break;
-  case C: tmp = i->C; carries = getAddCarries(i->C, !1+1 ,0); i->C--; break;
-  case D: tmp = i->D; carries = getAddCarries(i->D, !1+1 ,0); i->D--; break;
-  case E: tmp = i->E; carries = getAddCarries(i->E, !1+1 ,0); i->E--; break;
-  case H: tmp = i->H; carries = getAddCarries(i->H, !1+1 ,0); i->H--; break;
-  case L: tmp = i->L; carries = getAddCarries(i->L, !1+1 ,0); i->L--; break;
+  case A: tmp = i->A; borrows = getSubtractBorrows(i->A, 1 ,0); i->A--; break;
+  case B: tmp = i->B; borrows = getSubtractBorrows(i->B, 1 ,0); i->B--; break;
+  case C: tmp = i->C; borrows = getSubtractBorrows(i->C, 1 ,0); i->C--; break;
+  case D: tmp = i->D; borrows = getSubtractBorrows(i->D, 1 ,0); i->D--; break;
+  case E: tmp = i->E; borrows = getSubtractBorrows(i->E, 1 ,0); i->E--; break;
+  case H: tmp = i->H; borrows = getSubtractBorrows(i->H, 1 ,0); i->H--; break;
+  case L: tmp = i->L; borrows = getSubtractBorrows(i->L, 1 ,0); i->L--; break;
   default: return BAD_ARGUMENT;
   }
 
-  carries = !carries;
   uint8_t flags = i->F & 0b00000001;
-  if (i->A == 0) {flags += 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-  if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-  if (tmp == 0x80) {flags += 0b00000100;} // P/V flag
-  flags += 0b00000010; //N flag
+  if (tmp - 1 == 0) {flags |= 0b01000000;} //Z flag
+  if (tmp - 1 & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+  if (tmp == 0x80) {flags |= 0b00000100;} // P/V flag
+  flags |= 0b00000010; //N flag
   i->F = flags;
   return nop(i, inf);
 }
@@ -781,14 +786,13 @@ enum Error dec_$hl$(struct Instance *__restrict i, void **__restrict inf) {
   if (i->MState == 2) {
     i->MState = 3;
     i->TCycle = 1;    
-    uint8_t carries = getAddCarries(i->tmp, 1, 0);
-    carries = !carries;
+    uint8_t borrows = getSubtractBorrows(i->tmp, 1, 0);
     uint8_t flags = i->F & 0b00000001;
-    if (i->A == 0) {flags += 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags += 0b10000000;} //S flag
-    if (carries & 0b00001000) {flags += 0b00010000;} //H flag
-    if (i->tmp == 0x7F) {flags += 0b00000100;} //P/V flag
-    flags += 0b00000010; //N flag
+    if (i->tmp - 1 == 0) {flags |= 0b01000000;} //Z flag
+    if (i->tmp - 1 & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
+    if (i->tmp == 0x7F) {flags |= 0b00000100;} //P/V flag
+    flags |= 0b00000010; //N flag
     i->tmp--;
     i->F = flags;
     

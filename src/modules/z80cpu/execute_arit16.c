@@ -123,45 +123,37 @@ enum Error adc_hl_ss(struct Instance *__restrict i, void **__restrict inf) {
 }
 
 enum Error sbc_hl_ss(struct Instance *__restrict i, void **__restrict inf) {
-  uint8_t carryL, carryH;
+  uint8_t borrowL, borrowH;
   switch ((i->instruction & 0b00110000) >> 4) {
     case BC:
-      carryL = getAddCarries(i->L, !(i->C) + 1, i->F & 0b00000001);
-      carryL = !carryL;
-      carryH = getAddCarries(i->H, !(i->B) + 1, carryL >> 7);
-      carryH = !carryH;
+      borrowL = getAddCarries(i->L, i->C, i->F & 0b00000001);
+      borrowH = getAddCarries(i->H, i->B, borrowL >> 7);
       i->L -= i->C - i->F & 0b00000001;
-      i->H -= i->B - (carryL >> 7);
+      i->H -= i->B - (borrowL >> 7);
       break;
     case DE:
-      carryL = getAddCarries(i->L, !(i->E) + 1, i->F & 0b00000001);
-      carryL = !carryL;
-      carryH = getAddCarries(i->H, !(i->D) + 1, carryL >> 7);
-      carryH = !carryH;
+      borrowL = getAddCarries(i->L, i->E, i->F & 0b00000001);
+      borrowH = getAddCarries(i->H, i->D, borrowL >> 7);
       i->L -= i->E - i->F & 0b00000001;
-      i->H -= i->D - (carryL >> 7);
+      i->H -= i->D - (borrowL >> 7);
       break;
     case HL:
-      carryL = getAddCarries(i->L, !(i->L) + 1, i->F & 0b00000001);
-      carryL = !carryL;
-      carryH = getAddCarries(i->H, !(i->H) + 1, carryL >> 7);
-      carryH = !carryH;
+      borrowL = getAddCarries(i->L, i->L, i->F & 0b00000001);
+      borrowH = getAddCarries(i->H, i->H, borrowL >> 7);
       i->L -= i->L - i->F & 0b00000001;
-      i->H -= i->H - (carryL >> 7);
+      i->H -= i->H - (borrowL >> 7);
       break;
     case SP:
-      carryL = getAddCarries(i->L, !(i->SP & 0x00FF) + 1, i->F & 0b00000001);
-      carryL = !carryL;
-      carryH = getAddCarries(i->H, !(i->SP >> 8) + 1, carryL >> 7);
-      carryH = !carryH;
+      borrowL = getAddCarries(i->L, i->SP & 0x00FF, i->F & 0b00000001);
+      borrowH = getAddCarries(i->H, i->SP >> 8, borrowL >> 7);
       i->L -= (i->SP & 0x00FF) - i->F & 0b00000001;
-      i->H -= (i->SP >> 8) - (carryL >> 7);
+      i->H -= (i->SP >> 8) - (borrowL >> 7);
       break;
   }
   i->F &= 0b11101100;
 
-  if (carryH & 0b00010000) {i->F |= 0b00010000;} // H flag
-  if (carryH & 0b10000000) {i->F |= 0b00000001;} // P/V flag
+  if (borrowH & 0b00010000) {i->F |= 0b00010000;} // H flag
+  if (borrowH & 0b10000000) {i->F |= 0b00000001;} // P/V flag
   return nop(i, inf);
 }
 
@@ -174,21 +166,9 @@ enum Error inc_ss(struct Instance *__restrict i, void **__restrict inf) {
   else if (i->currentOverride == IY_OVERRIDE) {i->IY++;}
   else {
     switch ((i->instruction & 0b00110000) >> 4) {
-      case BC:
-	carry = getAddCarries(i->C, 1, 0);
-	i->C++;
-	i->B += carry >> 7;
-	break;
-      case DE:
-	carry = getAddCarries(i->E, 1, 0);
-	i->E++;
-	i->D += carry >> 7;
-	break;
-      case HL:
-	carry = getAddCarries(i->L, 1, 0);
-	i->L++;
-	i->H += carry >> 7;
-	break;
+      case BC: increment16(&i->B, &i->C); break;
+      case DE: increment16(&i->D, &i->E); break;
+      case HL: increment16(&i->H, &i->L); break;
       case SP: i->SP++; break;
     }
   }
@@ -199,26 +179,14 @@ enum Error inc_ss(struct Instance *__restrict i, void **__restrict inf) {
 enum Error dec_ss(struct Instance *__restrict i, void **__restrict inf) {
   if (i->currentOverride && i->instruction != 0x2B) {return BAD_ARGUMENT;}
 
-  uint8_t carry;
+  uint8_t borrow;
   if (i->currentOverride == IX_OVERRIDE) {i->IX--;}
   else if (i->currentOverride == IY_OVERRIDE) {i->IY--;}
   else {
     switch ((i->instruction & 0b00110000) >> 4) {
-      case BC:
-	carry = !getAddCarries(i->C, !0, 0);
-	i->C--;
-	i->B -= carry >> 7;
-	break;
-      case DE:
-	carry = !getAddCarries(i->E, !0, 0);
-	i->E--;
-	i->D -= carry >> 7;
-	break;
-      case HL:
-	carry = !getAddCarries(i->L, !0, 0);
-	i->L--;
-	i->H -= carry >> 7;
-	break;
+      case BC: decrement16(&i->B, &i->C); break;
+      case DE: decrement16(&i->D, &i->E); break;
+      case HL: decrement16(&i->H, &i->L); break;
       case SP: i->SP--; break;
     }
   }

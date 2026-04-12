@@ -74,9 +74,9 @@ enum Error call_cc_nn(struct Instance* __restrict i, void** __restrict inf) {
         case 1: if (i->F & 0b01000000) {break;} return nop(i, inf); // zero
         case 2: if (i->F & 0b00000001) {return nop(i, inf);} break; // non carry
         case 3: if (i->F & 0b00000001) {break;} return nop(i, inf); // carry
-        case 4: if (i->F & 0b00000000) {return nop(i, inf);} break; // pairity odd
+        case 4: if (i->F & 0b00000100) {return nop(i, inf);} break; // pairity odd
         case 5: if (i->F & 0b00000100) {break;} return nop(i, inf); // pairity even
-        case 6: if (i->F & 0b10000100) {return nop(i, inf);} break; // sign positive
+        case 6: if (i->F & 0b10000000) {return nop(i, inf);} break; // sign positive
         case 7: if (i->F & 0b10000000) {break;} return nop(i, inf); // sign negative
       }
       i->MState = 3;
@@ -140,9 +140,9 @@ enum Error ret_cc(struct Instance* __restrict i, void** __restrict inf) {
       case 1: if (i->F & 0b01000000) {break;} return nop(i, inf); // zero
       case 2: if (i->F & 0b00000001) {return nop(i, inf);} break; // non carry
       case 3: if (i->F & 0b00000001) {break;} return nop(i, inf); // carry
-      case 4: if (i->F & 0b00000000) {return nop(i, inf);} break; // pairity odd
+      case 4: if (i->F & 0b00000100) {return nop(i, inf);} break; // pairity odd
       case 5: if (i->F & 0b00000100) {break;} return nop(i, inf); // pairity even
-      case 6: if (i->F & 0b10000100) {return nop(i, inf);} break; // sign positive
+      case 6: if (i->F & 0b10000000) {return nop(i, inf);} break; // sign positive
       case 7: if (i->F & 0b10000000) {break;} return nop(i, inf); // sign negative
       default: return BAD_ARGUMENT;
     }
