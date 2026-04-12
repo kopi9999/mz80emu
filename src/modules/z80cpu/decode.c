@@ -50,7 +50,7 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                         case 0b00011000: return SBC_A_N;
                         case 0b00100000: return AND_N;
                         case 0b00101000: return XOR_N;
-                        case 0b00110000: return OR_S;
+                        case 0b00110000: return OR_N;
                         case 0b00111000: return CP_N;
                     }
                 case 7: return RST_P;
@@ -273,5 +273,5 @@ enum Instruction decodeInstruction_ED (struct Instance* __restrict i) {
                 }
         }
     }
-    return BAD;
+   return NOP;  // most of undocumented ed instructions are NOP-like
 }

@@ -80,7 +80,6 @@ enum Instruction {
     CP_$HL$,
 
     AND_S,
-    OR_S,
     XOR_S,
     CP_S,
     INC_R,

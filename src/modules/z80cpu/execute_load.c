@@ -162,7 +162,7 @@ enum Error ld_$hl$_n(struct Instance *__restrict i, void **__restrict inf) {
     else {
       *(uint16_t*) inf[0] = i->H; //addr
       *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
-      *(uint16_t *)inf[0] += i->L; //addr
+      *(uint16_t *)inf[0] |= i->L; //addr
     }
     
     return SUCCESS;
@@ -292,7 +292,6 @@ enum Error ld_$nn$_a(struct Instance *__restrict i, void **__restrict inf) {
       i->PC++;
       *(uint16_t*) inf[0] = i->PC; //addr
       i->stateIterator = 1;
-      printf("tmpAddr = %d", i->tmpAddr);
       return SUCCESS;
     }
     if (i->stateIterator == 1) {
@@ -303,7 +302,6 @@ enum Error ld_$nn$_a(struct Instance *__restrict i, void **__restrict inf) {
       *(uint16_t*) inf[0] = i->tmpAddr; //addr
       i->tmp = i->A;
       i->stateIterator = 2;
-      printf("tmpAddr = %d", i->tmpAddr);
       return SUCCESS;
     }
   }

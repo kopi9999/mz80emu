@@ -32,10 +32,10 @@ enum Error jp_cc_nn(struct Instance*__restrict i, void**__restrict inf) {
   if (i->MState == 1) {
     switch ((i->instruction & 0b00111000) >> 3) {
     case 0: //nonzero
-      if (i->F & 0b00000010) {i->PC += 2; return nop(i, inf);}
+      if (i->F & 0b01000000) {i->PC += 2; return nop(i, inf);}
       break;
     case 1: //zero
-      if (i->F & 0b00000010) {break;}
+      if (i->F & 0b01000000) {break;}
       i->PC += 2;
       return nop(i, inf);
     case 2: //nocarry
@@ -283,11 +283,9 @@ enum Error djnz_e(struct Instance*__restrict i, void**__restrict inf) {
     return SUCCESS;
   }
   if (i->MState == 2) {
-    if (i->stateIterator == 0) {
-      int8_t tmp = i->tmp;
-      i->PC += tmp;
-      return nop(i, inf);
-    }
+    int8_t tmp = i->tmp;
+    i->PC += tmp;
+    return nop(i, inf);
   }
   return BAD_ARGUMENT;
 }

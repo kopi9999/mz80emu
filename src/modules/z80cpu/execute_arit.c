@@ -584,22 +584,27 @@ enum Error xor_$hl$(struct Instance *__restrict i, void **__restrict inf) {
 enum Error cp_r(struct Instance *__restrict i, void **__restrict inf) {
   i->tmp = i->A;
   uint8_t borrows = 0;
+  uint8_t tmp = 0;
   switch (i->instruction & 0b00000111) {
-  case A: borrows = getSubtractBorrows(i->A, i->A, 0); i->tmp -= i->A; break;
-  case B: borrows = getSubtractBorrows(i->A, i->B, 0); i->tmp -= i->B; break;
-  case C: borrows = getSubtractBorrows(i->A, i->C, 0); i->tmp -= i->C; break;
-  case D: borrows = getSubtractBorrows(i->A, i->D, 0); i->tmp -= i->D; break;
-  case E: borrows = getSubtractBorrows(i->A, i->E, 0); i->tmp -= i->E; break;
-  case H: borrows = getSubtractBorrows(i->A, i->H, 0); i->tmp -= i->H; break;
-  case L: borrows = getSubtractBorrows(i->A, i->L, 0); i->tmp -= i->L; break;
+  case A: i->tmp = i->A; break;
+  case B: i->tmp = i->B; break;
+  case C: i->tmp = i->C; break;
+  case D: i->tmp = i->D; break;
+  case E: i->tmp = i->E; break;
+  case H: i->tmp = i->H; break;
+  case L: i->tmp = i->L; break;
   default: return BAD_ARGUMENT;
   }
 
+  borrows = getSubtractBorrows(i->A, i->tmp, 0);
+  tmp -= i->tmp;
+
   uint8_t flags = 0b00000010;
-  if (i->tmp == 0) {flags |= 0b01000000;} //Z flag
-  if (i->tmp & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (tmp == 0) {flags |= 0b01000000;} //Z flag
+  if (tmp & 0b10000000) {flags |= 0b10000000;} //S flag
   if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
-  if (borrows & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
+  if (borrows & 0b10000000) {flags |= 0b00000001;} // C flag
+  if ((i->A ^ i->tmp) & (i->A ^ tmp) & 0x80) {flags |= 0b00000100;} //P/V flag
   i->F = flags;
   return nop(i, inf);
   }  
@@ -622,7 +627,8 @@ enum Error cp_n(struct Instance *__restrict i, void **__restrict inf) {
     if (tmp == 0) {flags |= 0b01000000;} //Z flag
     if (tmp & 0b10000000) {flags |= 0b10000000;} //S flag
     if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
-    if (borrows & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
+    if (borrows & 0b10000000) {flags |= 0b00000001;} //C flag
+    if ((i->A ^ i->tmp) & (i->A ^ tmp) & 0x80) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -660,7 +666,8 @@ enum Error cp_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     if (tmp == 0) {flags |= 0b01000000;} //Z flag
     if (tmp & 0b10000000) {flags |= 0b10000000;} //S flag
     if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
-    if (borrows & 0b10000000) {flags |= 0b00000101;} // C and P/V flag
+    if (borrows & 0b10000000) {flags |= 0b00000001;} // C flag
+    if ((i->A ^ i->tmp) & (i->A ^ tmp) & 0x80) {flags |= 0b00000100;} //P/V flag
     i->F = flags;
     
     return nop(i, inf);
@@ -683,8 +690,8 @@ enum Error inc_r(struct Instance *__restrict i, void **__restrict inf) {
   }
 
   uint8_t flags = i->F & 0b00000001;
-  if (i->A == 0) {flags |= 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (tmp + 1 == 0) {flags |= 0b01000000;} //Z flag
+  if (tmp + 1 & 0b10000000) {flags |= 0b10000000;} //S flag
   if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
   if (tmp == 0x7F) {flags |= 0b00000100;} // P/V flag
   i->F = flags;
@@ -708,7 +715,7 @@ enum Error inc_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     else {
       *(uint16_t*) inf[0] = i->H; //addr
       *(uint16_t*) inf[0] = *(uint16_t*) inf[0] << 8; //addr
-      *(uint16_t*) inf[0] += i->L; //addr
+      *(uint16_t*) inf[0] |= i->L; //addr
     }
     return SUCCESS;
   }
@@ -717,8 +724,8 @@ enum Error inc_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     i->TCycle = 1;
     uint8_t carries = getAddCarries(i->tmp, 1, 0);
     uint8_t flags = i->F & 0b00000001;
-    if (i->A == 0) {flags |= 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (i->tmp + 1 == 0) {flags |= 0b01000000;} //Z flag
+    if (i->tmp + 1 & 0b10000000) {flags |= 0b10000000;} //S flag
     if (carries & 0b00001000) {flags |= 0b00010000;} //H flag
     if (i->tmp == 0x7F) {flags |= 0b00000100;} //P/V flag
     i->tmp++;
@@ -746,8 +753,8 @@ enum Error dec_r(struct Instance *__restrict i, void **__restrict inf) {
   }
 
   uint8_t flags = i->F & 0b00000001;
-  if (i->A == 0) {flags |= 0b01000000;} //Z flag
-  if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+  if (tmp - 1 == 0) {flags |= 0b01000000;} //Z flag
+  if (tmp - 1 & 0b10000000) {flags |= 0b10000000;} //S flag
   if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
   if (tmp == 0x80) {flags |= 0b00000100;} // P/V flag
   flags |= 0b00000010; //N flag
@@ -781,8 +788,8 @@ enum Error dec_$hl$(struct Instance *__restrict i, void **__restrict inf) {
     i->TCycle = 1;    
     uint8_t borrows = getSubtractBorrows(i->tmp, 1, 0);
     uint8_t flags = i->F & 0b00000001;
-    if (i->A == 0) {flags |= 0b01000000;} //Z flag
-    if (i->A & 0b10000000) {flags |= 0b10000000;} //S flag
+    if (i->tmp - 1 == 0) {flags |= 0b01000000;} //Z flag
+    if (i->tmp - 1 & 0b10000000) {flags |= 0b10000000;} //S flag
     if (borrows & 0b00001000) {flags |= 0b00010000;} //H flag
     if (i->tmp == 0x7F) {flags |= 0b00000100;} //P/V flag
     flags |= 0b00000010; //N flag

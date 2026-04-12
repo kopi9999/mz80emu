@@ -49,8 +49,9 @@ enum Error m1_strobeDown (struct Instance* __restrict instance, void** __restric
 	    case ED_PREFIX: instance->state = decodeInstruction_ED(instance); break;
           }
 	} else {instance->state = decodeInstruction(instance);}
-
-        printf("\nLoaded instruction %d on address %d, decoded to %d", instance->instruction, instance->PC, instance->state);
+	if (!instance->halted){
+	  printf("\nLoaded instruction %d on address %d, decoded to %d", instance->instruction, instance->PC, instance->state);
+	}
         instance->PC++;
         return SUCCESS;
     }
