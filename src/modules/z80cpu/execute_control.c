@@ -26,10 +26,22 @@ uint8_t getAddCarries(uint8_t a, uint8_t b, uint8_t previousCarry) {
   uint8_t out = 0;
   uint8_t tmp = 0;
   for (uint8_t i = 0; i < 8; i++) {
-    tmp = (a & (0b00000001 << i)) + (b & (0b00000001 << i));
+    tmp = ((a >> i) & 0b00000001) + ((b >> i) & 0b00000001);
     if (i) {tmp += (out >> (i - 1)) & 0b00000001;}
     else {tmp += previousCarry;}
     if (tmp > 1) {out |= 1 << i;}
+  }
+  return out;
+}
+
+uint8_t getSubtractBorrows(uint8_t a, uint8_t b, uint8_t previousBorrow) {
+  uint8_t out = 0;
+  int8_t tmp = 0;
+  for (uint8_t i = 0; i < 8; i++) {
+    tmp = ((a >> i) & 0b00000001) - ((b >> i) & 0b00000001);
+    if (i) {tmp -= (out >> (i - 1)) & 0b00000001;}
+    else {tmp -= previousBorrow;}
+    if (tmp < 0) {out |= 1 << i;}
   }
   return out;
 }
