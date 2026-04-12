@@ -36,10 +36,10 @@ enum Error ld_dd_nn(struct Instance *__restrict i, void **__restrict inf) {
     }
     if (i->stateIterator == 1) {
       if (i->currentOverride == IX_OVERRIDE) {
-	i->IX = i->tmp << 8;
+	i->IX |= i->tmp << 8;
       }
       else if (i->currentOverride == IY_OVERRIDE) {
-	i->IY = i->tmp << 8;
+	i->IY |= i->tmp << 8;
       }
       else {
 	switch ((i->instruction & 0b00110000) >> 4) {
@@ -50,6 +50,7 @@ enum Error ld_dd_nn(struct Instance *__restrict i, void **__restrict inf) {
           case SP: i->SP |= i->tmp << 8; break;
         }
       }
+      i->PC++;
       return nop(i, inf);
     }
   }
@@ -160,6 +161,7 @@ enum Error ld_dd_$nn$(struct Instance *__restrict i, void **__restrict inf) {
         case HL: i->H = i->tmp; break;
       case SP: i->SP = i->tmp << 8; break;
       }
+      i->PC++;
       return nop(i, inf);
     }
   }
@@ -211,15 +213,16 @@ enum Error ld_$nn$_hl(struct Instance *__restrict i, void **__restrict inf) {
 	i->tmp = i->IX >> 8;
       }
       else if (i->currentOverride == IY_OVERRIDE) {
-	i->tmp = i->IY >> 8;
+	i->tmp |= i->IY >> 8;
       }
       else {
-	i->tmp = i->H;
+	i->tmp |= i->H;
       }
       i->stateIterator = 3;
       return SUCCESS;
     }
     if (i->stateIterator == 3) {
+      i->PC++;
       return nop(i, inf);
     }
   }
@@ -277,6 +280,7 @@ enum Error ld_$nn$_dd(struct Instance *__restrict i, void **__restrict inf) {
       return SUCCESS;
     }
     if (i->stateIterator == 3) {
+      i->PC++;
       return nop(i, inf);
     }
   }

@@ -181,7 +181,7 @@ enum Error ld_a_$bc$(struct Instance *__restrict i, void **__restrict inf) {
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t*) inf[0] = i->B; //addr
     *(uint16_t*) inf[0] = (*(uint16_t*) inf[0]) << 8; //addr
-    *(uint16_t *)inf[0] += i->C; //addr
+    *(uint16_t *)inf[0] |= i->C; //addr
     return SUCCESS;
   }
   if (i->MState == 2) {

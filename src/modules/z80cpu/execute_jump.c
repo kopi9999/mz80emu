@@ -53,12 +53,12 @@ enum Error jp_cc_nn(struct Instance*__restrict i, void**__restrict inf) {
       i->PC += 2;
       return nop(i, inf);
     case 6: //sign positive
+      if (i->F & 0b10000000) {i->PC += 2; return nop(i, inf);}
+      break;
+    case 7: //sign negative
       if (i->F & 0b10000000) {break;}
       i->PC += 2;
       return nop(i, inf);
-    case 7: //sign negative
-      if (i->F & 0b10000000) {i->PC += 2; return nop(i, inf);}
-      break;
     }
     
     i->MState = 2;
@@ -269,6 +269,7 @@ enum Error jp_$hl$(struct Instance*__restrict i, void**__restrict inf) {
 
 enum Error djnz_e(struct Instance*__restrict i, void**__restrict inf) {
   if (i->MState == 1) {
+    i->B--;
     if (i->B == 0) {
       i->PC++;
       return nop(i, inf);
@@ -278,6 +279,7 @@ enum Error djnz_e(struct Instance*__restrict i, void**__restrict inf) {
     i->TCycle = 1;
     *(uint8_t*) inf[2] = 0; //m1
     *(uint16_t*) inf[0] = i->PC; //addr
+    i->PC++;
     return SUCCESS;
   }
   if (i->MState == 2) {

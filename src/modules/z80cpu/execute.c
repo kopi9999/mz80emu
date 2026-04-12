@@ -150,6 +150,7 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case DEC_SS:    return dec_ss(i, inf);
     // rotate and shift group
   case RLCA:      return rlca(i, inf);
+  case RRCA:      return rrca(i, inf);
   case RLA:       return rla(i, inf);
   case RRA:       return rra(i, inf);
   case RLC_R:     return rlc_r(i, inf); // CB prefix

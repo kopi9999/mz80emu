@@ -101,7 +101,7 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
         else { //00xxxxxx
             switch (i->instruction & 0b00000111) {
                 case 0: //00xxx000
-                    switch (i->instruction & 0b00111000){
+		    switch ((i->instruction & 0b00111000)){
                         case 0b00000000: return NOP;
                         case 0b00001000: return EX_AF_AF;
                         case 0b00010000: return DJNZ_E;
@@ -116,7 +116,7 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                     else { return LD_DD_NN; }
                 case 2: //00xxx010
                     if (i->instruction & 0b00001000) {
-                        switch (i->instruction & 0b00110000) {
+		        switch ((i->instruction & 0b00110000)) {
                             case 0b00000000: return LD_A_$BC$;
                             case 0b00010000: return LD_A_$DE$;
                             case 0b00100000: return LD_HL_$NN$;
@@ -124,7 +124,7 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                         }
                     }
                     else {
-                        switch (i -> instruction & 0b00110000) {
+		        switch ((i -> instruction & 0b00110000)) {
                             case 0b00000000: return LD_$BC$_A;
                             case 0b00010000: return LD_$DE$_A;
                             case 0b00100000: return LD_$NN$_HL;
@@ -144,7 +144,7 @@ enum Instruction decodeInstruction(struct Instance* __restrict  i)
                     if ((i->instruction & 0b00111000) == UNDEFINED * 8) {return LD_$HL$_N;}
                     else {return LD_R_N;}
                 case 7: //00xxx111
-                    switch (i->instruction & 0b00111000) {
+		  switch (i->instruction & 0b00111000) {
                         case 0b00000000: return RLCA;
                         case 0b00001000: return RRCA;
                         case 0b00010000: return RLA;
