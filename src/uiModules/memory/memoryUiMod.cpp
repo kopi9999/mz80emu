@@ -356,15 +356,54 @@ void UiModulePanel::SelectFileWindow(wxCommandEvent& event)
 //saves a table to a file
 void UiModulePanel::SelectSaveFile(wxCommandEvent& event)
 {
-    wxMessageDialog dlg(
-    this,
-    "(select NO if you want to save the WHOLE table)",
-    "Do you want to select the number of cells saved",
-    wxYES_NO | wxCANCEL
-    );
+    wxDialog dlg(this, wxID_ANY, "Saving table to bin file",
+                 wxDefaultPosition, wxSize(500,175));
+
+    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+
+    wxStaticText* text = new wxStaticText(&dlg, wxID_ANY, "How do you want to save the table?");
+    mainSizer->Add(text, 0, wxALL | wxALIGN_CENTER, 10);
+
+    wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
+
+    wxButton* btnCancel = new wxButton(&dlg, wxID_CANCEL, "Cancel");
+    wxButton* btn1 = new wxButton(&dlg, wxID_ANY, "Whole Table");
+    wxButton* btn2 = new wxButton(&dlg, wxID_ANY, "Selected Number of cells");
+    
+    btnSizer->Add(btnCancel, 1, wxALL, 5);
+    btnSizer->Add(btn1, 1, wxALL, 3);
+    btnSizer->Add(btn2, 1, wxALL, 4);
+
+    mainSizer->Add(btnSizer, 0, wxALIGN_CENTER);
+
+    dlg.SetSizer(mainSizer);
+
+    // bindy (lambda)
+    btn1->Bind(wxEVT_BUTTON, [&](wxCommandEvent&){ dlg.EndModal(1); });
+    btn2->Bind(wxEVT_BUTTON, [&](wxCommandEvent&){ dlg.EndModal(2); });
+
     int result = dlg.ShowModal();
 
-    if(result == wxID_YES)
+    if (result == 1)
+    {
+        wxFileDialog saveFileDialog(
+            this,
+            "Save BIN file",
+            "",
+            "",
+            "File BIN (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*",
+            wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+        );
+
+        if (saveFileDialog.ShowModal() == wxID_CANCEL)
+            return;
+
+        if (SaveUint32TableToBin(saveFileDialog.GetPath() , 0))
+        {
+            wxLogMessage("Saved", sizeof(instance->data));
+        }
+    }
+    else if (result == 2)
     {
         wxNumberEntryDialog dlg(
             this,
@@ -398,24 +437,4 @@ void UiModulePanel::SelectSaveFile(wxCommandEvent& event)
             }
         }
     }
-    else if(result == wxID_NO)
-    {
-        wxFileDialog saveFileDialog(
-            this,
-            "Save BIN file",
-            "",
-            "",
-            "File BIN (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*",
-            wxFD_SAVE | wxFD_OVERWRITE_PROMPT
-        );
-
-        if (saveFileDialog.ShowModal() == wxID_CANCEL)
-            return;
-
-        if (SaveUint32TableToBin(saveFileDialog.GetPath() , 0))
-        {
-            wxLogMessage("Saved", sizeof(instance->data));
-        }
-    }
-    
 }
