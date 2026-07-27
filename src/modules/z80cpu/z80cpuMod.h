@@ -222,6 +222,9 @@ struct Instance{
     enum Prefix currentPrefix;
     enum Override currentOverride;
 
+    uint8_t IFF1;
+    uint8_t IFF2;
+
     uint16_t PC;
     uint16_t SP;
     uint16_t IX;
