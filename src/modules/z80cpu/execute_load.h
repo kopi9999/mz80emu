@@ -15,5 +15,8 @@ enum Error ld_$bc$_a(struct Instance* __restrict i, void** __restrict inf);
 enum Error ld_$de$_a(struct Instance* __restrict i, void** __restrict inf);
 enum Error ld_$nn$_a(struct Instance* __restrict i, void** __restrict inf);
 enum Error ld_a_i(struct Instance* __restrict i, void** __restrict inf);
+enum Error ld_a_r(struct Instance* __restrict i, void** __restrict inf);
+enum Error ld_i_a(struct Instance* __restrict i, void** __restrict inf);
+enum Error ld_r_a(struct Instance* __restrict i, void** __restrict inf);
 
 #endif

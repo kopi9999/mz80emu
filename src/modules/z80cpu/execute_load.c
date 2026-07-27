@@ -324,3 +324,25 @@ enum Error ld_a_i(struct Instance *__restrict i, void **__restrict inf) {
   
   return nop(i, inf);
 }
+
+enum Error ld_a_r(struct Instance *__restrict i, void **__restrict inf) {
+  i->A = i->R;
+
+  i->F &= 0x00000001;
+  if (i->R & 0x10000000) {i->F |= 0x10000000;} // S flag
+  if (i->R == 0) {i->F |= 0x01000000;} // Z flag
+  if (i->IFF2 != 0) {i->F |= 0x00000100;} // P/V flag
+  // add P/V flag clearing when CPU is interrupted in this instruction
+  
+  return nop(i, inf);
+}
+
+enum Error ld_i_a(struct Instance *__restrict i, void **__restrict inf) {
+  i->I = i->A;
+  return nop(i, inf);
+}
+
+enum Error ld_r_a(struct Instance *__restrict i, void **__restrict inf) {
+  i->R = i->A;
+  return nop(i, inf);
+}

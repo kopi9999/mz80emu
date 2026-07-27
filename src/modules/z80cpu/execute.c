@@ -75,9 +75,9 @@ enum Error execute_up(struct Instance *__restrict i, void **__restrict inf) {
   case LD_$DE$_A: return ld_$de$_a(i, inf);
   case LD_$NN$_A: return ld_$nn$_a(i, inf);
   case LD_A_I:    return ld_a_i(i, inf); // not fully implemented, ED prefix
-  case LD_A_R:    return nop(i, inf); // not implemented, ED prefix
-  case LD_I_A:    return nop(i, inf); // not implemented, ED prefix
-  case LD_R_A:    return nop(i, inf); // not implemented, ED prefix
+  case LD_A_R:    return ld_a_r(i, inf); // not fully implemented, ED prefix
+  case LD_I_A:    return ld_i_a(i, inf); // ED prefix
+  case LD_R_A:    return ld_r_a(i, inf); // ED prefix
     // 16bit load group
   case LD_DD_NN:  return ld_dd_nn(i, inf);
   case LD_HL_$NN$:return ld_hl_$nn$(i, inf);
