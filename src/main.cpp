@@ -35,12 +35,16 @@ bool exitLoop = false;
 enum CrashCode exitCode = RUNNING;
 bool exitedLoop = false;
 bool startedLoop = false;
+bool crashed = false;
 chrono::nanoseconds duration;
 chrono::nanoseconds originalDuration;
 
 void crash() {
-    wxMessageBox("Critical error occured and aplication will be closed.\nError code: " + to_string(exitCode), "Critical error.", wxOK | wxICON_ERROR);
-    ::wxExit();
+    if (!crashed){
+        crashed = true;
+        wxMessageBox("Critical error occured and aplication will be closed.\nError code: " + to_string(exitCode), "Critical error.", wxOK | wxICON_ERROR);
+        ::wxExit();
+    }    
 }
 
 void mainLoop()
