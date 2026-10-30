@@ -1,3 +1,10 @@
+/*
+ * SPDX_License_identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 Daw151
+ * This file is a part of mz80emu project.
+ */
+
+
 #include "oneBitLabel.hpp"
 
 OneBitLabel::OneBitLabel(wxWindow* parent, wxString labelText, uint8_t* registerPointer, uint8_t mask)
