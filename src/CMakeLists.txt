@@ -1,3 +1,9 @@
+###
+## SPDX_License_identifier: GPL-3.0-or-later
+## Copyright (c) 2026 kopi9999
+## This file is a part of mz80emu project.
+#
+
 add_library(config SHARED config.cpp validation.cpp misc.cpp)
 
 if(WIN32)
