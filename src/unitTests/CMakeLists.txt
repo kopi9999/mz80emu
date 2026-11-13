@@ -1,3 +1,9 @@
+###
+## SPDX_License_identifier: GPL-3.0-or-later
+## Copyright (c) 2026 kopi9999
+## This file is a part of mz80emu project.
+#
+
 add_executable(test_mz80emu misc.cpp validation.cpp ../misc.cpp ../validation.cpp)
 add_executable(test_moduleFunctions ../modules/test_moduleFunctions.cpp ../modules/moduleFunctions.c)
 add_executable(test_testMod ../modules/test/testMod.c ../modules/test/unitTests/test.cpp)

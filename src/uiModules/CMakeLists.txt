@@ -1,3 +1,9 @@
+###
+## SPDX_License_identifier: GPL-3.0-or-later
+## Copyright (c) 2026 kopi9999
+## This file is a part of mz80emu project.
+#
+
 add_library(testUiMod SHARED test/testUiMod.cpp uiModuleFunctions.cpp)
 add_library(memoryUiMod SHARED memory/memoryUiMod.cpp uiModuleFunctions.cpp)
 add_library(z80cpuUiMod SHARED z80cpu/z80cpuUiMod.cpp z80cpu/editableLabel.cpp z80cpu/oneBitLabel.cpp uiModuleFunctions.cpp)

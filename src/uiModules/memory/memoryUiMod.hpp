@@ -1,3 +1,9 @@
+/*
+ * SPDX_License_identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 TheDragonEye
+ * This file is a part of mz80emu project.
+ */
+
 #ifndef MEMORY_UI_MOD
 #define MEMORY_UI_MOD
 

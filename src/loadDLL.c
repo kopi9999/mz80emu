@@ -1,3 +1,10 @@
+/*
+ * SPDX_License_identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 kopi9999
+ * This file is a part of mz80emu project.
+ */
+
+
 #include <stdbool.h>
 #include <windows.h>
 
