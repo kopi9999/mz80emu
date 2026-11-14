@@ -9,17 +9,19 @@ Every **module** is a dynamic library, which contains functions for emulation of
 
 #### **`Error`**
 
-This enumerator is used as return value of module functions. It says whether the function was performed in right way. If an error occur, it informs about error type. The enumerator accepts following values:
+This enumerator is used as return value of module functions. It says whether the function was performed in right way. If an error occurs, it informs about error type. The enumerator accepts following values:
 
 | Value | Explanation |
 | - | - |
 | `SUCCESS`:&nbsp;0 | No error occurred. **Tip:** because `SUCCESS` value is zero, enumerator value can be compared to bool in order to catch errors - `SUCCESS` is `false`, and other values are `true`. |
 | `BAD_ARGUMENT`:&nbsp;1 | Invalid argument has been passed to the function (it is possible because sometimes function parameters are void pointers). |
 | `MALLOC_ERROR`:&nbsp;2 | Memory allocation failed, e.g. due to insufficient amount of available RAM. |
-| SIZE_MISMATCH:3 | Size of given array is insufficient. |
+| `SIZE_MISMATCH`:&nbsp;3 | Size of given array is insufficient. |
 
 
 ## Global variables
+
+These variables must be set in the module code.
 
 | variable | description |
 | - | - |
