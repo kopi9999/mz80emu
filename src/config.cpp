@@ -184,7 +184,7 @@ enum CrashCode loadRawData(
     }
 
     while (getline(ConfigFile, row)) {
-        trim(&row);
+        trim(row);
         loadingStep = detectLoadingStep(row);
         if (loadingStep) {currentLoadingStep = loadingStep;}
         else if (!row.empty() && row[0] != '#') {

@@ -254,49 +254,49 @@ BOOST_AUTO_TEST_SUITE( testMisc )
         
         BOOST_AUTO_TEST_CASE ( testTrim_spaceOnStart ){
             string str = " HelloWorld!";
-            trim(&str);
+            trim(str);
             string expectedResult = "HelloWorld!";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrim_spaceOnEnd ){
             string str = "HelloWorld! ";
-            trim(&str);
+            trim(str);
             string expectedResult = "HelloWorld!";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrim_variousWhitespaceChars ){
             string str = "\r\t \nHelloWorld! \n\t\r";
-            trim(&str);
+            trim(str);
             string expectedResult = "HelloWorld!";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrim_whitespaceInsideString ){
             string str = "Hello World!";
-            trim(&str);
+            trim(str);
             string expectedResult = "Hello World!";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrim_noWhitespace ){
             string str = "HelloWorld!";
-            trim(&str);
+            trim(str);
             string expectedResult = "HelloWorld!";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrim_emptyString ){
             string str = "";
-            trim(&str);
+            trim(str);
             string expectedResult = "";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrim_onlyWhitespace ){
             string str = "\n\r\t ";
-            trim(&str);
+            trim(str);
             string expectedResult = "";
             BOOST_TEST ( (str == expectedResult) );
         }

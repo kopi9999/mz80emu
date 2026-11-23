@@ -74,26 +74,26 @@ string boolToString(bool boolean) {
     return "false";
 }
 
-void trim(string* str) {
-    if (*str == "") {
+void trim(string &str) {
+    if (str == "") {
         return;
     }
 
     uint32_t i = 0;
-    while (str[0][i] == ' ' || str[0][i] == '\n' || str[0][i] == '\r' || str[0][i] == '\t') {
+    while (str[i] == ' ' || str[i] == '\n' || str[i] == '\r' || str[i] == '\t') {
         i++;
     }
-    *str = str->substr(i);
+    str = str.substr(i);
     
-    if (*str == "") {
+    if (str == "") {
         return;
     }
 
-    i = str->length();
-    while (str[0][i-1] == ' ' || str[0][i-1] == '\n' || str[0][i-1] == '\r' || str[0][i-1] == '\t') {
+    i = str.length();
+    while (str[i-1] == ' ' || str[i-1] == '\n' || str[i-1] == '\r' || str[i-1] == '\t') {
         i--;
     }
-    *str = str->substr(0, i);
+    str = str.substr(0, i);
 }
 
 void trimLeadingZeros(string* str) {

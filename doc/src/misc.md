@@ -75,7 +75,7 @@ When provided string is an empty string, the function returns an empty vector.
 
 | Parameter | Explanation |
 | - | - |
-| `string* str` | Pointer to string which will be trimmed. |
+| `string& str` | Reference to string which will be trimmed. |
 
 `trim()` removes all whitespace characters from the beginning and end of the provided string. The whitespace characters include: " " (space), "\n" (new line), "\r" (carriage return) and "\t" (tab).
 
