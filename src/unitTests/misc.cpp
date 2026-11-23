@@ -17,28 +17,6 @@ using namespace std;
 
 BOOST_AUTO_TEST_SUITE( testMisc )
 
-    BOOST_AUTO_TEST_SUITE( testCompareStringVectors )
-
-        BOOST_AUTO_TEST_CASE ( testCompareStringVectors_equal ) {
-            vector<string> vec1 = {"Hello", "World!"};
-            vector<string> vec2 = {"Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(vec1, vec2) );
-        }
-
-        BOOST_AUTO_TEST_CASE ( testCompareStringVectors_different ) {
-            vector<string> vec1 = {"Hello", "World!"};
-            vector<string> vec2 = {"World!", "Hello"};
-            BOOST_TEST ( !compareStringVectors(vec1, vec2) );
-        }
-
-        BOOST_AUTO_TEST_CASE ( testCompareStringVectors_emptyVector ) {
-            vector<string> vec1 = {};
-            vector<string> vec2 = {};
-            BOOST_TEST ( compareStringVectors(vec1, vec2) );
-        }
-
-    BOOST_AUTO_TEST_SUITE_END()
-
     BOOST_AUTO_TEST_SUITE( testSplitString )
 
         BOOST_AUTO_TEST_CASE ( testSplitString_oneCharDelimiter ){
@@ -46,7 +24,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = " ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {"Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_twoCharsDelimiter ){
@@ -54,7 +32,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = ", ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {"1", "2", "3", "4", "5"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_delimiterOnStart ){
@@ -62,7 +40,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = " ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {"", "Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_delimiterOnEnd ){
@@ -70,7 +48,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = " ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {"Hello", "World!", ""};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_oneCharTwoDelimitersInARow ){
@@ -78,7 +56,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = " ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {"Hello", "", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_twoCharsTwoDelimitersInARow ){
@@ -86,7 +64,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = "  ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {"Hello", "", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_twoAndHalfDelimiterInARow ){
@@ -94,7 +72,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = "  ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {"Hello", "", " World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_halfDelimiterOnStart ){
@@ -102,7 +80,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = ", ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {" Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_halfDelimiterOnEnd ){
@@ -110,7 +88,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = ", ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {"Hello", "World!,"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_emptyString ){
@@ -118,7 +96,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = " ";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitString_emptyDelimiter ){
@@ -126,7 +104,7 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string delimiter = "";
             vector<string> result = splitString(str, delimiter);
             vector<string> expectedResult = {};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
 
     BOOST_AUTO_TEST_SUITE_END()
@@ -137,77 +115,77 @@ BOOST_AUTO_TEST_SUITE( testMisc )
             string str = "Hello World!";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {"Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_severalSpaces ){
             string str = "Hello   World!";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {"Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_severalVariousChars ){
             string str = "Hello\r \t\nWorld!";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {"Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_spaceOnStart ){
             string str = " HelloWorld!";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {"HelloWorld!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_spaceOnEnd ){
             string str = "HelloWorld! ";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {"HelloWorld!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_scatteredSingleChars ){
             string str = "Hello World!\nHello\tWorld! Hello\rWorld!";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {"Hello", "World!", "Hello", "World!", "Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_scatteredGroupedVariousChars ){
             string str = "Hello \tWorld!\n\rHello \nWorld!";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {"Hello", "World!", "Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_scatteredGroupedRepeatingChars ){
             string str = "Hello\t\tWorld!\n\nHello  World!\r\rHello  World!";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {"Hello", "World!", "Hello", "World!", "Hello", "World!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_noWhitespace ){
             string str = "HelloWorld!";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {"HelloWorld!"};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_onlyWhitespace ){
             string str = " \n\r\t";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
         
         BOOST_AUTO_TEST_CASE ( testSplitByWhitespace_emptyString ){
             string str = "";
             vector<string> result = splitByWhitespace(str);
             vector<string> expectedResult = {};
-            BOOST_TEST ( compareStringVectors(result, expectedResult) );
+            BOOST_TEST ( result == expectedResult );
         }
 
     BOOST_AUTO_TEST_SUITE_END()

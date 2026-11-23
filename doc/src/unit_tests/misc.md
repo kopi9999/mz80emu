@@ -1,11 +1,3 @@
-### `testCompareStringVectors` - tests compareStringVectors()
-
-| Test Case Name                         | Input                                        | Expected | Description                   |
-| -------------------------------------- | -------------------------------------------- | -------- | ----------------------------- |
-| `testCompareStringVectors_equal`       | `{"Hello", "World"}`, `{"Hello", "World"}`   | `true`   | Compare two equal vectors     |
-| `testCompareStringVectors_different`   | `{"Hello", "World!"}`, `{"World!", "Hello"}` | `false`  | Compare two different vectors |
-| `testCompareStringVectors_emptyVector` | `{}, {}`                                     | `true`   | Compare two empty vectors     |
-
 ### `testSplitString` - tests splitString()
 
 | Test Case Name                                | Input                        | Expected                    | Description                          |

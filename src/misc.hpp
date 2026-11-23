@@ -11,7 +11,6 @@
 #include <string>
 #include "main.hpp"
 
-extern bool compareStringVectors(std::vector<std::string>, std::vector<std::string>);
 extern std::vector<std::string> splitString(std::string, std::string);
 extern std::vector<std::string> splitByWhitespace(std::string);
 extern std::string toLower(std::string);

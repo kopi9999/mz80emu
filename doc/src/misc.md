@@ -5,18 +5,6 @@
 
 ## Functions
 
-### `compareStringVectors(vec1, vec2)`
-
-**Returns: bool**
-
-| Parameter | Explanation |
-| - | - |
-| `vector<string> vec1` | First vector of strings to compare. |
-| `vector<string> vec2` | Second vector of strings to compare. |
-
-`compareStringVectors()` checks if both vectors passed as function arguments are identical. It returns false when vectors vary in length or any pair of elements with the same ID in both vectors does not consist of identical elements. When no defference was found, the function returns true.
-
-
 ### `splitString(str, delimiter)`
 
 **Returns: `vector<string>`**
