@@ -89,7 +89,7 @@ bool validateValueEqualsNumberOfInstances(uint32_t value, uint32_t numberOfInsta
 
 bool validateVectorHasUniqueValues(vector<string> vec, string loadingStep) {
     for (size_t i=0; i<vec.size(); ++i) {
-        trimLeadingZeros(&vec[i]);
+        trimLeadingZeros(vec[i]);
         for (size_t j=0; j<i; ++j) {
             if (vec[i] == vec[j]) {
                 cout << "ERROR: Values in section are not unique (\"" << loadingStep << "\" section of config.txt).\n";

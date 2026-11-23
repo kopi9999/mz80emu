@@ -17,8 +17,8 @@ extern std::string toLower(std::string);
 extern bool stringToBool(std::string);
 extern std::string boolToString(bool);
 extern void trim(std::string&);
-extern void trimLeadingZeros(std::string*);
+extern void trimLeadingZeros(std::string&);
 extern enum CrashCode convertErrorToCrash(enum Error);
-extern void setCrashIfRunning(enum CrashCode*, enum CrashCode);
+extern void setCrashIfRunning(enum CrashCode&, enum CrashCode);
 
 #endif

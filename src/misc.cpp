@@ -96,16 +96,16 @@ void trim(string &str) {
     str = str.substr(0, i);
 }
 
-void trimLeadingZeros(string* str) {
-    if (*str == "") {
+void trimLeadingZeros(string &str) {
+    if (str == "") {
         return;
     }
 
     uint32_t i = 0;
-    while (str[0][i] == '0') {
+    while (str[i] == '0') {
         i++;
     }
-    *str = str->substr(i);
+    str = str.substr(i);
 }
 
 enum CrashCode convertErrorToCrash(enum Error error)
@@ -118,8 +118,8 @@ enum CrashCode convertErrorToCrash(enum Error error)
     return MODULE_INVALID_ERROR;
 }
 
-void setCrashIfRunning(enum CrashCode* crashVar, enum CrashCode crash) {
-    if (*crashVar == RUNNING) {
-        *crashVar = crash;
+void setCrashIfRunning(enum CrashCode &crashVar, enum CrashCode crash) {
+    if (crashVar == RUNNING) {
+        crashVar = crash;
     }
 }

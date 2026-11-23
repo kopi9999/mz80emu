@@ -209,89 +209,89 @@ enum CrashCode validateRawData(
     enum CrashCode crash = RUNNING;
     int numberOfAllInterfaces = rawInterfacesInfo.module.size() + rawInterfacesInfo.derived.size();
 
-    if(!validateVectorHasUniqueValues(rawModulesInfo, "Modules")) {setCrashIfRunning(&crash, CONFIG_INVALID_MODULE_LIST);}
+    if(!validateVectorHasUniqueValues(rawModulesInfo, "Modules")) {setCrashIfRunning(crash, CONFIG_INVALID_MODULE_LIST);}
 
     for (size_t i = 0; i < rawInstanceInfo.size(); ++i) {
-        if (!validateStringIsInteger(rawInstanceInfo[i], "Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawInstanceInfo[i]), rawModulesInfo.size() - 1, "Module instances")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        if (!validateStringIsInteger(rawInstanceInfo[i], "Module instances")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+        else if (!validateIdExist(stoul(rawInstanceInfo[i]), rawModulesInfo.size() - 1, "Module instances")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
     }
     
     for (size_t i = 0; i < rawInterfacesInfo.module.size(); ++i) {
-        if (!validateStringIsInteger(rawInterfacesInfo.module[i], "Interfaces")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawInterfacesInfo.module[i]), rawInstanceInfo.size() - 1, "Interfaces")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        if (!validateStringIsInteger(rawInterfacesInfo.module[i], "Interfaces")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+        else if (!validateIdExist(stoul(rawInterfacesInfo.module[i]), rawInstanceInfo.size() - 1, "Interfaces")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
     }
 
     for (size_t i = 0; i < rawInterfacesInfo.derived.size(); ++i) {
-        if (!validateDerivedInterfaceHasValues(rawInterfacesInfo.derived[i])) {setCrashIfRunning(&crash, CONFIG_DERIVED_INTERFACE_INVALID);}
+        if (!validateDerivedInterfaceHasValues(rawInterfacesInfo.derived[i])) {setCrashIfRunning(crash, CONFIG_DERIVED_INTERFACE_INVALID);}
         for (size_t j = 0; j < rawInterfacesInfo.derived[i].size(); ++j) {
-            if (!validateVectorSize(rawInterfacesInfo.derived[i][j], 2, "Derived interfaces")) {setCrashIfRunning(&crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
-            if (!validateStringIsInteger(rawInterfacesInfo.derived[i][j][0], "Derived interfaces")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-            else if (!validateIdExist(stoul(rawInterfacesInfo.derived[i][j][0]), rawInterfacesInfo.module.size() - 1, "Derived interfaces")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+            if (!validateVectorSize(rawInterfacesInfo.derived[i][j], 2, "Derived interfaces")) {setCrashIfRunning(crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
+            if (!validateStringIsInteger(rawInterfacesInfo.derived[i][j][0], "Derived interfaces")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawInterfacesInfo.derived[i][j][0]), rawInterfacesInfo.module.size() - 1, "Derived interfaces")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
             for (size_t k = 1; k < rawInterfacesInfo.derived[i][j].size(); ++k) {
-                if (!validateStringIsInteger(rawInterfacesInfo.derived[i][j][k], "Derived interfaces")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
+                if (!validateStringIsInteger(rawInterfacesInfo.derived[i][j][k], "Derived interfaces")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
             }
         }
     }
     
-    if (!validateStringIsInteger(rawClockInfo.period, "Clock period")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-    else if (!validateValueDoesNotEqualZero(stoul(rawClockInfo.period), "Clock period")) {setCrashIfRunning(&crash, CONFIG_VALUE_INVALID);}
-    if (!validateStringIsInteger(rawClockInfo.depth, "Clock depth")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-    else if (!validateValueDoesNotEqualZero(stoul(rawClockInfo.depth), "Clock depth")) {setCrashIfRunning(&crash, CONFIG_VALUE_INVALID);}
+    if (!validateStringIsInteger(rawClockInfo.period, "Clock period")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+    else if (!validateValueDoesNotEqualZero(stoul(rawClockInfo.period), "Clock period")) {setCrashIfRunning(crash, CONFIG_VALUE_INVALID);}
+    if (!validateStringIsInteger(rawClockInfo.depth, "Clock depth")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+    else if (!validateValueDoesNotEqualZero(stoul(rawClockInfo.depth), "Clock depth")) {setCrashIfRunning(crash, CONFIG_VALUE_INVALID);}
 
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInstances.size(), rawInstanceInfo.size(), "Strobe up instances")) {setCrashIfRunning(&crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInterfaces.size(), rawInstanceInfo.size(), "Strobe up interfaces")) {setCrashIfRunning(&crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpClock.size(), rawInstanceInfo.size(), "Strobe up clock")) {setCrashIfRunning(&crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInstances.size(), rawInstanceInfo.size(), "Strobe down instances")) {setCrashIfRunning(&crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInterfaces.size(), rawInstanceInfo.size(), "Strobe down interfaces")) {setCrashIfRunning(&crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
-    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownClock.size(), rawInstanceInfo.size(), "Strobe down clock")) {setCrashIfRunning(&crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInstances.size(), rawInstanceInfo.size(), "Strobe up instances")) {setCrashIfRunning(crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpInterfaces.size(), rawInstanceInfo.size(), "Strobe up interfaces")) {setCrashIfRunning(crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeUpClock.size(), rawInstanceInfo.size(), "Strobe up clock")) {setCrashIfRunning(crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInstances.size(), rawInstanceInfo.size(), "Strobe down instances")) {setCrashIfRunning(crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownInterfaces.size(), rawInstanceInfo.size(), "Strobe down interfaces")) {setCrashIfRunning(crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
+    if (!validateValueEqualsNumberOfInstances(rawClockInfo.strobeDownClock.size(), rawInstanceInfo.size(), "Strobe down clock")) {setCrashIfRunning(crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
 
-    if (!validateVectorHasUniqueValues(rawClockInfo.strobeUpInstances, "Strobe up instances")) {setCrashIfRunning(&crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
-    if (!validateVectorHasUniqueValues(rawClockInfo.strobeDownInstances, "Strobe down instances")) {setCrashIfRunning(&crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
+    if (!validateVectorHasUniqueValues(rawClockInfo.strobeUpInstances, "Strobe up instances")) {setCrashIfRunning(crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
+    if (!validateVectorHasUniqueValues(rawClockInfo.strobeDownInstances, "Strobe down instances")) {setCrashIfRunning(crash, CONFIG_INSTANCE_NUMBER_INCONSISTENT);}
 
     for (size_t i = 0; i < rawClockInfo.strobeUpInstances.size(); ++i) {
-        if (!validateStringIsInteger(rawClockInfo.strobeUpInstances[i], "Strobe up instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawClockInfo.strobeUpInstances[i]), rawInstanceInfo.size() - 1, "Strobe up instances")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        if (!validateStringIsInteger(rawClockInfo.strobeUpInstances[i], "Strobe up instances")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+        else if (!validateIdExist(stoul(rawClockInfo.strobeUpInstances[i]), rawInstanceInfo.size() - 1, "Strobe up instances")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
     }
     for (size_t i = 0; i < rawClockInfo.strobeUpInterfaces.size(); ++i) {
-        if (!validateStringIsInteger(rawClockInfo.strobeUpInterfaces[i], "Strobe up interfaces")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawClockInfo.strobeUpInterfaces[i]), numberOfAllInterfaces - 1, "Strobe up interfaces")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        if (!validateStringIsInteger(rawClockInfo.strobeUpInterfaces[i], "Strobe up interfaces")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+        else if (!validateIdExist(stoul(rawClockInfo.strobeUpInterfaces[i]), numberOfAllInterfaces - 1, "Strobe up interfaces")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
     }
     for (size_t i = 0; i < rawClockInfo.strobeDownInstances.size(); ++i) {
-        if (!validateStringIsInteger(rawClockInfo.strobeDownInstances[i], "Strobe down clock")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawClockInfo.strobeDownInstances[i]), rawInstanceInfo.size() - 1, "Strobe down instances")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        if (!validateStringIsInteger(rawClockInfo.strobeDownInstances[i], "Strobe down clock")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+        else if (!validateIdExist(stoul(rawClockInfo.strobeDownInstances[i]), rawInstanceInfo.size() - 1, "Strobe down instances")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
     }
     for (size_t i = 0; i < rawClockInfo.strobeDownInterfaces.size(); ++i) {
-        if (!validateStringIsInteger(rawClockInfo.strobeDownInterfaces[i], "Strobe down interfaces")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-        else if (!validateIdExist(stoul(rawClockInfo.strobeDownInterfaces[i]), numberOfAllInterfaces - 1, "Strobe down interfaces")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+        if (!validateStringIsInteger(rawClockInfo.strobeDownInterfaces[i], "Strobe down interfaces")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+        else if (!validateIdExist(stoul(rawClockInfo.strobeDownInterfaces[i]), numberOfAllInterfaces - 1, "Strobe down interfaces")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
     }
     for (size_t i = 0; i < rawClockInfo.strobeUpClock.size(); ++i) {
-        if (!validateVectorSize(rawClockInfo.strobeUpClock[i], stoul(rawClockInfo.depth), "Strobe up clock")) {setCrashIfRunning(&crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
+        if (!validateVectorSize(rawClockInfo.strobeUpClock[i], stoul(rawClockInfo.depth), "Strobe up clock")) {setCrashIfRunning(crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
         for (size_t j = 0; j < rawClockInfo.strobeUpClock[i].size(); ++j) {
-            if (!validateStringIsBool(rawClockInfo.strobeUpClock[i][j], "Strobe up clock")) {setCrashIfRunning(&crash, CONFIG_VALUE_NOT_BOOL);}
+            if (!validateStringIsBool(rawClockInfo.strobeUpClock[i][j], "Strobe up clock")) {setCrashIfRunning(crash, CONFIG_VALUE_NOT_BOOL);}
         }
     }
     for (size_t i = 0; i < rawClockInfo.strobeDownClock.size(); ++i) {
-        if (!validateVectorSize(rawClockInfo.strobeDownClock[i], stoul(rawClockInfo.depth), "Strobe down clock")) {setCrashIfRunning(&crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
+        if (!validateVectorSize(rawClockInfo.strobeDownClock[i], stoul(rawClockInfo.depth), "Strobe down clock")) {setCrashIfRunning(crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
         for (size_t j = 0; j < rawClockInfo.strobeDownClock[i].size(); ++j) {
-            if (!validateStringIsBool(rawClockInfo.strobeDownClock[i][j], "Strobe down clock")) {setCrashIfRunning(&crash, CONFIG_VALUE_NOT_BOOL);}
+            if (!validateStringIsBool(rawClockInfo.strobeDownClock[i][j], "Strobe down clock")) {setCrashIfRunning(crash, CONFIG_VALUE_NOT_BOOL);}
         }
     }
     
-    if(!validateVectorHasUniqueValues(rawUIModulesInfo, "UI Modules")) {setCrashIfRunning(&crash, CONFIG_INVALID_MODULE_LIST);}
+    if(!validateVectorHasUniqueValues(rawUIModulesInfo, "UI Modules")) {setCrashIfRunning(crash, CONFIG_INVALID_MODULE_LIST);}
 
     for (size_t i = 0; i < rawUIInstanceInfo.size(); ++i) {
-        if (!validateVectorSize(rawUIInstanceInfo[i], 3, "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
+        if (!validateVectorSize(rawUIInstanceInfo[i], 3, "UI Module instances")) {setCrashIfRunning(crash, CONFIG_INVALID_NUMBER_OF_VALUES);}
         if (rawUIInstanceInfo[i].size() >= 1) {
-            if (!validateStringIsInteger(rawUIInstanceInfo[i][0], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][0]), rawUIModulesInfo.size() - 1, "UI Module instances (column 1)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+            if (!validateStringIsInteger(rawUIInstanceInfo[i][0], "UI Module instances")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][0]), rawUIModulesInfo.size() - 1, "UI Module instances (column 1)")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
         }
         if (rawUIInstanceInfo[i].size() >= 2) {
-            if (!validateStringIsInteger(rawUIInstanceInfo[i][1], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][1]), rawInstanceInfo.size() - 1, "UI Module instances (column 2)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+            if (!validateStringIsInteger(rawUIInstanceInfo[i][1], "UI Module instances")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][1]), rawInstanceInfo.size() - 1, "UI Module instances (column 2)")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
         }
         if (rawUIInstanceInfo[i].size() >= 3) {
-            if (!validateStringIsInteger(rawUIInstanceInfo[i][2], "UI Module instances")) {setCrashIfRunning(&crash, CONFIG_VALUE_NAN);}
-            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][2]), numberOfAllInterfaces - 1, "UI Module instances (column 3)")) {setCrashIfRunning(&crash, CONFIG_ID_DOES_NOT_EXIST);}
+            if (!validateStringIsInteger(rawUIInstanceInfo[i][2], "UI Module instances")) {setCrashIfRunning(crash, CONFIG_VALUE_NAN);}
+            else if (!validateIdExist(stoul(rawUIInstanceInfo[i][2]), numberOfAllInterfaces - 1, "UI Module instances (column 3)")) {setCrashIfRunning(crash, CONFIG_ID_DOES_NOT_EXIST);}
         }
     }
 

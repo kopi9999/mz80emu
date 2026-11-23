@@ -307,42 +307,42 @@ BOOST_AUTO_TEST_SUITE( testMisc )
 
         BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_oneZero ){
             string str = "0123";
-            trimLeadingZeros(&str);
+            trimLeadingZeros(str);
             string expectedResult = "123";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_severalZeros ){
             string str = "00000123";
-            trimLeadingZeros(&str);
+            trimLeadingZeros(str);
             string expectedResult = "123";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_noZeros ){
             string str = "123";
-            trimLeadingZeros(&str);
+            trimLeadingZeros(str);
             string expectedResult = "123";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_zeroOnEnd ){
             string str = "1230";
-            trimLeadingZeros(&str);
+            trimLeadingZeros(str);
             string expectedResult = "1230";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_zeroAfterSpace ){
             string str = " 0123";
-            trimLeadingZeros(&str);
+            trimLeadingZeros(str);
             string expectedResult = " 0123";
             BOOST_TEST ( (str == expectedResult) );
         }
         
         BOOST_AUTO_TEST_CASE ( testTrimLeadingZeros_emptyString ){
             string str = "";
-            trimLeadingZeros(&str);
+            trimLeadingZeros(str);
             string expectedResult = "";
             BOOST_TEST ( (str == expectedResult) );
         }

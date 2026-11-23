@@ -86,7 +86,7 @@ When provided string is an empty string, the function returns an empty vector.
 
 | Parameter | Explanation |
 | - | - |
-| `string* str` | Pointer to string which will be trimmed. |
+| `string& str` | Reference to string which will be trimmed. |
 
 `trimLeadingZeros()` removes all zero characters from the beginning of the provided string.
 
@@ -115,7 +115,7 @@ When provided string is an empty string, the function returns an empty vector.
 
 | Parameter | Explanation |
 | - | - |
-| `enum CrashCode* crashVar` | Pointer to variable which `CrashCode` value would be changed. |
+| `enum CrashCode& crashVar` | Reference to variable which `CrashCode` value would be changed. |
 | `enum CrashCode crash` | `CrashCode` which would be set as value of `crashVar`. |
 
 `setCrashIfRunning()` checks whether the value of `crashVar` is `RUNNING`. If so, `crashVar` value is changed to provided `crash`. Otherwise, nothing happens.
